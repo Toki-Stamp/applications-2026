@@ -4,6 +4,7 @@
   import { slide, fade } from "svelte/transition";
   import { formStore, sanitizeFormData } from "./store.js";
 
+
   import IntroBlock from "./blocks/IntroBlock.svelte";
   import FormatBlock from "./blocks/FormatBlock.svelte";
   import PersonalDataBlock from "./blocks/PersonalDataBlock.svelte";
@@ -60,12 +61,27 @@
     }
   }
 
-  function clearForm() {
-    if (confirm("Вы уверены, что хотите стереть все введенные данные?")) {
-      formStore.reset();
-      currentStep = 1;
-      scrollToTop();
+  let showClearModal = false;
+
+  $: {
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = showClearModal ? 'hidden' : '';
     }
+  }
+
+  function clearForm() {
+    showClearModal = true;
+  }
+
+  function confirmClear() {
+    formStore.reset();
+    currentStep = 1;
+    scrollToTop();
+    showClearModal = false;
+  }
+
+  function cancelClear() {
+    showClearModal = false;
   }
 
   const submitForm = () => {
@@ -206,6 +222,23 @@
             currentStep = 1;
           }}>Отправить еще одну заявку</button
         >
+      </div>
+    </div>
+  {/if}
+
+  {#if showClearModal}
+    <div class="modal-overlay" transition:fade={{ duration: 200 }}>
+      <div class="block-card modal-card" transition:slide={{ duration: 300 }}>
+        <h2 class="block-title">Очистить форму?</h2>
+        <div class="modal-content">
+          <p>Вы уверены, что хотите безвозвратно удалить все введенные данные?</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" on:click={cancelClear}>Отмена</button>
+          <button type="button" class="btn-danger" on:click={confirmClear}>
+            <md-icon style="font-size: 1.2rem; margin-right: 0.25rem; vertical-align: text-bottom;">delete_sweep</md-icon> Очистить
+          </button>
+        </div>
       </div>
     </div>
   {/if}
@@ -476,6 +509,57 @@
     max-width: 800px;
     margin: 0 auto;
     width: 100%;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(9, 9, 11, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+
+  .modal-card {
+    width: 100%;
+    max-width: 450px;
+    margin: 0;
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5), 0 0 30px var(--primary-glow);
+  }
+
+  .modal-card .block-title {
+    position: relative;
+    top: 0;
+    box-shadow: none;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-content {
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+    text-align: center;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: stretch;
+  }
+
+  .modal-actions button {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   @media (max-width: 600px) {
