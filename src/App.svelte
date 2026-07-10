@@ -4,14 +4,15 @@
   import { slide, fade } from "svelte/transition";
   import { formStore, sanitizeFormData } from "./store.js";
 
-
   import IntroBlock from "./blocks/IntroBlock.svelte";
   import FormatBlock from "./blocks/FormatBlock.svelte";
   import PersonalDataBlock from "./blocks/PersonalDataBlock.svelte";
   import TransportBlock from "./blocks/TransportBlock.svelte";
   import ProvisionsBlock from "./blocks/ProvisionsBlock.svelte";
   import AccommodationBlock from "./blocks/AccommodationBlock.svelte";
+  import FreeMicBlock from "./blocks/FreeMicBlock.svelte";
   import TextArea from "./components/TextArea.svelte";
+  import TextInput from "./components/TextInput.svelte";
   import ThemeSwitcher from "./components/ThemeSwitcher.svelte";
 
   let isSubmitted = false;
@@ -24,26 +25,36 @@
   onMount(() => {
     // Dynamically calculate sticky header heights to prevent overlap bugs
     const updateHeaderHeights = () => {
-      const bt = /** @type {HTMLElement} */ (document.querySelector('.block-title'));
+      const bt = /** @type {HTMLElement} */ (
+        document.querySelector(".block-title")
+      );
       if (bt) {
-        document.documentElement.style.setProperty('--block-title-height', `${bt.offsetHeight}px`);
+        document.documentElement.style.setProperty(
+          "--block-title-height",
+          `${bt.offsetHeight}px`,
+        );
       }
-      const st = /** @type {HTMLElement} */ (document.querySelector('.section-title'));
+      const st = /** @type {HTMLElement} */ (
+        document.querySelector(".section-title")
+      );
       if (st) {
-        document.documentElement.style.setProperty('--section-title-height', `${st.offsetHeight}px`);
+        document.documentElement.style.setProperty(
+          "--section-title-height",
+          `${st.offsetHeight}px`,
+        );
       }
     };
-    
+
     const observer = new ResizeObserver(updateHeaderHeights);
     observer.observe(document.body);
-    
+
     return () => {
       observer.disconnect();
     };
   });
 
   function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function nextStep() {
@@ -64,8 +75,8 @@
   let showClearModal = false;
 
   $: {
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = showClearModal ? 'hidden' : '';
+    if (typeof document !== "undefined") {
+      document.body.style.overflow = showClearModal ? "hidden" : "";
     }
   }
 
@@ -138,7 +149,7 @@
             </div>
           {:else if currentStep === 3}
             <div transition:fade={{ duration: 300 }} class="step-layer">
-              <PersonalDataBlock stepNumber={currentStep - 1} />
+              <PersonalDataBlock />
             </div>
           {:else if currentStep === 4}
             <div transition:fade={{ duration: 300 }} class="step-layer">
@@ -154,14 +165,7 @@
             </div>
           {:else if currentStep === 7}
             <div transition:fade={{ duration: 300 }} class="step-layer">
-              <div class="block-card">
-                  Свободный микрофон
-                <TextArea
-                  label="Комментарий или пожелания организаторам"
-                  placeholder="Напишите здесь всё, что считаете важным..."
-                  bind:value={$formStore.freeMic}
-                />
-              </div>
+              <FreeMicBlock />
             </div>
           {/if}
         </div>
@@ -171,29 +175,57 @@
       <footer class="app-footer">
         <div class="footer-content">
           {#if currentStep === 1}
-            <div class="center-buttons" style="display: flex; justify-content: center; width: 100%;">
-              <button type="button" class="btn-primary" on:click={nextStep} style="min-width: 250px; flex-grow: 0;">
+            <div
+              class="center-buttons"
+              style="display: flex; justify-content: center; width: 100%;"
+            >
+              <button
+                type="button"
+                class="btn-primary"
+                on:click={nextStep}
+                style="min-width: 250px; flex-grow: 0;"
+              >
                 Начать заполнение
               </button>
             </div>
           {:else}
             <div class="navigation-buttons">
               <div class="left-buttons">
-                <button type="button" class="btn-danger icon-only" data-tooltip="Очистить форму" on:click={clearForm}>
+                <button
+                  type="button"
+                  class="btn-danger icon-only"
+                  data-tooltip="Очистить форму"
+                  on:click={clearForm}
+                >
                   <md-icon>delete_sweep</md-icon>
                 </button>
               </div>
               <div class="right-buttons">
-                <button type="button" class="btn-secondary icon-only" data-tooltip="Назад" on:click={prevStep} disabled={currentStep === 2}>
+                <button
+                  type="button"
+                  class="btn-secondary icon-only"
+                  data-tooltip="Назад"
+                  on:click={prevStep}
+                  disabled={currentStep === 2}
+                >
                   <md-icon>arrow_back</md-icon>
                 </button>
 
                 {#if currentStep < totalSteps}
-                  <button type="button" class="btn-primary icon-only" data-tooltip="Далее" on:click={nextStep}>
+                  <button
+                    type="button"
+                    class="btn-primary icon-only"
+                    data-tooltip="Далее"
+                    on:click={nextStep}
+                  >
                     <md-icon>arrow_forward</md-icon>
                   </button>
                 {:else}
-                  <button type="submit" class="btn-submit icon-only" data-tooltip="Отправить заявку">
+                  <button
+                    type="submit"
+                    class="btn-submit icon-only"
+                    data-tooltip="Отправить заявку"
+                  >
                     <md-icon>rocket_launch</md-icon>
                   </button>
                 {/if}
@@ -231,12 +263,19 @@
       <div class="block-card modal-card" transition:slide={{ duration: 300 }}>
         <h2 class="block-title">Очистить форму?</h2>
         <div class="modal-content">
-          <p>Вы уверены, что хотите безвозвратно удалить все введенные данные?</p>
+          <p>
+            Вы уверены, что хотите безвозвратно удалить все введенные данные?
+          </p>
         </div>
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" on:click={cancelClear}>Отмена</button>
+          <button type="button" class="btn-secondary" on:click={cancelClear}
+            >Отмена</button
+          >
           <button type="button" class="btn-danger" on:click={confirmClear}>
-            <md-icon style="font-size: 1.2rem; margin-right: 0.25rem; vertical-align: text-bottom;">delete_sweep</md-icon> Очистить
+            <md-icon
+              style="font-size: 1.2rem; margin-right: 0.25rem; vertical-align: text-bottom;"
+              >delete_sweep</md-icon
+            > Очистить
           </button>
         </div>
       </div>
@@ -355,7 +394,11 @@
     font-size: 1.6rem;
     font-weight: 800;
     margin: 0;
-    background: linear-gradient(135deg, var(--text-primary) 20%, var(--primary) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--text-primary) 20%,
+      var(--primary) 100%
+    );
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -456,11 +499,14 @@
     box-shadow: 0 4px 15px var(--primary-glow);
     flex-grow: 1;
   }
-  
+
   .btn-primary::before {
     content: "";
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(135deg, var(--cyan) 0%, var(--primary) 100%);
     border-radius: inherit;
     z-index: -1;
@@ -472,7 +518,7 @@
     box-shadow: 0 8px 25px var(--primary-glow);
     transform: translateY(-2px) scale(1.01);
   }
-  
+
   .btn-primary:hover::before {
     opacity: 1;
   }
@@ -531,7 +577,9 @@
     width: 100%;
     max-width: 450px;
     margin: 0;
-    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5), 0 0 30px var(--primary-glow);
+    box-shadow:
+      0 20px 50px -10px rgba(0, 0, 0, 0.5),
+      0 0 30px var(--primary-glow);
   }
 
   .modal-card .block-title {
@@ -572,7 +620,7 @@
     .success-container {
       padding: 1rem;
     }
-    
+
     .progress-container {
       margin-bottom: 0.5rem;
     }

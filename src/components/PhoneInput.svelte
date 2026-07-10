@@ -362,7 +362,7 @@
     width: 100%;
     height: 56px;
     background: transparent;
-    border: 1px solid var(--text-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -376,7 +376,7 @@
   }
 
   .country-selector-btn:hover {
-    border-color: var(--text-primary);
+    border-color: var(--primary-hover);
   }
 
   .country-selector-btn:focus-visible,

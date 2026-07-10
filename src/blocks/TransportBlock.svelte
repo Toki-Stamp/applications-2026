@@ -44,7 +44,12 @@
 
   <div class="section-container">
     <h3 class="section-title">{stepNumber}.3. Дополнительно по транспорту</h3>
-    <TextArea label="Комментарий к дороге" bind:value={$formStore.transportComment} />
+    <TextArea 
+      label="Комментарий к дороге" 
+      icon="edit_note"
+      placeholder="Напишите здесь всё, что считаете важным..."
+      bind:value={$formStore.transportComment} 
+    />
   </div>
 </div>
 

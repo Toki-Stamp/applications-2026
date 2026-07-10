@@ -100,6 +100,24 @@ input, button, textarea, select {
   font-family: inherit;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
 body {
   font-family: var(--font-family);
   background-color: var(--bg-color);
@@ -249,6 +267,7 @@ h1::after {
   color: var(--text-primary);
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -295,7 +314,8 @@ h1::after {
 }
 
 /* Add a tiny accent dot to titles */
-.block-title::before {
+.block-title::before,
+.block-title::after {
   content: "";
   display: block;
   width: 8px;
@@ -348,8 +368,12 @@ h1::after {
   --md-outlined-text-field-focus-label-text-color: var(--primary);
   --md-outlined-text-field-input-text-color: var(--text-primary);
   --md-outlined-text-field-outline-color: var(--border-color);
-  --md-outlined-text-field-hover-outline-color: var(--text-secondary);
+  --md-outlined-text-field-hover-outline-color: var(--primary-hover);
   --md-outlined-text-field-focus-outline-color: var(--primary);
+
+  --md-outlined-select-text-field-outline-color: var(--border-color);
+  --md-outlined-select-text-field-hover-outline-color: var(--primary-hover);
+  --md-outlined-select-text-field-focus-outline-color: var(--primary);
 
   --md-menu-container-color: var(--bg-color-accent);
   --md-sys-color-surface-container: var(--bg-color-accent);

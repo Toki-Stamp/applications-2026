@@ -6,7 +6,6 @@
   import PhoneInput from '../components/PhoneInput.svelte';
   import SubBlockCard from '../components/SubBlockCard.svelte';
 
-  export let stepNumber;
 </script>
 
 <div class="block-card">

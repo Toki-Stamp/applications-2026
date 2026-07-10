@@ -133,7 +133,7 @@
 
     .select-field {
       width: 100%;
-      --md-outlined-select-text-field-container-shape: 4px;
+      --md-outlined-select-text-field-container-shape: 8px;
     }
   }
 </style>

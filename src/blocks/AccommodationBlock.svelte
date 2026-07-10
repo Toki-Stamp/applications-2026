@@ -17,7 +17,12 @@
     <div transition:slide>
       <CheckboxGrid label="Укажите ночевки" bind:values={$formStore.nights} options={nightsList} />
       <div class="mt-4">
-        <TextArea label="Дополнительные пожелания к номеру и соседям" bind:value={$formStore.accommodationComment} />
+        <TextArea 
+          label="Дополнительные пожелания к номеру и соседям" 
+          icon="edit_note"
+          placeholder="Напишите здесь всё, что считаете важным..."
+          bind:value={$formStore.accommodationComment} 
+        />
       </div>
     </div>
   {/if}
