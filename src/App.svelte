@@ -154,32 +154,36 @@
       <!-- Navigation Buttons -->
       <footer class="app-footer">
         <div class="footer-content">
-          <div class="navigation-buttons">
-            <div class="left-buttons">
-              {#if currentStep > 1}
-                <button type="button" class="btn-danger" on:click={clearForm}>
-                  Очистить форму
-                </button>
-              {/if}
+          {#if currentStep === 1}
+            <div class="center-buttons" style="display: flex; justify-content: center; width: 100%;">
+              <button type="button" class="btn-primary" on:click={nextStep} style="min-width: 250px; flex-grow: 0;">
+                Начать заполнение
+              </button>
             </div>
-            <div class="right-buttons">
-              {#if currentStep > 1}
-                <button type="button" class="btn-secondary" on:click={prevStep}>
-                  Назад
+          {:else}
+            <div class="navigation-buttons">
+              <div class="left-buttons">
+                <button type="button" class="btn-danger icon-only" data-tooltip="Очистить форму" on:click={clearForm}>
+                  <md-icon>delete_sweep</md-icon>
                 </button>
-              {/if}
+              </div>
+              <div class="right-buttons">
+                <button type="button" class="btn-secondary icon-only" data-tooltip="Назад" on:click={prevStep} disabled={currentStep === 2}>
+                  <md-icon>arrow_back</md-icon>
+                </button>
 
-              {#if currentStep < totalSteps}
-                <button type="button" class="btn-primary" on:click={nextStep}>
-                  {currentStep === 1 ? "Начать заполнение" : "Далее"}
-                </button>
-              {:else}
-                <button type="submit" class="btn-submit"
-                  >Отправить заявку</button
-                >
-              {/if}
+                {#if currentStep < totalSteps}
+                  <button type="button" class="btn-primary icon-only" data-tooltip="Далее" on:click={nextStep}>
+                    <md-icon>arrow_forward</md-icon>
+                  </button>
+                {:else}
+                  <button type="submit" class="btn-submit icon-only" data-tooltip="Отправить заявку">
+                    <md-icon>rocket_launch</md-icon>
+                  </button>
+                {/if}
+              </div>
             </div>
-          </div>
+          {/if}
         </div>
       </footer>
     </form>
@@ -354,6 +358,7 @@
   .right-buttons {
     display: flex;
     gap: 1rem;
+    align-items: center;
   }
 
   .right-buttons {
@@ -376,6 +381,39 @@
     position: relative;
     overflow: hidden;
     z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    box-shadow: none !important;
+  }
+
+  button:disabled::before {
+    display: none !important;
+  }
+
+  .btn-primary md-icon,
+  .btn-secondary md-icon,
+  .btn-danger md-icon {
+    font-size: 1.2rem;
+  }
+
+  .icon-only {
+    width: 55px;
+    height: 55px;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    min-width: 0 !important;
+    flex-grow: 0 !important;
+  }
+
+  .icon-only md-icon {
+    font-size: 1.8rem !important;
   }
 
   .btn-primary {
@@ -391,6 +429,7 @@
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(135deg, var(--cyan) 0%, var(--primary) 100%);
+    border-radius: inherit;
     z-index: -1;
     transition: opacity 0.4s ease;
     opacity: 0;
@@ -452,29 +491,6 @@
     
     .progress-container {
       margin-bottom: 0.5rem;
-    }
-
-    .navigation-buttons {
-      flex-direction: column-reverse;
-      gap: 0.5rem;
-    }
-
-    .btn-primary,
-    .btn-secondary,
-    .btn-danger {
-      padding: 0.75rem 1rem;
-    }
-
-    .left-buttons,
-    .right-buttons {
-      width: 100%;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .btn-secondary,
-    .btn-danger {
-      width: 100%;
     }
   }
 </style>

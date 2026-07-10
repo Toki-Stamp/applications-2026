@@ -142,6 +142,8 @@
     border-radius: 8px;
     font-size: 0.85rem;
     font-family: var(--font-family);
+    text-transform: uppercase;
+    letter-spacing: 1px;
     white-space: nowrap;
     border: 1px solid var(--border-color);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
