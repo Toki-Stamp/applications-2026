@@ -1,25 +1,25 @@
 <script>
-  import '@material/web/iconbutton/icon-button.js';
-  import '@material/web/icon/icon.js';
-  import { generateId } from '../utils.js';
-  import { onMount } from 'svelte';
+  import "@material/web/iconbutton/icon-button.js";
+  import "@material/web/icon/icon.js";
+  import { generateId } from "../utils.js";
+  import { onMount } from "svelte";
 
-  export let value = '';
-  export let label = '';
-  export let helperText = '';
+  export let value = "";
+  export let label = "";
+  export let helperText = "";
   export let required = false;
-  export let placeholder = '';
-  export let icon = '';
+  export let placeholder = "";
+  export let icon = "";
 
-  export let id = generateId('textarea');
+  export let id = generateId("textarea");
 
   /** @type {HTMLTextAreaElement} */
   let textareaRef;
 
   function adjustHeight() {
     if (!textareaRef) return;
-    textareaRef.style.height = 'auto';
-    textareaRef.style.height = textareaRef.scrollHeight + 'px';
+    textareaRef.style.height = "auto";
+    textareaRef.style.height = textareaRef.scrollHeight + "px";
   }
 
   onMount(() => {
@@ -37,24 +37,33 @@
   /** @param {Event} e */
   function clearValue(e) {
     e.preventDefault();
-    value = '';
+    value = "";
     if (textareaRef) {
-      textareaRef.value = '';
+      textareaRef.value = "";
     }
     adjustHeight();
   }
 </script>
 
-<div class="container">
-  {#if label}
-    <div class="group-label">
-      {label}
-      <span class="optional-tag">
-        {required ? '(Обязательно для заполнения)' : ''}
-      </span>
+<div class="form-group">
+  {#if label || helperText}
+    <div class="label-container">
+      {#if label}
+        <div class="group-label">
+          {label}
+          <span class="optional-tag">
+            {required ? "(Обязательно для заполнения)" : ""}
+          </span>
+        </div>
+      {/if}
+      {#if helperText}
+        <div class="helper-text">
+          <strong>Подсказка:</strong> {helperText}
+        </div>
+      {/if}
     </div>
   {/if}
-  
+
   <div class="input-wrapper">
     {#if icon}
       <md-icon class="leading-icon">{icon}</md-icon>
@@ -62,7 +71,7 @@
     <textarea
       bind:this={textareaRef}
       class="custom-textarea"
-      class:has-icon={icon !== ''}
+      class:has-icon={icon !== ""}
       rows="3"
       {required}
       {id}
@@ -80,44 +89,18 @@
       </div>
     {/if}
   </div>
-  
-  {#if helperText}
-    <div class="helper-text">{helperText}</div>
-  {/if}
+
+
 </div>
 
 <style>
-  .container {
-    margin-bottom: 1.5rem;
+  .input-wrapper {
+    position: relative;
+    display: flex;
     width: 100%;
+  }
 
-    .group-label {
-      margin-bottom: 0.75rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .optional-tag {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--accent);
-      margin-left: 0.25rem;
-    }
-
-    .helper-text {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-      margin-top: 0.5rem;
-      padding-left: 1rem;
-    }
-
-    .input-wrapper {
-      position: relative;
-      display: flex;
-      width: 100%;
-    }
-
-    .leading-icon {
+  .leading-icon {
       position: absolute;
       left: 16px;
       top: 16px;
@@ -155,9 +138,11 @@
       overflow: hidden; /* Hide scrollbar since it grows infinitely */
       box-sizing: border-box;
       line-height: 1.5;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
     }
-    
+
     .custom-textarea.has-icon {
       padding-left: 52px;
     }
@@ -173,7 +158,6 @@
     }
 
     .custom-textarea::placeholder {
-      color: var(--text-secondary);
+      color: var(--text-placeholder);
     }
-  }
 </style>

@@ -2,22 +2,22 @@ import { writable } from 'svelte/store';
 import { APPLICATION_TYPE, GROUP_CONDITIONS, PROVISION_TYPE, ACCOMMODATION_TYPE, TRANSPORT_METHOD } from './constants.js';
 
 export const defaultProvisions = () => ({
-  food: PROVISION_TYPE.NONE,
+  food: null,
   foodPeriods: [],
-  alcohol: PROVISION_TYPE.NONE,
+  alcohol: null,
   alcoholPeriods: []
 });
 
 const initialState = {
-  applicationType: APPLICATION_TYPE.INDIVIDUAL,
-  totalGroupSize: 2,
-  groupConditions: GROUP_CONDITIONS.UNIFIED,
+  applicationType: null,
+  totalGroupSize: null,
+  groupConditions: null,
   applicant: { nickname: '', firstName: '', lastName: '', phone: '', provisions: defaultProvisions() },
   guests: [],
-  transportTo: { method: TRANSPORT_METHOD.SELF, freeSeats: 0, day: 'Пятница', time: '' },
-  transportFrom: { method: TRANSPORT_METHOD.SAME_AS_TO, freeSeats: 0, day: 'Воскресенье', time: '' },
+  transportTo: { method: null, freeSeats: null, day: null, time: '' },
+  transportFrom: { method: null, freeSeats: null, day: null, time: '' },
   transportComment: '',
-  accommodation: ACCOMMODATION_TYPE.SELF,
+  accommodation: null,
   nights: [],
   accommodationComment: '',
   freeMic: ''

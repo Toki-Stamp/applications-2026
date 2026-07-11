@@ -8,3 +8,19 @@ let idCounter = 0;
 export function generateId(prefix = 'el') {
   return `${prefix}-${idCounter++}`;
 }
+
+import { cubicOut } from 'svelte/easing';
+
+/**
+ * Custom Svelte transition using CSS Grid for flawless height animation
+ * @param {HTMLElement} node
+ * @param {{duration?: number, easing?: any}} [options]
+ */
+export function gridExpand(node, { duration = 300, easing = cubicOut } = {}) {
+  return {
+    duration,
+    easing,
+    /** @param {number} t */
+    css: t => `display: grid; grid-template-rows: ${t}fr;`
+  };
+}

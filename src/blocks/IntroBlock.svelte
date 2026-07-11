@@ -1,5 +1,6 @@
 <script>
-  import SubBlockCard from '../components/SubBlockCard.svelte';
+  import SubBlockCard from "../components/SubBlockCard.svelte";
+  import HintBox from "../components/HintBox.svelte";
 </script>
 
 <div class="block-card">
@@ -9,7 +10,7 @@
   </div>
 
   <div class="intro-content">
-    <SubBlockCard title="📅 Даты проведения" accentTitle={true} stickyLevel={2}>
+    <SubBlockCard title="Даты проведения" stickyLevel={2}>
       <p><strong>с 7 по 9 августа 2026 года</strong> (3 дня)</p>
       <ul>
         <li><strong>Пятница:</strong> шоу начинается</li>
@@ -18,7 +19,7 @@
       </ul>
     </SubBlockCard>
 
-    <SubBlockCard title="📞 Контакты организаторов" accentTitle={true} stickyLevel={2}>
+    <SubBlockCard title="Контакты организаторов" stickyLevel={2}>
       <p>Для решения организационных вопросов:</p>
       <ul>
         <li>
@@ -34,9 +35,11 @@
       </ul>
     </SubBlockCard>
 
-    <p class="highlight-text">
-      Нажмите <strong>«Начать заполнение»</strong>, чтобы перейти к форме заявки
-    </p>
+    <HintBox>
+      Нажмите кнопку
+      <strong class="text-primary">НАЧАТЬ ЗАПОЛНЕНИЕ</strong>, чтобы перейти к
+      форме заявки
+    </HintBox>
   </div>
 </div>
 
@@ -52,7 +55,6 @@
 
   .badge-container {
     text-align: center;
-    margin-bottom: 1.5rem;
 
     .anniversary-badge {
       background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -99,6 +101,10 @@
     color: var(--primary);
   }
 
+  .text-primary {
+    color: var(--primary);
+  }
+
   a {
     color: var(--primary);
     text-decoration: none;
@@ -107,12 +113,5 @@
     &:hover {
       text-decoration: underline;
     }
-  }
-
-  .highlight-text {
-    text-align: center;
-    color: var(--primary);
-    font-weight: 600;
-    margin-top: 1rem;
   }
 </style>

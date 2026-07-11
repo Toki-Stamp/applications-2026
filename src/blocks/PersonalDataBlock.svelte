@@ -13,20 +13,20 @@
     <h3 class="section-title">2.1. Заявитель</h3>
     <TextInput
       label="Никнейм"
-      placeholder="Например: cyber_ninja"
+      placeholder="cyber_ninja"
       icon="badge"
       bind:value={$formStore.applicant.nickname}
       required={true}
     />
     <TextInput
       label="Имя"
-      placeholder="Например: Иван"
+      placeholder="Иван"
       icon="person"
       bind:value={$formStore.applicant.firstName}
     />
     <TextInput
       label="Фамилия"
-      placeholder="Например: Иванов"
+      placeholder="Иванов"
       icon="person"
       bind:value={$formStore.applicant.lastName}
     />
@@ -45,20 +45,20 @@
           <SubBlockCard title={`Гость #${i + 1}`}>
             <TextInput
               label="Имя"
-              placeholder="Например: Иван"
+              placeholder="Иван"
               icon="person"
               bind:value={$formStore.guests[i].firstName}
               required={true}
             />
             <TextInput
               label="Фамилия"
-              placeholder="Например: Иванов"
+              placeholder="Иванов"
               icon="person"
               bind:value={$formStore.guests[i].lastName}
             />
             <TextInput
               label="Никнейм"
-              placeholder="Например: cyber_ninja"
+              placeholder="cyber_ninja"
               icon="badge"
               bind:value={$formStore.guests[i].nickname}
             />

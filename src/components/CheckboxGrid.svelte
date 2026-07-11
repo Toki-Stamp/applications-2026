@@ -1,17 +1,17 @@
 <script>
-  import '@material/web/checkbox/checkbox.js';
-  import { generateId } from '../utils.js';
+  import "@material/web/checkbox/checkbox.js";
+  import { generateId } from "../utils.js";
 
   /** @type {string[]} */
   export let values = [];
   /** @type {string} */
-  export let label = '';
+  export let label = "";
   /** @type {Array<{id: string, label: string, helperText?: string}>} */
   export let options = [];
   /** @type {boolean} */
   export let required = false;
   /** @type {string} */
-  export let name = generateId('checkboxgrid');
+  export let name = generateId("checkboxgrid");
 
   /**
    * @param {Event} e
@@ -24,7 +24,7 @@
         values = [...values, optId];
       }
     } else {
-      values = values.filter(v => v !== optId);
+      values = values.filter((v) => v !== optId);
     }
   }
   /**
@@ -32,18 +32,18 @@
    * @returns {(e: Event) => void}
    */
   function createChangeHandler(optId) {
-    return function(e) {
+    return function (e) {
       handleChange(e, optId);
     };
   }
 </script>
 
-<div class="container">
+<div class="form-group">
   {#if label}
     <h3 class="group-label">
       {label}
       <span class="optional-tag">
-        {required ? '(Обязательно для заполнения)' : ''}
+        {required ? "(Обязательно для заполнения)" : ""}
       </span>
     </h3>
   {/if}
@@ -53,7 +53,7 @@
       {@const suppText = opt.helperText || null}
       <!-- svelte-ignore a11y_label_has_associated_control -->
       <label class="checkbox-label">
-        <md-checkbox 
+        <md-checkbox
           class="checkbox-input"
           {name}
           checked={values.includes(opt.id)}
@@ -71,56 +71,38 @@
 </div>
 
 <style>
-  .container {
-    margin-bottom: 1.5rem;
-    margin-top: 1rem;
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.5rem;
+  }
 
-    .group-label {
-      margin-top: 0;
-      margin-bottom: 1rem;
-      font-size: 1.1rem;
-      color: var(--text-primary);
-    }
+  .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    padding: 0.3rem 0;
+  }
 
-    .optional-tag {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--accent);
-      margin-left: 0.25rem;
-    }
+  .checkbox-input {
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
 
-    .options-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 0.5rem;
+  .text-container {
+    margin-left: 12px;
+    display: flex;
+    flex-direction: column;
+  }
 
-      .checkbox-label {
-        display: flex;
-        align-items: flex-start;
-        cursor: pointer;
-        padding: 0.3rem 0;
+  .main-label {
+    color: var(--text-primary);
+  }
 
-        .checkbox-input {
-          margin-top: 2px;
-          flex-shrink: 0;
-        }
-
-        .text-container {
-          margin-left: 12px;
-          display: flex;
-          flex-direction: column;
-
-          .main-label {
-            color: var(--text-primary);
-          }
-
-          .supp-text {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-top: 2px;
-          }
-        }
-      }
-    }
+  .supp-text {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-top: 2px;
+    flex-shrink: 0;
   }
 </style>

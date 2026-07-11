@@ -239,17 +239,21 @@
 </script>
 
 <div class="form-group">
-  {#if label}
-    <div class="group-label" class:has-helper={!!helperText}>
-      {label}
-      <span class="optional-tag">
-        {required ? '(Обязательно для заполнения)' : ''}
-      </span>
-    </div>
-  {/if}
-  {#if helperText}
-    <div class="helper-text">
-      <strong>Подсказка:</strong> {helperText}
+  {#if label || helperText}
+    <div class="label-container">
+      {#if label}
+        <div class="group-label">
+          {label}
+          <span class="optional-tag">
+            {required ? '(Обязательно для заполнения)' : ''}
+          </span>
+        </div>
+      {/if}
+      {#if helperText}
+        <div class="helper-text">
+          <strong>Подсказка:</strong> {helperText}
+        </div>
+      {/if}
     </div>
   {/if}
   
@@ -316,36 +320,8 @@
   </div>
 </div>
 
+
 <style>
-  .form-group {
-    position: relative;
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .group-label {
-    margin-bottom: 0.75rem;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
-
-  .group-label.has-helper {
-    margin-bottom: 2px;
-  }
-
-  .helper-text {
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .optional-tag {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--accent);
-    margin-left: 0.25rem;
-  }
-
   .phone-inputs-container {
     display: flex;
     gap: 8px;
@@ -453,7 +429,7 @@
   }
 
   .search-input::placeholder {
-    color: var(--text-secondary);
+    color: var(--text-placeholder);
   }
 
   .country-list {
@@ -537,5 +513,20 @@
   .phone-input md-outlined-text-field {
     width: 100%;
     --md-outlined-text-field-container-shape: 8px;
+  }
+
+  @media (max-width: 600px) {
+    .country-dropdown-wrapper {
+      flex: 0 0 95px;
+    }
+    .country-selector-btn {
+      padding: 0 8px 0 10px;
+    }
+    .country-selector-btn .dial-code {
+      margin-left: 4px;
+    }
+    .flag-icon {
+      margin-right: 8px;
+    }
   }
 </style>

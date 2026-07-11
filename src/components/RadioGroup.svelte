@@ -1,17 +1,17 @@
 <script>
-  import '@material/web/radio/radio.js';
-  import { generateId } from '../utils.js';
+  import "@material/web/radio/radio.js";
+  import { generateId } from "../utils.js";
 
   /** @type {any} */
   export let value;
   /** @type {string} */
-  export let label = '';
+  export let label = "";
   /** @type {any[]} */
   export let options = [];
   /** @type {boolean} */
   export let required = false;
   /** @type {string} */
-  export let name = generateId('radiogroup');
+  export let name = generateId("radiogroup");
 
   /** @param {any} optValue */
   function handleChange(optValue) {
@@ -19,12 +19,12 @@
   }
 </script>
 
-<div class="container">
+<div class="form-group">
   {#if label}
     <div class="group-label">
       {label}
       <span class="optional-tag">
-        {required ? '(Обязательно для заполнения)' : ''}
+        {required ? "(Обязательно для заполнения)" : ""}
       </span>
     </div>
   {/if}
@@ -35,7 +35,7 @@
       {@const suppText = opt.helperText || null}
       <!-- svelte-ignore a11y_label_has_associated_control -->
       <label class="radio-label">
-        <md-radio 
+        <md-radio
           class="radio-input"
           {name}
           value={optVal}
@@ -46,7 +46,8 @@
           <span class="main-label">{mainLabel}</span>
           {#if suppText}
             <span class="supp-text">
-              <strong>Подсказка:</strong> {suppText}
+              <strong>Подсказка:</strong>
+              {suppText}
             </span>
           {/if}
         </div>
@@ -56,54 +57,38 @@
 </div>
 
 <style>
-  .container {
-    margin-bottom: 1.5rem;
+  .options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
 
-    .group-label {
-      margin-bottom: 0.75rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
+  .radio-label {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    padding: 0.3rem 0;
+  }
 
-    .optional-tag {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--accent);
-      margin-left: 0.25rem;
-    }
+  .radio-input {
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
 
-    .options-container {
-      display: flex;
-      flex-direction: column;
-      gap: 0.2rem;
+  .text-container {
+    margin-left: 12px;
+    display: flex;
+    flex-direction: column;
+  }
 
-      .radio-label {
-        display: flex;
-        align-items: flex-start;
-        cursor: pointer;
-        padding: 0.3rem 0;
+  .main-label {
+    color: var(--text-primary);
+  }
 
-        .radio-input {
-          margin-top: 2px;
-          flex-shrink: 0;
-        }
-
-        .text-container {
-          margin-left: 12px;
-          display: flex;
-          flex-direction: column;
-
-          .main-label {
-            color: var(--text-primary);
-          }
-
-          .supp-text {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-top: 2px;
-          }
-        }
-      }
-    }
+  .supp-text {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-top: 2px;
+    flex-shrink: 0;
   }
 </style>

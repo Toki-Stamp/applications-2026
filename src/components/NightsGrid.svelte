@@ -17,9 +17,11 @@
   }
 </script>
 
-<div class="nights-group">
+<div class="form-group">
   {#if label}
-    <h3 class="group-label">{label}</h3>
+    <div class="label-container">
+      <div class="group-label">{label}</div>
+    </div>
   {/if}
   <div class="cards-grid">
     {#each nightsList as night}
@@ -49,19 +51,7 @@
 </div>
 
 <style>
-  .nights-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 0;
-    padding-bottom: 1.5rem;
-  }
-  
-  .group-label {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-    color: var(--text-primary);
-  }
+
   
   .cards-grid {
     display: grid;

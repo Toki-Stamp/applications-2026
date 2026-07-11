@@ -72,22 +72,27 @@
 </script>
 
 <div class="form-group">
-  {#if label}
-    <div class="group-label" class:has-helper={!!helperText}>
-      {label}
-      <span class="optional-tag">
-        {required ? '(Обязательно для заполнения)' : ''}
-      </span>
-    </div>
-  {/if}
-  {#if helperText}
-    <div class="helper-text">
-      <strong>Подсказка:</strong> {helperText}
+  {#if label || helperText}
+    <div class="label-container">
+      {#if label}
+        <div class="group-label">
+          {label}
+          <span class="optional-tag">
+            {required ? "(Обязательно для заполнения)" : ""}
+          </span>
+        </div>
+      {/if}
+      {#if helperText}
+        <div class="helper-text">
+          <strong>Подсказка:</strong> {helperText}
+        </div>
+      {/if}
     </div>
   {/if}
   <md-outlined-text-field
     {id}
     {type}
+    class:is-time-empty={type === 'time' && (!value || value === '')}
     supporting-text={computedSupportingText}
     {error}
     {required}
@@ -115,37 +120,20 @@
 </div>
 
 <style>
-  .form-group {
-    position: relative;
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
 
-    .group-label {
-      margin-bottom: 0.75rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .group-label.has-helper {
-      margin-bottom: 2px;
-    }
-
-    .helper-text {
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .optional-tag {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--accent);
-      margin-left: 0.25rem;
-    }
-  }
 
   md-outlined-text-field {
     width: 100%;
+    min-height: 56px;
     --md-outlined-text-field-container-shape: 8px;
+  }
+
+  md-outlined-text-field.is-time-empty {
+    --md-outlined-text-field-input-text-color: var(--text-placeholder);
+    --md-outlined-text-field-hover-input-text-color: var(--text-placeholder);
+    --md-outlined-text-field-focus-input-text-color: var(--text-placeholder);
+    --md-outlined-text-field-error-input-text-color: var(--text-placeholder);
+    --md-outlined-text-field-error-hover-input-text-color: var(--text-placeholder);
+    --md-outlined-text-field-error-focus-input-text-color: var(--text-placeholder);
   }
 </style>

@@ -43,31 +43,23 @@ export const transportMethodsFrom = [
   { label: 'Самостоятельно', value: TRANSPORT_METHOD.SELF }
 ];
 
-export const periods = [
-  { id: 'fri-morn', label: 'Пятница: Утро', helperText: 'до обеда' },
-  { id: 'fri-eve', label: 'Пятница: Вечер', helperText: 'после обеда' },
-  { id: 'sat-morn', label: 'Суббота: Утро', helperText: 'до обеда' },
-  { id: 'sat-eve', label: 'Суббота: Вечер', helperText: 'после обеда' },
-  { id: 'sun-morn', label: 'Воскресенье: Утро', helperText: 'до обеда' },
-];
-
 export const groupedPeriods = [
   {
-    day: 'Пятница',
+    day: 'На пятницу',
     periods: [
       { id: 'fri-morn', label: 'Утро', helperText: 'до обеда' },
       { id: 'fri-eve', label: 'Вечер', helperText: 'после обеда' }
     ]
   },
   {
-    day: 'Суббота',
+    day: 'На субботу',
     periods: [
       { id: 'sat-morn', label: 'Утро', helperText: 'до обеда' },
       { id: 'sat-eve', label: 'Вечер', helperText: 'после обеда' }
     ]
   },
   {
-    day: 'Воскресенье',
+    day: 'На воскресенье',
     periods: [
       { id: 'sun-morn', label: 'Утро', helperText: 'до обеда' }
     ]
