@@ -3,7 +3,7 @@
   import { formStore } from '../store.js';
   import { APPLICATION_TYPE, GROUP_CONDITIONS, PROVISION_TYPE, periods, foodOptions, alcoholOptions } from '../constants.js';
   import RadioGroup from '../components/RadioGroup.svelte';
-  import CheckboxGrid from '../components/CheckboxGrid.svelte';
+  import PeriodsGrid from '../components/PeriodsGrid.svelte';
   import SubBlockCard from '../components/SubBlockCard.svelte';
 
   export let stepNumber;
@@ -19,7 +19,7 @@
         <RadioGroup label="Потребность в питании" bind:value={$formStore.applicant.provisions.food} options={foodOptions} />
         {#if $formStore.applicant.provisions.food === PROVISION_TYPE.REQUIRED}
           <div transition:slide>
-            <CheckboxGrid bind:values={$formStore.applicant.provisions.foodPeriods} options={periods} />
+            <PeriodsGrid bind:values={$formStore.applicant.provisions.foodPeriods} />
           </div>
         {/if}
       </div>
@@ -31,7 +31,7 @@
         <RadioGroup label="Потребность в алкоголе" bind:value={$formStore.applicant.provisions.alcohol} options={alcoholOptions} />
         {#if $formStore.applicant.provisions.alcohol === PROVISION_TYPE.REQUIRED}
           <div transition:slide>
-            <CheckboxGrid bind:values={$formStore.applicant.provisions.alcoholPeriods} options={periods} />
+            <PeriodsGrid bind:values={$formStore.applicant.provisions.alcoholPeriods} />
           </div>
         {/if}
       </div>
@@ -44,7 +44,7 @@
         <RadioGroup label="Потребность в питании" bind:value={$formStore.applicant.provisions.food} options={foodOptions} />
         {#if $formStore.applicant.provisions.food === PROVISION_TYPE.REQUIRED}
           <div transition:slide>
-            <CheckboxGrid bind:values={$formStore.applicant.provisions.foodPeriods} options={periods} />
+            <PeriodsGrid bind:values={$formStore.applicant.provisions.foodPeriods} />
           </div>
         {/if}
       </div>
@@ -52,7 +52,7 @@
         <RadioGroup label="Потребность в алкоголе" bind:value={$formStore.applicant.provisions.alcohol} options={alcoholOptions} />
         {#if $formStore.applicant.provisions.alcohol === PROVISION_TYPE.REQUIRED}
           <div transition:slide>
-            <CheckboxGrid bind:values={$formStore.applicant.provisions.alcoholPeriods} options={periods} />
+            <PeriodsGrid bind:values={$formStore.applicant.provisions.alcoholPeriods} />
           </div>
         {/if}
       </div>
@@ -65,7 +65,7 @@
             <RadioGroup label="Потребность в питании" bind:value={$formStore.guests[i].provisions.food} options={foodOptions} />
             {#if $formStore.guests[i].provisions.food === PROVISION_TYPE.REQUIRED}
               <div transition:slide>
-                <CheckboxGrid bind:values={$formStore.guests[i].provisions.foodPeriods} options={periods} />
+                <PeriodsGrid bind:values={$formStore.guests[i].provisions.foodPeriods} />
               </div>
             {/if}
           </div>
@@ -73,7 +73,7 @@
             <RadioGroup label="Потребность в алкоголе" bind:value={$formStore.guests[i].provisions.alcohol} options={alcoholOptions} />
             {#if $formStore.guests[i].provisions.alcohol === PROVISION_TYPE.REQUIRED}
               <div transition:slide>
-                <CheckboxGrid bind:values={$formStore.guests[i].provisions.alcoholPeriods} options={periods} />
+                <PeriodsGrid bind:values={$formStore.guests[i].provisions.alcoholPeriods} />
               </div>
             {/if}
           </div>

@@ -51,6 +51,29 @@ export const periods = [
   { id: 'sun-morn', label: 'Воскресенье: Утро', helperText: 'до обеда' },
 ];
 
+export const groupedPeriods = [
+  {
+    day: 'Пятница',
+    periods: [
+      { id: 'fri-morn', label: 'Утро', helperText: 'до обеда' },
+      { id: 'fri-eve', label: 'Вечер', helperText: 'после обеда' }
+    ]
+  },
+  {
+    day: 'Суббота',
+    periods: [
+      { id: 'sat-morn', label: 'Утро', helperText: 'до обеда' },
+      { id: 'sat-eve', label: 'Вечер', helperText: 'после обеда' }
+    ]
+  },
+  {
+    day: 'Воскресенье',
+    periods: [
+      { id: 'sun-morn', label: 'Утро', helperText: 'до обеда' }
+    ]
+  }
+];
+
 export const groupSizeOptions = [
   { label: 'Всего 2 участника', value: 2 },
   { label: 'Всего 3 участника', value: 3 },
