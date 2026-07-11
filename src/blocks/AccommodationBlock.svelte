@@ -17,7 +17,7 @@
   <RadioGroup label="Потребность в проживании" required={true} bind:value={$formStore.accommodation} options={accommodationOptions} />
 
   {#if $formStore.accommodation === ACCOMMODATION_TYPE.BOOKING}
-    <div transition:slide>
+    <div transition:slide style="margin-top: 1.5rem;">
       <NightsGrid label="Укажите ночевки" bind:values={$formStore.nights} />
       <div class="mt-4">
         <TextArea 
@@ -32,7 +32,13 @@
 </div>
 
 <style>
+  :global(.block-card > .container) {
+    margin-bottom: 0 !important;
+  }
 
+  :global(.mt-4 > .container) {
+    margin-bottom: 0 !important;
+  }
 
   .mt-4 {
     margin-top: 1rem;

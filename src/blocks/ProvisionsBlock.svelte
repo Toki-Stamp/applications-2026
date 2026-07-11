@@ -50,7 +50,7 @@
           options={foodOptions}
         />
         {#if $formStore.applicant.provisions.food === PROVISION_TYPE.REQUIRED}
-          <div transition:slide>
+          <div transition:slide style="margin-top: 1.5rem;">
             <PeriodsGrid
               bind:values={$formStore.applicant.provisions.foodPeriods}
             />
@@ -68,7 +68,7 @@
           options={alcoholOptions}
         />
         {#if $formStore.applicant.provisions.alcohol === PROVISION_TYPE.REQUIRED}
-          <div transition:slide>
+          <div transition:slide style="margin-top: 1.5rem;">
             <PeriodsGrid
               bind:values={$formStore.applicant.provisions.alcoholPeriods}
             />
@@ -93,7 +93,7 @@
           options={foodOptions}
         />
         {#if $formStore.applicant.provisions.food === PROVISION_TYPE.REQUIRED}
-          <div transition:slide>
+          <div transition:slide style="margin-top: 1.5rem;">
             <PeriodsGrid
               bind:values={$formStore.applicant.provisions.foodPeriods}
             />
@@ -107,7 +107,7 @@
           options={alcoholOptions}
         />
         {#if $formStore.applicant.provisions.alcohol === PROVISION_TYPE.REQUIRED}
-          <div transition:slide>
+          <div transition:slide style="margin-top: 1.5rem;">
             <PeriodsGrid
               bind:values={$formStore.applicant.provisions.alcoholPeriods}
             />
@@ -129,7 +129,7 @@
               options={foodOptions}
             />
             {#if $formStore.guests[i].provisions.food === PROVISION_TYPE.REQUIRED}
-              <div transition:slide>
+              <div transition:slide style="margin-top: 1.5rem;">
                 <PeriodsGrid
                   bind:values={$formStore.guests[i].provisions.foodPeriods}
                 />
@@ -143,7 +143,7 @@
               options={alcoholOptions}
             />
             {#if $formStore.guests[i].provisions.alcohol === PROVISION_TYPE.REQUIRED}
-              <div transition:slide>
+              <div transition:slide style="margin-top: 1.5rem;">
                 <PeriodsGrid
                   bind:values={$formStore.guests[i].provisions.alcoholPeriods}
                 />
@@ -157,6 +157,10 @@
 </div>
 
 <style>
+  :global(.form-group > .container) {
+    margin-bottom: 0 !important;
+  }
+
   .hint-box {
     display: flex;
     align-items: center;

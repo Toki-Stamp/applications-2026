@@ -52,7 +52,8 @@
   .nights-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0;
+    padding-bottom: 1.5rem;
   }
   
   .group-label {
