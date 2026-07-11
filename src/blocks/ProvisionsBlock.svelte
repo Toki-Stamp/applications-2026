@@ -5,6 +5,7 @@
   import RadioGroup from '../components/RadioGroup.svelte';
   import PeriodsGrid from '../components/PeriodsGrid.svelte';
   import SubBlockCard from '../components/SubBlockCard.svelte';
+  import '@material/web/icon/icon.js';
 
   export let stepNumber;
 
@@ -57,7 +58,10 @@
       </div>
     </div>
   {:else}
-    <p class="hint">Укажите потребности для каждого участника группы отдельно.</p>
+    <div class="hint-box">
+      <md-icon class="hint-icon">info</md-icon>
+      <span>Укажите потребности для каждого участника группы отдельно.</span>
+    </div>
     
     <SubBlockCard title={`Для ${$formStore.applicant.nickname || 'Заявителя'}`} stickyLevel={2}>
       <div class="form-group">
@@ -105,10 +109,25 @@
 
 <style>
 
-  .hint {
-    color: var(--text-secondary);
-    font-style: italic;
-    margin-bottom: 1rem;
+  .hint-box {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--primary);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    gap: 0.75rem;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+  
+  .hint-icon {
+    color: var(--primary);
+    font-size: 1.25rem;
+    flex-shrink: 0;
   }
 
   .form-group {
