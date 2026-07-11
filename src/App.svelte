@@ -45,7 +45,13 @@
       }
     };
 
-    const observer = new ResizeObserver(updateHeaderHeights);
+    let lastWidth = 0;
+    const observer = new ResizeObserver(() => {
+      if (window.innerWidth !== lastWidth) {
+        lastWidth = window.innerWidth;
+        updateHeaderHeights();
+      }
+    });
     observer.observe(document.body);
 
     return () => {
@@ -197,6 +203,7 @@
                   type="button"
                   class="btn-danger icon-only"
                   data-tooltip="Очистить форму"
+                  data-tooltip-pos="left"
                   on:click={clearForm}
                 >
                   <md-icon>delete_sweep</md-icon>
@@ -207,6 +214,7 @@
                   type="button"
                   class="btn-secondary icon-only"
                   data-tooltip="Назад"
+                  data-tooltip-pos="right"
                   on:click={prevStep}
                   disabled={currentStep === 2}
                 >
@@ -218,6 +226,7 @@
                     type="button"
                     class="btn-primary icon-only"
                     data-tooltip="Далее"
+                    data-tooltip-pos="right"
                     on:click={nextStep}
                   >
                     <md-icon>arrow_forward</md-icon>
@@ -227,6 +236,7 @@
                     type="submit"
                     class="btn-submit icon-only"
                     data-tooltip="Отправить заявку"
+                    data-tooltip-pos="right"
                   >
                     <md-icon>rocket_launch</md-icon>
                   </button>
@@ -296,6 +306,7 @@
   :global(#app) {
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
     min-height: 100dvh;
     padding: 0 !important;
     max-width: 100% !important;
@@ -351,12 +362,13 @@
     max-width: 800px;
     margin: 0 auto;
     width: 100%;
-    padding: 1.5rem;
+    padding: 1.5rem 1.5rem 6rem; /* Отступ снизу под фиксированный футер */
   }
 
   .app-footer {
-    position: sticky;
+    position: fixed;
     bottom: 0;
+    left: 0;
     width: 100%;
     background: rgba(9, 9, 11, 0.7);
     backdrop-filter: blur(24px);

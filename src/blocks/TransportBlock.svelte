@@ -54,6 +54,7 @@
 </div>
 
 <style>
-
-
+  :global(.section-container:last-child > .container:last-child) {
+    margin-bottom: 0 !important;
+  }
 </style>
