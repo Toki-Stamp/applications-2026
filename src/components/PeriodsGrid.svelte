@@ -80,25 +80,23 @@
   .period-card {
     display: flex;
     align-items: center;
-    background: var(--surface-variant);
-    border: 2px solid transparent;
-    border-radius: 12px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
     padding: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
     user-select: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
   
   .period-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-hover);
   }
   
   .period-card.selected {
     border-color: var(--primary);
-    background: rgba(255, 165, 0, 0.05); /* very subtle orange tint for dark mode */
+    background-color: rgba(255, 165, 0, 0.05);
+    box-shadow: 0 0 0 1px var(--primary); /* Mimic focus ring */
   }
   
   .card-icon {

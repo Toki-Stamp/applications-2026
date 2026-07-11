@@ -3,10 +3,13 @@
   import { formStore } from '../store.js';
   import { nightsList, accommodationOptions, ACCOMMODATION_TYPE } from '../constants.js';
   import RadioGroup from '../components/RadioGroup.svelte';
-  import CheckboxGrid from '../components/CheckboxGrid.svelte';
+  import NightsGrid from '../components/NightsGrid.svelte';
   import TextArea from '../components/TextArea.svelte';
 
-
+  // Clear nights if booking is not required
+  $: if ($formStore.accommodation === ACCOMMODATION_TYPE.SELF) {
+    $formStore.nights = [];
+  }
 </script>
 
 <div class="block-card">
@@ -15,7 +18,7 @@
 
   {#if $formStore.accommodation === ACCOMMODATION_TYPE.BOOKING}
     <div transition:slide>
-      <CheckboxGrid label="Укажите ночевки" bind:values={$formStore.nights} options={nightsList} />
+      <NightsGrid label="Укажите ночевки" bind:values={$formStore.nights} />
       <div class="mt-4">
         <TextArea 
           label="Дополнительные пожелания к номеру и соседям" 

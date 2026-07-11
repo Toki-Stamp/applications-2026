@@ -29,17 +29,17 @@ export const TRANSPORT_METHOD = {
 export const days = ['Пятница', 'Суббота', 'Воскресенье'];
 
 export const transportMethods = [
-  { label: 'Как водитель', value: TRANSPORT_METHOD.DRIVER }, 
-  { label: 'Ищу место в авто', value: TRANSPORT_METHOD.PASSENGER }, 
-  { label: 'На организованной маршрутке', value: TRANSPORT_METHOD.BUS }, 
+  { label: 'Как водитель', value: TRANSPORT_METHOD.DRIVER },
+  { label: 'Ищу место в авто', value: TRANSPORT_METHOD.PASSENGER },
+  { label: 'На организованной маршрутке', value: TRANSPORT_METHOD.BUS },
   { label: 'Самостоятельно', value: TRANSPORT_METHOD.SELF }
 ];
 
 export const transportMethodsFrom = [
-  { label: 'Тот же, что и туда', value: TRANSPORT_METHOD.SAME_AS_TO }, 
-  { label: 'Как водитель', value: TRANSPORT_METHOD.DRIVER }, 
-  { label: 'Ищу место в авто', value: TRANSPORT_METHOD.PASSENGER }, 
-  { label: 'На организованной маршрутке', value: TRANSPORT_METHOD.BUS }, 
+  { label: 'Тот же, что и туда', value: TRANSPORT_METHOD.SAME_AS_TO },
+  { label: 'Как водитель', value: TRANSPORT_METHOD.DRIVER },
+  { label: 'Ищу место в авто', value: TRANSPORT_METHOD.PASSENGER },
+  { label: 'На организованной маршрутке', value: TRANSPORT_METHOD.BUS },
   { label: 'Самостоятельно', value: TRANSPORT_METHOD.SELF }
 ];
 
@@ -87,13 +87,13 @@ export const foodOptions = [
 ];
 
 export const alcoholOptions = [
-  { label: 'Не пью', value: PROVISION_TYPE.NONE },
+  { label: 'Без алкоголя', value: PROVISION_TYPE.NONE },
   { label: 'Буду пить', value: PROVISION_TYPE.REQUIRED }
 ];
 
 export const nightsList = [
-  { id: 'fri-sat', label: 'Ночь с пятницы на субботу' },
-  { id: 'sat-sun', label: 'Ночь с субботы на воскресенье' }
+  { id: 'fri-sat', label: 'С пятницы на субботу' },
+  { id: 'sat-sun', label: 'С субботы на воскресенье' }
 ];
 
 export const accommodationOptions = [

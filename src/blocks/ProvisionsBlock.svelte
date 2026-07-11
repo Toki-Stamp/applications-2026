@@ -7,6 +7,26 @@
   import SubBlockCard from '../components/SubBlockCard.svelte';
 
   export let stepNumber;
+
+  // Clear periods when "none" is selected
+  $: if ($formStore.applicant.provisions.food === PROVISION_TYPE.NONE) {
+    $formStore.applicant.provisions.foodPeriods = [];
+  }
+  $: if ($formStore.applicant.provisions.alcohol === PROVISION_TYPE.NONE) {
+    $formStore.applicant.provisions.alcoholPeriods = [];
+  }
+  
+  $: {
+    for (let i = 0; i < $formStore.guests.length; i++) {
+      const guest = $formStore.guests[i];
+      if (guest.provisions.food === PROVISION_TYPE.NONE) {
+        $formStore.guests[i].provisions.foodPeriods = [];
+      }
+      if (guest.provisions.alcohol === PROVISION_TYPE.NONE) {
+        $formStore.guests[i].provisions.alcoholPeriods = [];
+      }
+    }
+  }
 </script>
 
 <div class="block-card">
