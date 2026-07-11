@@ -103,12 +103,14 @@
 </script>
 
 <main id="app">
-  {#if !isSubmitted}
-    <form
-      class="app-form"
-      bind:this={formElement}
-      on:submit|preventDefault={submitForm}
-    >
+  <div class="app-transition-wrapper">
+    {#if !isSubmitted}
+      <form
+        class="app-form"
+        bind:this={formElement}
+        on:submit|preventDefault={submitForm}
+        transition:fade={{ duration: 300 }}
+      >
       <header class="app-header" bind:clientHeight={headerHeight}>
         <div class="header-content">
           <div class="header-top-row">
@@ -237,17 +239,17 @@
     </form>
   {:else}
     <!-- Success Screen -->
-    <div class="success-container" transition:slide>
+    <div class="success-container" transition:fade={{ duration: 300 }}>
       <div class="block-card success-screen">
         <div class="success-icon">🎉</div>
-        <h2>Ваша заявка принята!</h2>
+        <h2 class="success-title">Ваша заявка принята!</h2>
         <p class="success-text">
-          Организаторы обработают данные, рассчитают итоговую сумму (оргвзнос +
-          проживание + питание + проезд) и свяжутся с вами по указанному
-          контакту для подтверждения.
+          Да прибудет с Вами сила зубра!<br />
+          А теперь степенно ожидайте дня сходки...
         </p>
         <button
-          class="btn-submit mt-4"
+          class="btn-primary"
+          style="margin-top: 1rem;"
           on:click={() => {
             formStore.reset();
             isSubmitted = false;
@@ -257,6 +259,7 @@
       </div>
     </div>
   {/if}
+  </div>
 
   {#if showClearModal}
     <div class="modal-overlay" transition:fade={{ duration: 200 }}>
@@ -546,16 +549,59 @@
     box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
   }
 
-  .success-container {
+  .app-transition-wrapper {
+    display: grid;
+    width: 100%;
     flex: 1;
+  }
+  
+  .app-form,
+  .success-container {
+    grid-area: 1 / 1;
+    width: 100%;
+  }
+
+  .success-container {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 2rem;
     max-width: 800px;
     margin: 0 auto;
-    width: 100%;
   }
+  
+  .success-screen {
+    text-align: center;
+    padding: 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .success-icon {
+    font-size: 4.5rem;
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 20px rgba(0, 191, 255, 0.4));
+  }
+  
+  .success-title {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+  }
+  
+  .success-text {
+    font-family: monospace, var(--font-family);
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    font-size: 0.95rem;
+  }
+  
+
 
   .modal-overlay {
     position: fixed;
