@@ -3,6 +3,7 @@
   import '@material/web/icon/icon.js';
   import '@material/web/iconbutton/icon-button.js';
   import { generateId } from '../utils.js';
+  import { ERROR_MESSAGES } from '../constants.js';
 
   /** @type {any} */
   export let value = '';
@@ -59,7 +60,7 @@
   export function validate() {
     if (required && !value) {
       error = true;
-      errorText = 'Обязательное поле';
+      errorText = ERROR_MESSAGES.TEXT;
     } else {
       error = false;
       errorText = '';
@@ -95,7 +96,6 @@
     class:is-time-empty={type === 'time' && (!value || value === '')}
     supporting-text={computedSupportingText}
     {error}
-    {required}
     {value}
     {min}
     {max}

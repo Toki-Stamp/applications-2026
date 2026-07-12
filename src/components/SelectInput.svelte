@@ -4,6 +4,7 @@
   import "@material/web/icon/icon.js";
   import "@material/web/iconbutton/icon-button.js";
   import { generateId } from "../utils.js";
+  import { ERROR_MESSAGES } from "../constants.js";
 
   /** @type {any} */
   export let value;
@@ -44,7 +45,7 @@
   export function validate() {
     if (required && !value) {
       error = true;
-      errorText = "Обязательное поле";
+      errorText = ERROR_MESSAGES.TEXT;
     } else {
       error = false;
       errorText = "";
@@ -96,7 +97,6 @@
     <md-outlined-select
       class="select-field"
       class:is-empty={!value || value === ""}
-      {required}
       {id}
       {error}
       error-text={errorText}
@@ -129,7 +129,7 @@
     {#if value && String(value).length > 0}
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <!-- svelte-ignore a11y_click_events_have_key_events -->
-      <div class="clear-button-wrapper">
+      <div class="clear-button-wrapper" class:has-error={error}>
         <md-icon-button type="button" on:click={clearValue}>
           <md-icon>close</md-icon>
         </md-icon-button>
@@ -157,6 +157,11 @@
         --bg-color-accent
       ); /* Hide the text underneath if it overlaps */
       border-radius: 50%;
+      transition: margin-top 0.2s;
+    }
+
+    .clear-button-wrapper.has-error {
+      margin-top: -10px;
     }
 
     .select-field {

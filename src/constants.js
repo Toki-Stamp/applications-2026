@@ -37,7 +37,6 @@ export const transportMethods = [
 
 export const transportMethodsFrom = [
   { label: 'Тот же, что и туда', value: TRANSPORT_METHOD.SAME_AS_TO },
-  { label: 'Как водитель', value: TRANSPORT_METHOD.DRIVER },
   { label: 'Ищу место в авто', value: TRANSPORT_METHOD.PASSENGER },
   { label: 'На организованной маршрутке', value: TRANSPORT_METHOD.BUS },
   { label: 'Самостоятельно', value: TRANSPORT_METHOD.SELF }
@@ -45,21 +44,21 @@ export const transportMethodsFrom = [
 
 export const groupedPeriods = [
   {
-    day: 'На пятницу',
+    day: 'В пятницу',
     periods: [
       { id: 'fri-morn', label: 'Утро', helperText: 'до обеда' },
       { id: 'fri-eve', label: 'Вечер', helperText: 'после обеда' }
     ]
   },
   {
-    day: 'На субботу',
+    day: 'В субботу',
     periods: [
       { id: 'sat-morn', label: 'Утро', helperText: 'до обеда' },
       { id: 'sat-eve', label: 'Вечер', helperText: 'после обеда' }
     ]
   },
   {
-    day: 'На воскресенье',
+    day: 'В воскресенье',
     periods: [
       { id: 'sun-morn', label: 'Утро', helperText: 'до обеда' }
     ]
@@ -75,12 +74,12 @@ export const groupSizeOptions = [
 
 export const foodOptions = [
   { label: 'Без питания', value: PROVISION_TYPE.NONE },
-  { label: 'Требуется питание', value: PROVISION_TYPE.REQUIRED }
+  { label: 'Буду кушать', value: PROVISION_TYPE.REQUIRED }
 ];
 
 export const alcoholOptions = [
   { label: 'Без алкоголя', value: PROVISION_TYPE.NONE },
-  { label: 'Буду пить', value: PROVISION_TYPE.REQUIRED }
+  { label: 'Буду выпивать', value: PROVISION_TYPE.REQUIRED }
 ];
 
 export const nightsList = [
@@ -101,3 +100,23 @@ export const freeSeatsOptions = [
   { label: '4 места', value: 4 },
   { label: '5 и более', value: 5 }
 ];
+
+export const ERROR_MESSAGES = {
+  RADIO: (label) => ({
+    prefix: 'Пожалуйста, выберите один из вариантов для поля ',
+    label: typeof label === 'string' ? label.toUpperCase() : label,
+    suffix: '. Это обязательное поле, без которого мы не сможем двигаться дальше'
+  }),
+
+  PERIODS: (label) => ({
+    prefix: 'Пожалуйста, отметьте необходимые периоды, чтобы мы могли всё правильно организовать',
+    label: '',
+    suffix: ''
+  }),
+  NIGHTS: (label) => ({
+    prefix: 'Пожалуйста, выберите хотя бы одну ночь для поля ',
+    label: typeof label === 'string' ? label.toUpperCase() : label,
+    suffix: ', в которую вы планируете остаться'
+  }),
+  TEXT: "Это поле обязательно для заполнения"
+};

@@ -1,9 +1,12 @@
 <script>
-  export let icon = "campaign"; // info
+  export let type = "info"; // "info" | "error"
+  export let icon = null; // optional override
+
+  $: computedIcon = icon || (type === "error" ? "touch_app" : "campaign");
 </script>
 
-<div class="hint-box">
-  <md-icon class="hint-icon">{icon}</md-icon>
+<div class="hint-box" class:error={type === "error"}>
+  <md-icon class="hint-icon">{computedIcon}</md-icon>
   <span><slot></slot></span>
 </div>
 
@@ -26,5 +29,14 @@
     color: var(--primary);
     font-size: 1.8rem;
     flex-shrink: 0;
+  }
+
+  .hint-box.error {
+    border-left-color: #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+  }
+
+  .hint-box.error .hint-icon {
+    color: #ef4444;
   }
 </style>

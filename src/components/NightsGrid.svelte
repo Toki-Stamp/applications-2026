@@ -1,5 +1,6 @@
 <script>
-  import { nightsList } from '../constants.js';
+  import { nightsList, ERROR_MESSAGES } from '../constants.js';
+  import HintBox from "./HintBox.svelte";
   import '@material/web/icon/icon.js';
 
   /** @type {string[]} */
@@ -13,6 +14,28 @@
       values = values.filter(v => v !== id);
     } else {
       values = [...values, id];
+    }
+  }
+
+  export let required = false;
+  let error = false;
+  /** @type {{prefix: string, label: string, suffix: string} | null} */
+  let errorMsg = null;
+
+  export function validate() {
+    if (required && (!values || values.length === 0)) {
+      error = true;
+      errorMsg = ERROR_MESSAGES.NIGHTS(label || 'Значение');
+    } else {
+      error = false;
+      errorMsg = null;
+    }
+    return !error;
+  }
+
+  $: {
+    if (error && values.length > 0) {
+      validate();
     }
   }
 </script>
@@ -48,6 +71,13 @@
       </div>
     {/each}
   </div>
+  {#if error && errorMsg}
+    <div class="error-wrapper">
+      <HintBox type="error">
+        {errorMsg.prefix}<strong class="text-primary">{errorMsg.label}</strong>{errorMsg.suffix}
+      </HintBox>
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -115,5 +145,9 @@
   
   .night-card.selected .card-checkbox {
     color: var(--primary);
+  }
+
+  .error-wrapper {
+    margin-top: 0.5rem;
   }
 </style>

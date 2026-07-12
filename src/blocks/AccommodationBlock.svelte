@@ -10,17 +10,30 @@
   $: if ($formStore.accommodation === ACCOMMODATION_TYPE.SELF) {
     $formStore.nights = [];
   }
+
+  /** @type {any} */ let accInput;
+  /** @type {any} */ let nightsInput;
+  /** @type {any} */ let commentInput;
+
+  export function validate() {
+    let errors = [];
+    if (accInput && !accInput.validate()) errors.push(accInput.label || "Размещение");
+    if (nightsInput && !nightsInput.validate()) errors.push(nightsInput.label || "Ночевки");
+    if (commentInput && typeof commentInput.validate === 'function' && !commentInput.validate()) errors.push(commentInput.label);
+    return errors;
+  }
 </script>
 
 <div class="block-card">
   <h2 class="block-title">Проживание</h2>
   <div class="section-container first-section">
-    <RadioGroup label="Потребность в проживании" required={true} bind:value={$formStore.accommodation} options={accommodationOptions} />
+    <RadioGroup bind:this={accInput} label="Потребность в проживании" required={true} bind:value={$formStore.accommodation} options={accommodationOptions} />
 
     {#if $formStore.accommodation === ACCOMMODATION_TYPE.BOOKING}
       <div transition:slide class="slide-container">
-        <NightsGrid label="Укажите ночевки" bind:values={$formStore.nights} />
+        <NightsGrid bind:this={nightsInput} required={true} label="Укажите ночевки" bind:values={$formStore.nights} />
         <TextArea 
+          bind:this={commentInput}
           label="Дополнительные пожелания к номеру и соседям" 
           icon="edit_note"
           placeholder="Напишите здесь всё, что считаете важным..."

@@ -1,5 +1,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
+  import { ERROR_MESSAGES } from '../constants.js';
   import '@material/web/select/select-option.js';
   import '@material/web/textfield/outlined-text-field.js';
   import 'flag-icons/css/flag-icons.min.css';
@@ -167,7 +168,7 @@
   export function validate() {
     if (required && (!rawPhoneNumber || rawPhoneNumber.trim() === '')) {
       error = true;
-      errorText = 'Обязательное поле';
+      errorText = ERROR_MESSAGES.TEXT;
       return false;
     }
     
@@ -235,6 +236,7 @@
     }
   }
 
+  // supporting-text is now only used for errors or empty
   $: computedSupportingText = error ? errorText : '';
 </script>
 
@@ -311,7 +313,6 @@
         placeholder={dynamicPlaceholder}
         supporting-text={computedSupportingText}
         {error}
-        {required}
         on:input={handleInput}
         on:change={validate}
         on:blur={validate}

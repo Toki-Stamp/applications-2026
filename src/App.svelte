@@ -14,6 +14,7 @@
 
   import SuccessScreen from "./components/SuccessScreen.svelte";
   import ClearModal from "./components/ClearModal.svelte";
+  import HintBox from "./components/HintBox.svelte";
   import Header from "./components/Header.svelte";
   import NavigationButtons from "./components/NavigationButtons.svelte";
 
@@ -23,6 +24,17 @@
   let currentStep = 1;
   const totalSteps = 7;
   let headerHeight = 100;
+
+  /** @type {any} */ let introBlock;
+  /** @type {any} */ let formatBlock;
+  /** @type {any} */ let personalDataBlock;
+  /** @type {any} */ let transportBlock;
+  /** @type {any} */ let provisionsBlock;
+  /** @type {any} */ let accommodationBlock;
+  /** @type {any} */ let freeMicBlock;
+
+  /** @type {string[]} */
+  let stepErrors = [];
 
   onMount(() => {
     // Dynamically calculate sticky header heights to prevent overlap bugs
@@ -66,9 +78,28 @@
   }
 
   function nextStep() {
-    // Validation removed as requested
+    /** @type {string[]} */
+    let errors = [];
+    if (currentStep === 2 && formatBlock && typeof formatBlock.validate === 'function') errors = formatBlock.validate();
+    if (currentStep === 3 && personalDataBlock && typeof personalDataBlock.validate === 'function') errors = personalDataBlock.validate();
+    if (currentStep === 4 && transportBlock && typeof transportBlock.validate === 'function') errors = transportBlock.validate();
+    if (currentStep === 5 && provisionsBlock && typeof provisionsBlock.validate === 'function') errors = provisionsBlock.validate();
+    if (currentStep === 6 && accommodationBlock && typeof accommodationBlock.validate === 'function') errors = accommodationBlock.validate();
+    if (currentStep === 7 && freeMicBlock && typeof freeMicBlock.validate === 'function') errors = freeMicBlock.validate();
+
+    if (formElement && !formElement.checkValidity()) {
+      if (errors.length === 0) {
+        errors.push("Некоторые обязательные поля не заполнены");
+      }
+    }
+
+    stepErrors = errors;
+
+    if (stepErrors.length > 0) return;
+
     if (currentStep < totalSteps) {
       currentStep++;
+      stepErrors = [];
       scrollToTop();
     }
   }
@@ -76,6 +107,7 @@
   function prevStep() {
     if (currentStep > 1) {
       currentStep--;
+      stepErrors = [];
       scrollToTop();
     }
   }
@@ -95,6 +127,7 @@
   function confirmClear() {
     formStore.reset();
     currentStep = 1;
+    stepErrors = [];
     scrollToTop();
     showClearModal = false;
   }
@@ -110,6 +143,20 @@
   }
 
   const submitForm = () => {
+    /** @type {string[]} */
+    let errors = [];
+    if (currentStep === 7 && freeMicBlock && typeof freeMicBlock.validate === 'function') errors = freeMicBlock.validate();
+    
+    if (formElement && !formElement.checkValidity()) {
+      if (errors.length === 0) {
+        errors.push("Некоторые обязательные поля не заполнены");
+      }
+    }
+
+    stepErrors = errors;
+
+    if (stepErrors.length > 0) return;
+
     const finalData = sanitizeFormData($formStore);
     console.log("Form Submitted", finalData);
     isSubmitted = true;
@@ -121,6 +168,7 @@
     {#if !isSubmitted}
       <form
         class="app-form"
+        novalidate
         bind:this={formElement}
         on:submit|preventDefault={submitForm}
         transition:fade={{ duration: 300 }}
@@ -132,31 +180,31 @@
           <div class="step-container">
             {#if currentStep === 1}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <IntroBlock />
+                <IntroBlock bind:this={introBlock} />
               </div>
             {:else if currentStep === 2}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <FormatBlock />
+                <FormatBlock bind:this={formatBlock} />
               </div>
             {:else if currentStep === 3}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <PersonalDataBlock />
+                <PersonalDataBlock bind:this={personalDataBlock} />
               </div>
             {:else if currentStep === 4}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <TransportBlock stepNumber={currentStep - 1} />
+                <TransportBlock bind:this={transportBlock} stepNumber={currentStep - 1} />
               </div>
             {:else if currentStep === 5}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <ProvisionsBlock stepNumber={currentStep - 1} />
+                <ProvisionsBlock bind:this={provisionsBlock} stepNumber={currentStep - 1} />
               </div>
             {:else if currentStep === 6}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <AccommodationBlock />
+                <AccommodationBlock bind:this={accommodationBlock} />
               </div>
             {:else if currentStep === 7}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <FreeMicBlock />
+                <FreeMicBlock bind:this={freeMicBlock} />
               </div>
             {/if}
           </div>
@@ -239,4 +287,6 @@
       padding: 1rem 1rem 6rem;
     }
   }
+
+
 </style>

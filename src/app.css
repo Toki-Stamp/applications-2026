@@ -31,6 +31,10 @@
   /* Typography */
   --font-family: 'JetBrains Mono', monospace;
 
+  .text-primary {
+    color: var(--primary);
+  }
+
   /* Layout Dimensions */
   --max-width: 700px;
   --border-radius: 16px;

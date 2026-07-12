@@ -1,9 +1,12 @@
 <script>
-  import { groupedPeriods } from "../constants.js";
+  import { groupedPeriods, ERROR_MESSAGES } from "../constants.js";
+  import HintBox from "./HintBox.svelte";
   import "@material/web/icon/icon.js";
 
   /** @type {string[]} */
   export let values = [];
+  /** @type {string} */
+  export const label = "Периоды";
 
   /** @param {string} id */
   function handleToggle(id) {
@@ -18,6 +21,28 @@
   function getIcon(label) {
     // Return different Material icons based on time of day
     return label === "Утро" ? "wb_sunny" : "nightlight_round";
+  }
+
+  export let required = false;
+  let error = false;
+  /** @type {{prefix: string, label: string, suffix: string} | null} */
+  let errorMsg = null;
+
+  export function validate() {
+    if (required && (!values || values.length === 0)) {
+      error = true;
+      errorMsg = ERROR_MESSAGES.PERIODS(label || 'Значение');
+    } else {
+      error = false;
+      errorMsg = null;
+    }
+    return !error;
+  }
+
+  $: {
+    if (error && values.length > 0) {
+      validate();
+    }
   }
 </script>
 
@@ -55,6 +80,13 @@
       </div>
     </div>
   {/each}
+  {#if error && errorMsg}
+    <div class="error-wrapper">
+      <HintBox type="error">
+        {errorMsg.prefix}<strong class="text-primary">{errorMsg.label}</strong>{errorMsg.suffix}
+      </HintBox>
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -129,5 +161,9 @@
 
   .period-card.selected .card-checkbox {
     color: var(--primary);
+  }
+
+  .error-wrapper {
+    margin-top: 0.5rem;
   }
 </style>

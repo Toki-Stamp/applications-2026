@@ -1,6 +1,8 @@
 <script>
   import "@material/web/radio/radio.js";
   import { generateId } from "../utils.js";
+  import HintBox from "./HintBox.svelte";
+  import { ERROR_MESSAGES } from "../constants.js";
 
   /** @type {any} */
   export let value;
@@ -16,6 +18,22 @@
   /** @param {any} optValue */
   function handleChange(optValue) {
     value = optValue;
+    validate();
+  }
+
+  let error = false;
+  /** @type {{prefix: string, label: string, suffix: string} | null} */
+  let errorMsg = null;
+
+  export function validate() {
+    if (required && (value === undefined || value === null || value === "")) {
+      error = true;
+      errorMsg = ERROR_MESSAGES.RADIO(label || 'Значение');
+    } else {
+      error = false;
+      errorMsg = null;
+    }
+    return !error;
   }
 </script>
 
@@ -54,6 +72,13 @@
       </label>
     {/each}
   </div>
+  {#if error && errorMsg}
+    <div class="error-wrapper">
+      <HintBox type="error">
+        {errorMsg.prefix}<strong class="text-primary">{errorMsg.label}</strong>{errorMsg.suffix}
+      </HintBox>
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -90,5 +115,9 @@
     font-size: 0.85rem;
     margin-top: 2px;
     flex-shrink: 0;
+  }
+
+  .error-wrapper {
+    margin-top: 0.5rem;
   }
 </style>
