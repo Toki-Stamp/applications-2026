@@ -105,7 +105,7 @@ export const ERROR_MESSAGES = {
   RADIO: (label) => ({
     prefix: 'Пожалуйста, выберите один из вариантов для поля ',
     label: typeof label === 'string' ? label.toUpperCase() : label,
-    suffix: '. Это обязательное поле, без которого мы не сможем двигаться дальше'
+    suffix: '. Без этих данных мы не сможем двигаться дальше'
   }),
 
   PERIODS: (label) => ({

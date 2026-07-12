@@ -3,6 +3,8 @@
   import { ERROR_MESSAGES } from '../constants.js';
   import '@material/web/select/select-option.js';
   import '@material/web/textfield/outlined-text-field.js';
+  import '@material/web/iconbutton/icon-button.js';
+  import '@material/web/icon/icon.js';
   import 'flag-icons/css/flag-icons.min.css';
   import { AsYouType, isValidPhoneNumber, getCountries, getCountryCallingCode, getExampleNumber } from 'libphonenumber-js';
   // @ts-ignore
@@ -131,6 +133,14 @@
       value = fullNumberToFormat === currentDialCode ? '' : fullNumberToFormat;
     }
     
+    validate();
+  }
+
+  /** @param {Event} e */
+  function clearValue(e) {
+    e.preventDefault();
+    value = '';
+    rawPhoneNumber = '';
     validate();
   }
 
@@ -316,7 +326,15 @@
         on:input={handleInput}
         on:change={validate}
         on:blur={validate}
-      ></md-outlined-text-field>
+      >
+        {#if rawPhoneNumber && String(rawPhoneNumber).length > 0}
+          <!-- svelte-ignore a11y_no_static_element_interactions -->
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <md-icon-button slot="trailing-icon" type="button" on:click={clearValue}>
+            <md-icon>close</md-icon>
+          </md-icon-button>
+        {/if}
+      </md-outlined-text-field>
     </div>
   </div>
 </div>

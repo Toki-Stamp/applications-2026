@@ -24,29 +24,7 @@
   /** @param {Event} e */
   function handleInput(e) {
     const target = /** @type {HTMLInputElement} */ (e.target);
-    let val = target.value;
-
-    if (type === 'tel') {
-      let numbers = val.replace(/\D/g, '');
-      if (numbers.length > 0) {
-        if (numbers.startsWith('375')) {
-          numbers = numbers.substring(3);
-        } else if (numbers.startsWith('80')) {
-          numbers = numbers.substring(2);
-        } else if (numbers.startsWith('8') || numbers.startsWith('7')) {
-          numbers = numbers.substring(1);
-        }
-        
-        let res = '+375';
-        if (numbers.length > 0) res += ' (' + numbers.substring(0, 2);
-        if (numbers.length >= 3) res += ') ' + numbers.substring(2, 5);
-        if (numbers.length >= 6) res += ' ' + numbers.substring(5, 9);
-        val = res;
-        target.value = val;
-      }
-    }
-    
-    value = val;
+    value = target.value;
     validate();
   }
 

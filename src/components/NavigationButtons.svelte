@@ -3,6 +3,7 @@
 
   export let currentStep;
   export let totalSteps;
+  export let hasErrors = false;
 
   const dispatch = createEventDispatcher();
 </script>
@@ -33,35 +34,40 @@
           </button>
         </div>
         <div class="right-buttons">
-          <button
-            type="button"
-            class="btn-secondary icon-only"
-            data-tooltip="Назад"
-            data-tooltip-pos="right"
-            on:click={() => dispatch("prev")}
-            disabled={currentStep === 2}
-          >
-            <md-icon>arrow_back</md-icon>
-          </button>
+          {#if currentStep > 2}
+            <button
+              type="button"
+              class="btn-secondary icon-only"
+              data-tooltip="Назад"
+              data-tooltip-pos="right"
+              on:click={() => dispatch("prev")}
+            >
+              <md-icon>arrow_back</md-icon>
+            </button>
+          {/if}
 
           {#if currentStep < totalSteps}
             <button
               type="button"
-              class="btn-primary icon-only"
-              data-tooltip="Далее"
+              class="{hasErrors ? 'btn-danger' : 'btn-primary'} icon-only"
+              data-tooltip={hasErrors
+                ? "Пожалуйста, исправьте ошибки"
+                : "Далее"}
               data-tooltip-pos="right"
               on:click={() => dispatch("next")}
             >
-              <md-icon>arrow_forward</md-icon>
+              <md-icon>{hasErrors ? "pest_control" : "arrow_forward"}</md-icon>
             </button>
           {:else}
             <button
               type="submit"
-              class="btn-submit icon-only"
-              data-tooltip="Отправить заявку"
+              class="{hasErrors ? 'btn-danger' : 'btn-submit'} icon-only"
+              data-tooltip={hasErrors
+                ? "Пожалуйста, исправьте ошибки"
+                : "Отправить заявку"}
               data-tooltip-pos="right"
             >
-              <md-icon>rocket_launch</md-icon>
+              <md-icon>{hasErrors ? "pest_control" : "rocket_launch"}</md-icon>
             </button>
           {/if}
         </div>

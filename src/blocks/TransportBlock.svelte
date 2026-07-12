@@ -61,11 +61,13 @@
     <div class="transport-hint">
       {#if $formStore.applicationType === APPLICATION_TYPE.GROUP}
         <HintBox>
-          Для <strong class="text-primary">ГРУППОВЫХ ЗАЯВОК</strong> условия
-          транспортировки распространяются на всех участников группы единым
-          образом.<br /><br />
-          Если кому-то из участников требуется другой вид транспорта или иное время
-          выезда, пожалуйста, оформите на них отдельные индивидуальные заявки.
+          Для <strong class="text-primary">ГРУППОВЫХ ЗАЯВОК</strong> условия транспортировки
+          распространяются на всех участников группы единым образом
+        </HintBox>
+        <HintBox>
+          Если кому-то из участников требуется другой вид транспорта или иное
+          время выезда, пожалуйста, оформите на них отдельные <strong class="text-primary">ИНДИВИДУАЛЬНЫЕ
+          ЗАЯВКИ</strong>
         </HintBox>
       {/if}
     </div>
@@ -170,5 +172,11 @@
 
   .text-primary {
     color: var(--primary);
+  }
+
+  .transport-hint {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
   }
 </style>

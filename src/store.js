@@ -15,7 +15,7 @@ const initialState = {
   applicant: { nickname: '', firstName: '', lastName: '', phone: '', provisions: defaultProvisions() },
   guests: [],
   transportTo: { method: null, freeSeats: null, day: null, time: '' },
-  transportFrom: { method: null, freeSeats: null, day: null, time: '' },
+  transportFrom: { method: null, day: null, time: '' },
   transportComment: '',
   accommodation: null,
   nights: [],
@@ -78,9 +78,7 @@ export function sanitizeFormData(data) {
   }
 
   // 3. Transport From
-  if (payload.transportFrom.method !== TRANSPORT_METHOD.DRIVER) {
-    delete payload.transportFrom.freeSeats;
-  }
+  // (No freeSeats for transportFrom according to updated PRD)
 
   // 4. Accommodation
   if (payload.accommodation === ACCOMMODATION_TYPE.SELF) {

@@ -36,6 +36,13 @@
   /** @type {string[]} */
   let stepErrors = [];
 
+  // Очищаем ошибки при любом изменении формы, чтобы кнопка возвращала свой обычный цвет
+  $: {
+    if ($formStore) {
+      stepErrors = [];
+    }
+  }
+
   onMount(() => {
     // Dynamically calculate sticky header heights to prevent overlap bugs
     const updateHeaderHeights = () => {
@@ -213,7 +220,8 @@
         <!-- Navigation Buttons -->
         <NavigationButtons 
           {currentStep} 
-          {totalSteps} 
+          {totalSteps}
+          hasErrors={stepErrors.length > 0}
           on:prev={prevStep} 
           on:next={nextStep} 
           on:clear={clearForm} 
