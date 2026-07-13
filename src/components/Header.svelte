@@ -11,7 +11,10 @@
   <div class="header-content">
     <div class="header-top-row">
       <div class="title-container">
-        <h1>Заявка 2026</h1>
+        <h1>
+          <img src="/favicon.svg" alt="Z" class="title-icon" />
+          <span class="title-text">аявка 2026</span>
+        </h1>
       </div>
       <div class="theme-switcher-container">
         <ThemeSwitcher />
@@ -67,6 +70,13 @@
     font-size: 1.6rem;
     font-weight: 800;
     margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1rem;
+  }
+
+  .title-text {
     background: linear-gradient(
       135deg,
       var(--text-primary) 20%,
@@ -76,6 +86,15 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 2px 5px var(--primary-glow));
+    text-transform: uppercase;
+  }
+
+  .title-icon {
+    height: 1.9rem;
+    width: auto;
+    margin-right: 0.1rem;
+    filter: drop-shadow(0 2px 5px var(--primary-glow));
+    transform: translateY(-0.05rem);
   }
 
   @media (max-width: 600px) {
