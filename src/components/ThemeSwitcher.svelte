@@ -141,6 +141,7 @@
     padding: 0.4rem 0.8rem;
     border-radius: 8px;
     font-size: 0.85rem;
+    font-weight: normal;
     font-family: var(--font-family);
     text-transform: uppercase;
     letter-spacing: 1px;

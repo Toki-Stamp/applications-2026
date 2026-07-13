@@ -4,6 +4,7 @@
   export let currentStep;
   export let totalSteps;
   export let hasErrors = false;
+  export let isSubmitting = false;
 
   const dispatch = createEventDispatcher();
 </script>
@@ -62,12 +63,19 @@
             <button
               type="submit"
               class="{hasErrors ? 'btn-danger' : 'btn-submit'} icon-only"
+              disabled={isSubmitting}
               data-tooltip={hasErrors
                 ? "Пожалуйста, исправьте ошибки"
-                : "Отправить заявку"}
+                : isSubmitting
+                  ? "Подождите, идет отправка"
+                  : "Отправить заявку"}
               data-tooltip-pos="right"
             >
-              <md-icon>{hasErrors ? "pest_control" : "rocket_launch"}</md-icon>
+              {#if isSubmitting}
+                <md-icon class="flipping">hourglass_empty</md-icon>
+              {:else}
+                <md-icon>{hasErrors ? "pest_control" : "rocket_launch"}</md-icon>
+              {/if}
             </button>
           {/if}
         </div>
@@ -130,5 +138,21 @@
   .start-btn {
     min-width: 250px;
     flex-grow: 0;
+  }
+
+  @keyframes flip {
+    0%, 15% {
+      transform: rotate(0deg);
+    }
+    45%, 65% {
+      transform: rotate(180deg);
+    }
+    95%, 100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .flipping {
+    animation: flip 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 </style>

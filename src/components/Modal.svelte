@@ -2,12 +2,14 @@
   import { fade, scale } from "svelte/transition";
   import { createEventDispatcher } from "svelte";
 
+  export let variant = "default"; // 'default' or 'danger'
+
   const dispatch = createEventDispatcher();
 
   /** @param {KeyboardEvent} event */
   function handleKeydown(event) {
     if (event.key === "Escape") {
-      dispatch("cancel");
+      dispatch("close");
     }
   }
 </script>
@@ -19,32 +21,21 @@
 <div
   class="modal-overlay"
   transition:fade={{ duration: 200 }}
-  on:click={() => dispatch("cancel")}
+  on:click={() => dispatch("close")}
 >
   <div
-    class="block-card modal-card"
+    class="block-card modal-card variant-{variant}"
     transition:scale={{ start: 0.95, duration: 200 }}
     on:click|stopPropagation
   >
-    <h2 class="block-title">Очистить форму?</h2>
+    <slot name="header"></slot>
+    
     <div class="modal-content">
-      <p>Вы уверены, что хотите безвозвратно удалить все введенные данные?</p>
+      <slot></slot>
     </div>
+    
     <div class="modal-actions">
-      <button
-        type="button"
-        class="btn-secondary"
-        on:click={() => dispatch("cancel")}
-      >
-        Отмена
-      </button>
-      <button
-        type="button"
-        class="btn-danger"
-        on:click={() => dispatch("confirm")}
-      >
-        Очистить
-      </button>
+      <slot name="actions"></slot>
     </div>
   </div>
 </div>
@@ -75,16 +66,27 @@
       0 0 30px var(--primary-glow);
   }
 
-  .modal-card .block-title {
+  .variant-danger {
+    box-shadow:
+      0 20px 50px -10px rgba(0, 0, 0, 0.5),
+      0 0 30px rgba(220, 38, 38, 0.3);
+  }
+
+  .modal-card :global(.block-title) {
     position: relative;
     top: 0;
     box-shadow: none;
   }
 
+  .variant-danger :global(.block-title) {
+    color: #fca5a5;
+    border-bottom-color: rgba(220, 38, 38, 0.2);
+  }
+
   .modal-content {
     font-size: 1.05rem;
     text-align: center;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     line-height: 1.5;
   }
 
@@ -94,7 +96,7 @@
     justify-content: stretch;
   }
 
-  .modal-actions button {
+  .modal-actions :global(button) {
     flex: 1;
     display: flex;
     justify-content: center;

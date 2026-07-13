@@ -120,3 +120,6 @@ export const ERROR_MESSAGES = {
   }),
   TEXT: "Это поле обязательно для заполнения"
 };
+
+// URL веб-приложения Google Apps Script (замените на свой после деплоя скрипта)
+export const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';

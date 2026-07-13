@@ -6,50 +6,70 @@ function doPost(e) {
     // Парсим входящие данные из формы (JSON)
     var data = JSON.parse(e.postData.contents);
     
-    // Подготавливаем строку для записи
-    var rowData = [
-      new Date(), // Timestamp
-      data.applicationType || '',
-      data.groupConditions || '',
-      data.applicant.nickname || '',
-      data.applicant.firstName || '',
-      data.applicant.lastName || '',
-      data.applicant.phone || '',
-      // Транспорт туда
-      data.transportTo.method || '',
-      data.transportTo.freeSeats || '',
-      data.transportTo.day || '',
-      data.transportTo.time || '',
-      // Транспорт обратно
-      data.transportFrom.method || '',
-      data.transportFrom.freeSeats || '',
-      data.transportFrom.day || '',
-      data.transportFrom.time || '',
-      data.transportComment || '',
-      // Обеспечение Заявителя
-      data.applicant.provisions.food || '',
-      (data.applicant.provisions.foodPeriods || []).join(', '),
-      data.applicant.provisions.alcohol || '',
-      (data.applicant.provisions.alcoholPeriods || []).join(', '),
-      // Проживание
-      data.accommodation || '',
-      (data.nights || []).join(', '),
-      data.accommodationComment || '',
-      // Доп инфо
-      data.freeMic || '',
-      // Гости (сохраняем как JSON строку для удобства или можно разбивать на колонки)
-      JSON.stringify(data.guests || [])
-    ];
+    var timestamp = new Date();
+    // Генерируем уникальный ID группы на основе времени и последних цифр телефона заявителя
+    var phoneDigits = (data.applicant.phone || "0000").replace(/\D/g, '').slice(-4);
+    var groupId = "GRP-" + timestamp.getTime().toString().slice(-6) + "-" + phoneDigits;
     
-    // Добавляем строку в таблицу
-    sheet.appendRow(rowData);
+    // Вспомогательная функция для создания строки для одного человека
+    function createRow(person, role) {
+      return [
+        timestamp,                  // 1. Timestamp (Время подачи заявки)
+        groupId,                    // 2. Group ID (Связывает гостей с заявителем)
+        role,                       // 3. Роль (Заявитель / Гость)
+        data.applicationType || '', // 4. Тип заявки (individual/group)
+        data.groupConditions || '', // 5. Условия питания группы (unified/differential)
+        
+        // Личные данные
+        person.nickname || '',      // 6. Никнейм
+        person.firstName || '',     // 7. Имя
+        person.lastName || '',      // 8. Фамилия
+        person.phone || '',         // 9. Телефон
+        
+        // Транспорт туда (дублируется для всей группы)
+        data.transportTo.method || '',       // 10. Транспорт ТУДА
+        data.transportTo.freeSeats || '',    // 11. Свободные места
+        data.transportTo.day || '',          // 12. День выезда
+        data.transportTo.time || '',         // 13. Время выезда
+        
+        // Транспорт обратно (дублируется для всей группы)
+        data.transportFrom.method || '',     // 14. Транспорт ОБРАТНО
+        data.transportFrom.day || '',        // 15. День возвращения
+        data.transportFrom.time || '',       // 16. Время возвращения
+        data.transportComment || '',         // 17. Комментарий к транспорту
+        
+        // Питание (индивидуальное для каждого человека)
+        person.provisions.food || '',        // 18. Еда (provided/none)
+        (person.provisions.foodPeriods || []).join(', '), // 19. Приемы пищи
+        person.provisions.alcohol || '',     // 20. Алкоголь (provided/none)
+        (person.provisions.alcoholPeriods || []).join(', '), // 21. Приемы алкоголя
+        
+        // Проживание (дублируется для всей группы)
+        data.accommodation || '',            // 22. Проживание (tent/house/self)
+        (data.nights || []).join(', '),      // 23. Ночевки
+        data.accommodationComment || '',     // 24. Комментарий к проживанию
+        
+        // Свободный микрофон (дублируется для всей группы)
+        data.freeMic || ''                   // 25. Свободный микрофон
+      ];
+    }
+    
+    // 1. Сохраняем Заявителя
+    sheet.appendRow(createRow(data.applicant, "Заявитель"));
+    
+    // 2. Если есть гости, сохраняем каждого гостя отдельной строкой
+    if (data.applicationType === "group" && data.guests && data.guests.length > 0) {
+      for (var i = 0; i < data.guests.length; i++) {
+        sheet.appendRow(createRow(data.guests[i], "Гость " + (i + 1)));
+      }
+    }
     
     // Возвращаем успешный ответ для нашей веб-формы (CORS заголовки обязательны)
     return ContentService.createTextOutput(JSON.stringify({ "result": "success" }))
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch(error) {
-    // В случае ошибки
+    // В случае ошибки возвращаем JSON с описанием
     return ContentService.createTextOutput(JSON.stringify({ "error": error.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
   }

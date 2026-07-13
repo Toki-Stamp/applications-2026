@@ -63,7 +63,7 @@
     line-height: 1.6;
     margin-bottom: 2.5rem;
     max-width: 600px;
-    font-size: 0.95rem;
+    font-size: 1.15rem;
   }
 
   .mt-1 {

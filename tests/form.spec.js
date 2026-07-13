@@ -66,10 +66,21 @@ async function clickSubmit(page) {
 
 test.describe('Form E2E Tests', () => {
 
+  test.beforeEach(async ({ page }) => {
+    // Intercept Google Apps Script requests and return a mock success response
+    await page.route('**/*script.google.com*/**', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ result: 'success' })
+      });
+    });
+  });
+
   test('Case 1: Minimal Individual Application (Happy Path)', async ({ page }) => {
     let submittedData = null;
     page.on('console', msg => {
-      if (msg.text().includes('Form Submitted')) {
+      if (msg.text().includes('Submitting payload to Google Apps Script:')) {
         msg.args().forEach(async arg => {
           const val = await arg.jsonValue();
           if (typeof val === 'object' && val.applicationType) submittedData = val;
@@ -115,7 +126,7 @@ test.describe('Form E2E Tests', () => {
   test('Case 2: Individual Maximum (Driver, Food, Booking)', async ({ page }) => {
     let submittedData = null;
     page.on('console', msg => {
-      if (msg.text().includes('Form Submitted')) {
+      if (msg.text().includes('Submitting payload to Google Apps Script:')) {
         msg.args().forEach(async arg => {
           const val = await arg.jsonValue();
           if (typeof val === 'object' && val.applicationType) submittedData = val;
@@ -170,7 +181,7 @@ test.describe('Form E2E Tests', () => {
   test('Case 3: Group Unified', async ({ page }) => {
     let submittedData = null;
     page.on('console', msg => {
-      if (msg.text().includes('Form Submitted')) {
+      if (msg.text().includes('Submitting payload to Google Apps Script:')) {
         msg.args().forEach(async arg => {
           const val = await arg.jsonValue();
           if (typeof val === 'object' && val.applicationType) submittedData = val;
@@ -225,7 +236,7 @@ test.describe('Form E2E Tests', () => {
   test('Case 4: Group Differential', async ({ page }) => {
     let submittedData = null;
     page.on('console', msg => {
-      if (msg.text().includes('Form Submitted')) {
+      if (msg.text().includes('Submitting payload to Google Apps Script:')) {
         msg.args().forEach(async arg => {
           const val = await arg.jsonValue();
           if (typeof val === 'object' && val.applicationType) submittedData = val;
