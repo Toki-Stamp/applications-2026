@@ -10,6 +10,7 @@
 
   /** @param {string} id */
   function handleToggle(id) {
+    isTouched = true;
     if (values.includes(id)) {
       values = values.filter((v) => v !== id);
     } else {
@@ -24,14 +25,17 @@
   }
 
   export let required = false;
+  let isTouched = false;
   let error = false;
   /** @type {{prefix: string, label: string, suffix: string} | null} */
   let errorMsg = null;
 
-  export function validate() {
-    if (required && (!values || values.length === 0)) {
-      error = true;
-      errorMsg = ERROR_MESSAGES.PERIODS(label || 'Значение');
+  export function validate(forceTouch = false) {
+    if (forceTouch) isTouched = true;
+    let isError = required && (!values || values.length === 0);
+    if (isTouched) {
+      error = isError;
+      errorMsg = isError ? ERROR_MESSAGES.PERIODS(label || 'Значение') : null;
     } else {
       error = false;
       errorMsg = null;

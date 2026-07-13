@@ -18,11 +18,13 @@
   export let icon = '';
   export let placeholder = '';
 
+  let isTouched = false;
   let error = false;
   let errorText = '';
 
   /** @param {Event} e */
   function handleInput(e) {
+    isTouched = true;
     const target = /** @type {HTMLInputElement} */ (e.target);
     value = target.value;
     validate();
@@ -30,15 +32,18 @@
 
   /** @param {Event} e */
   function clearValue(e) {
+    isTouched = true;
     e.preventDefault();
     value = '';
     validate();
   }
 
-  export function validate() {
-    if (required && !value) {
-      error = true;
-      errorText = ERROR_MESSAGES.TEXT;
+  export function validate(forceTouch = false) {
+    if (forceTouch) isTouched = true;
+    let isError = required && !value;
+    if (isTouched) {
+      error = isError;
+      errorText = isError ? ERROR_MESSAGES.TEXT : '';
     } else {
       error = false;
       errorText = '';
@@ -79,8 +84,8 @@
     {max}
     {placeholder}
     on:input={handleInput}
-    on:change={validate}
-    on:blur={validate}
+    on:change={() => validate(true)}
+    on:blur={() => validate(true)}
     on:input
     on:change
   >

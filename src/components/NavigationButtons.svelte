@@ -50,22 +50,23 @@
           {#if currentStep < totalSteps}
             <button
               type="button"
-              class="{hasErrors ? 'btn-danger' : 'btn-primary'} icon-only"
+              class="{hasErrors ? 'btn-secondary btn-locked' : 'btn-primary'} icon-only"
+              disabled={hasErrors}
               data-tooltip={hasErrors
-                ? "Пожалуйста, исправьте ошибки"
+                ? "Исправьте ошибки, чтобы продолжить"
                 : "Далее"}
               data-tooltip-pos="right"
               on:click={() => dispatch("next")}
             >
-              <md-icon>{hasErrors ? "pest_control" : "arrow_forward"}</md-icon>
+              <md-icon>{hasErrors ? "lock" : "arrow_forward"}</md-icon>
             </button>
           {:else}
             <button
               type="submit"
-              class="{hasErrors ? 'btn-danger' : 'btn-submit'} icon-only"
+              class="{hasErrors ? 'btn-submit btn-locked' : 'btn-submit'} icon-only"
               disabled={isSubmitting}
               data-tooltip={hasErrors
-                ? "Пожалуйста, исправьте ошибки"
+                ? "Данные заполнены некорректно"
                 : isSubmitting
                   ? "Подождите, идет отправка"
                   : "Отправить заявку"}
@@ -74,7 +75,7 @@
               {#if isSubmitting}
                 <md-icon class="flipping">hourglass_empty</md-icon>
               {:else}
-                <md-icon>{hasErrors ? "pest_control" : "rocket_launch"}</md-icon>
+                <md-icon>{hasErrors ? "lock" : "rocket_launch"}</md-icon>
               {/if}
             </button>
           {/if}
@@ -141,13 +142,16 @@
   }
 
   @keyframes flip {
-    0%, 15% {
+    0%,
+    15% {
       transform: rotate(0deg);
     }
-    45%, 65% {
+    45%,
+    65% {
       transform: rotate(180deg);
     }
-    95%, 100% {
+    95%,
+    100% {
       transform: rotate(360deg);
     }
   }

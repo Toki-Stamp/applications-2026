@@ -29,6 +29,7 @@
 
   /** @param {Event} e */
   function handleInput(e) {
+    isTouched = true;
     const target = /** @type {HTMLTextAreaElement} */ (e.target);
     value = target.value;
     adjustHeight();

@@ -22,8 +22,7 @@ export const TRANSPORT_METHOD = {
   DRIVER: 'driver',
   PASSENGER: 'passenger',
   BUS: 'bus',
-  SELF: 'self',
-  SAME_AS_TO: 'same_as_to'
+  SELF: 'self'
 };
 
 export const days = ['Пятница', 'Суббота', 'Воскресенье'];
@@ -35,12 +34,7 @@ export const transportMethods = [
   { label: 'Самостоятельно', value: TRANSPORT_METHOD.SELF }
 ];
 
-export const transportMethodsFrom = [
-  { label: 'Тот же, что и туда', value: TRANSPORT_METHOD.SAME_AS_TO },
-  { label: 'Ищу место в авто', value: TRANSPORT_METHOD.PASSENGER },
-  { label: 'На организованной маршрутке', value: TRANSPORT_METHOD.BUS },
-  { label: 'Самостоятельно', value: TRANSPORT_METHOD.SELF }
-];
+
 
 export const groupedPeriods = [
   {

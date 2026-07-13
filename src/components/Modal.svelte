@@ -3,12 +3,13 @@
   import { createEventDispatcher } from "svelte";
 
   export let variant = "default"; // 'default' or 'danger'
+  export let dismissible = true;
 
   const dispatch = createEventDispatcher();
 
   /** @param {KeyboardEvent} event */
   function handleKeydown(event) {
-    if (event.key === "Escape") {
+    if (dismissible && event.key === "Escape") {
       dispatch("close");
     }
   }
@@ -21,7 +22,7 @@
 <div
   class="modal-overlay"
   transition:fade={{ duration: 200 }}
-  on:click={() => dispatch("close")}
+  on:click={() => dismissible && dispatch("close")}
 >
   <div
     class="block-card modal-card variant-{variant}"
@@ -81,6 +82,12 @@
   .variant-danger :global(.block-title) {
     color: #fca5a5;
     border-bottom-color: rgba(220, 38, 38, 0.2);
+  }
+
+  .variant-danger :global(.block-title::before),
+  .variant-danger :global(.block-title::after) {
+    background: linear-gradient(135deg, #ef4444, #991b1b) !important;
+    box-shadow: 0 0 8px #dc2626 !important;
   }
 
   .modal-content {

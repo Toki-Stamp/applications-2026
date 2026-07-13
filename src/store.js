@@ -9,6 +9,7 @@ export const defaultProvisions = () => ({
 });
 
 const initialState = {
+  _version: 1,
   applicationType: null,
   totalGroupSize: null,
   groupConditions: null,
@@ -23,8 +24,40 @@ const initialState = {
   freeMic: ''
 };
 
+const STORAGE_KEY = 'zubr_form_draft_2026';
+
 function createFormStore() {
-  const { subscribe, set, update } = writable(JSON.parse(JSON.stringify(initialState)));
+  let initial = JSON.parse(JSON.stringify(initialState));
+
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed._version === initialState._version) {
+          initial = parsed;
+        } else {
+          localStorage.removeItem(STORAGE_KEY);
+        }
+      } catch (e) {
+        console.error("Draft parsing error", e);
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+  }
+
+  const { subscribe, set, update } = writable(initial);
+
+  if (typeof window !== 'undefined') {
+    const initialStateStr = JSON.stringify(initialState);
+    subscribe(state => {
+      if (JSON.stringify(state) === initialStateStr) {
+        localStorage.removeItem(STORAGE_KEY);
+      } else {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+    });
+  }
 
   return {
     subscribe,
@@ -55,7 +88,12 @@ function createFormStore() {
       
       return newState;
     }),
-    reset: () => set(JSON.parse(JSON.stringify(initialState)))
+    reset: () => {
+      set(JSON.parse(JSON.stringify(initialState)));
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
   };
 }
 

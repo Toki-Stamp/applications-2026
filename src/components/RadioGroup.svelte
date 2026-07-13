@@ -17,18 +17,22 @@
 
   /** @param {any} optValue */
   function handleChange(optValue) {
+    isTouched = true;
     value = optValue;
     validate();
   }
 
+  let isTouched = false;
   let error = false;
   /** @type {{prefix: string, label: string, suffix: string} | null} */
   let errorMsg = null;
 
-  export function validate() {
-    if (required && (value === undefined || value === null || value === "")) {
-      error = true;
-      errorMsg = ERROR_MESSAGES.RADIO(label || 'Значение');
+  export function validate(forceTouch = false) {
+    if (forceTouch) isTouched = true;
+    let isError = required && (value === undefined || value === null || value === "");
+    if (isTouched) {
+      error = isError;
+      errorMsg = isError ? ERROR_MESSAGES.RADIO(label || 'Значение') : null;
     } else {
       error = false;
       errorMsg = null;

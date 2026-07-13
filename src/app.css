@@ -168,6 +168,18 @@ button:disabled::before {
   display: none !important;
 }
 
+.btn-locked {
+  background: linear-gradient(135deg, rgba(82, 82, 91, 0.5) 0%, rgba(63, 63, 70, 0.5) 100%) !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.btn-locked::before {
+  display: none !important;
+}
+
 .btn-primary md-icon,
 .btn-secondary md-icon,
 .btn-danger md-icon {
@@ -456,6 +468,8 @@ h1::after {
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
+  line-height: 1.4;
   gap: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -507,7 +521,13 @@ h1::after {
 .section-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem; /* Увеличенный отступ между заголовком и контентом */
+}
+
+.section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Стандартный отступ между инпутами внутри секции */
 }
 
 /* Add a tiny accent dot to titles */
@@ -779,12 +799,13 @@ h1::after {
     top: calc(var(--header-height, 60px) - 1px);
     padding: 1.125rem 1.25rem;
     margin: -1.5rem -1.25rem 0 -1.25rem;
+    font-size: 1.1rem;
   }
 
   .section-title {
     margin: 0 -1.25rem 0 -1.25rem;
     padding: 0.75rem 1.25rem;
-    top: calc(var(--header-height, 60px) + 68px);
+    top: calc(var(--header-height, 60px) + var(--block-title-height, 68px) - 2px);
   }
 
   .first-section .section-title {

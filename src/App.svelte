@@ -22,7 +22,15 @@
   let isSubmitting = false;
   /** @type {HTMLFormElement} */
   let formElement;
-  let currentStep = 1;
+  let showDraftModal =
+    typeof window !== "undefined"
+      ? !!localStorage.getItem("zubr_form_draft_2026")
+      : false;
+
+  let currentStep =
+    showDraftModal && typeof window !== "undefined"
+      ? Number(localStorage.getItem("zubr_step_draft")) || 1
+      : 1;
   const totalSteps = 7;
   let headerHeight = 100;
 
@@ -39,17 +47,26 @@
   /** @type {string | null} */
   let submitErrorMessage = null; // Хранит текст ошибки отправки
 
-  // Очищаем ошибки при любом изменении формы, чтобы кнопка возвращала свой обычный цвет
+  // Реактивно перепроверяем форму при любых изменениях.
   $: {
     if ($formStore) {
-      stepErrors = [];
+      // Используем setTimeout чтобы избежать циклических обновлений Svelte при рендеринге
+      setTimeout(() => {
+        stepErrors = getStepErrors(false);
+      }, 0);
+    }
+  }
+
+  $: {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("zubr_step_draft", String(currentStep));
     }
   }
 
   $: {
     if (typeof document !== "undefined") {
       document.body.style.overflow =
-        showClearModal || submitErrorMessage ? "hidden" : "";
+        showClearModal || submitErrorMessage || showDraftModal ? "hidden" : "";
     }
   }
 
@@ -94,7 +111,7 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function nextStep() {
+  function getStepErrors(forceTouch = false) {
     /** @type {string[]} */
     let errors = [];
     if (
@@ -102,45 +119,48 @@
       formatBlock &&
       typeof formatBlock.validate === "function"
     )
-      errors = formatBlock.validate();
+      errors = formatBlock.validate(forceTouch);
     if (
       currentStep === 3 &&
       personalDataBlock &&
       typeof personalDataBlock.validate === "function"
     )
-      errors = personalDataBlock.validate();
+      errors = personalDataBlock.validate(forceTouch);
     if (
       currentStep === 4 &&
       transportBlock &&
       typeof transportBlock.validate === "function"
     )
-      errors = transportBlock.validate();
+      errors = transportBlock.validate(forceTouch);
     if (
       currentStep === 5 &&
       provisionsBlock &&
       typeof provisionsBlock.validate === "function"
     )
-      errors = provisionsBlock.validate();
+      errors = provisionsBlock.validate(forceTouch);
     if (
       currentStep === 6 &&
       accommodationBlock &&
       typeof accommodationBlock.validate === "function"
     )
-      errors = accommodationBlock.validate();
+      errors = accommodationBlock.validate(forceTouch);
     if (
       currentStep === 7 &&
       freeMicBlock &&
       typeof freeMicBlock.validate === "function"
     )
-      errors = freeMicBlock.validate();
+      errors = freeMicBlock.validate(forceTouch);
 
     if (formElement && !formElement.checkValidity()) {
       if (errors.length === 0) {
         errors.push("Некоторые обязательные поля не заполнены");
       }
     }
+    return errors;
+  }
 
-    stepErrors = errors;
+  function nextStep() {
+    stepErrors = getStepErrors(true);
 
     if (stepErrors.length > 0) return;
 
@@ -162,6 +182,7 @@
   function clearForm() {
     formStore.reset();
     currentStep = 1;
+    showDraftModal = false;
     stepErrors = [];
     showClearModal = false;
     scrollToTop();
@@ -176,22 +197,7 @@
   const submitForm = async () => {
     if (isSubmitting) return;
 
-    /** @type {string[]} */
-    let errors = [];
-    if (
-      currentStep === 7 &&
-      freeMicBlock &&
-      typeof freeMicBlock.validate === "function"
-    )
-      errors = freeMicBlock.validate();
-
-    if (formElement && !formElement.checkValidity()) {
-      if (errors.length === 0) {
-        errors.push("Некоторые обязательные поля не заполнены");
-      }
-    }
-
-    stepErrors = errors;
+    stepErrors = getStepErrors(true);
 
     if (stepErrors.length > 0) return;
 
@@ -223,6 +229,10 @@
       }
 
       isSubmitted = true;
+      formStore.reset();
+      localStorage.removeItem("zubr_step_draft");
+      currentStep = 1;
+      showDraftModal = false;
     } catch (e) {
       const error = /** @type {Error} */ (e);
       console.error("Error submitting form:", error);
@@ -233,7 +243,7 @@
   };
 </script>
 
-<main id="app">
+<main id="app" on:focusout={() => { setTimeout(() => { stepErrors = getStepErrors(false); }, 0); }}>
   <div class="app-transition-wrapper">
     {#if !isSubmitted}
       <form
@@ -322,16 +332,48 @@
 
   {#if submitErrorMessage}
     <Modal variant="danger" on:close={() => (submitErrorMessage = null)}>
-      <h2 slot="header" class="block-title">Ошибка отправки формы</h2>
-      <p>Причина: <strong class="text-primary">{submitErrorMessage}</strong></p>
+      <h2 slot="header" class="block-title">
+        <span>Сбой при отправке!</span>
+      </h2>
+      <p>
+        Причина: <strong style="color: #fca5a5;">{submitErrorMessage}</strong>
+      </p>
       <p style="margin-top: 1rem;">
         Попробуйте позже или проверьте правильность развертывания скрипта
       </p>
       <svelte:fragment slot="actions">
         <button
           type="button"
-          class="btn-primary"
+          class="btn-danger"
           on:click={() => (submitErrorMessage = null)}>Понятно</button
+        >
+      </svelte:fragment>
+    </Modal>
+  {/if}
+
+  {#if showDraftModal}
+    <Modal
+      variant="info"
+      dismissible={false}
+      on:close={() => (showDraftModal = false)}
+    >
+      <h2 slot="header" class="block-title">С возвращением!</h2>
+      <p>У вас осталась неотправленная заявка.</p>
+      <p>Хотите продолжить её заполнение или начать всё заново?</p>
+      <svelte:fragment slot="actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          on:click={() => {
+            showDraftModal = false;
+            clearForm();
+            currentStep = 1; // Идём опять на интро
+          }}>Начать заново</button
+        >
+        <button
+          type="button"
+          class="btn-primary"
+          on:click={() => (showDraftModal = false)}>Продолжить</button
         >
       </svelte:fragment>
     </Modal>

@@ -23,18 +23,20 @@
     guestPhones = guestPhones.slice(0, len);
   }
 
-  export function validate() {
+  export function validate(forceTouch = false) {
     let errors = [];
-    if (applicantNickname && !applicantNickname.validate()) errors.push(applicantNickname.label + " (Заявитель)");
-    if (applicantFirstName && !applicantFirstName.validate()) errors.push(applicantFirstName.label + " (Заявитель)");
-    if (applicantLastName && !applicantLastName.validate()) errors.push(applicantLastName.label + " (Заявитель)");
-    if (applicantPhone && !applicantPhone.validate()) errors.push(applicantPhone.label + " (Заявитель)");
+    if (applicantNickname && !applicantNickname.validate(forceTouch)) errors.push(applicantNickname.label + " (Заявитель)");
+    if (applicantFirstName && !applicantFirstName.validate(forceTouch)) errors.push(applicantFirstName.label + " (Заявитель)");
+    if (applicantLastName && !applicantLastName.validate(forceTouch)) errors.push(applicantLastName.label + " (Заявитель)");
+    if (applicantPhone && !applicantPhone.validate(forceTouch)) errors.push(applicantPhone.label + " (Заявитель)");
 
-    for (let i = 0; i < $formStore.guests.length; i++) {
-      if (guestFirstNames[i] && !guestFirstNames[i].validate()) errors.push(`${guestFirstNames[i].label} (Гость ${i + 1})`);
-      if (guestLastNames[i] && !guestLastNames[i].validate()) errors.push(`${guestLastNames[i].label} (Гость ${i + 1})`);
-      if (guestNicknames[i] && !guestNicknames[i].validate()) errors.push(`${guestNicknames[i].label} (Гость ${i + 1})`);
-      if (guestPhones[i] && !guestPhones[i].validate()) errors.push(`${guestPhones[i].label} (Гость ${i + 1})`);
+    if ($formStore.applicationType === APPLICATION_TYPE.GROUP) {
+      for (let i = 0; i < $formStore.guests.length; i++) {
+        if (guestFirstNames[i] && !guestFirstNames[i].validate(forceTouch)) errors.push(`${guestFirstNames[i].label} (Гость ${i + 1})`);
+        if (guestLastNames[i] && !guestLastNames[i].validate(forceTouch)) errors.push(`${guestLastNames[i].label} (Гость ${i + 1})`);
+        if (guestNicknames[i] && !guestNicknames[i].validate(forceTouch)) errors.push(`${guestNicknames[i].label} (Гость ${i + 1})`);
+        if (guestPhones[i] && !guestPhones[i].validate(forceTouch)) errors.push(`${guestPhones[i].label} (Гость ${i + 1})`);
+      }
     }
     return errors;
   }
@@ -44,72 +46,76 @@
   <h2 class="block-title">Персональные данные</h2>
   <div class="section-container first-section">
     <h3 class="section-title">2.1. Заявитель</h3>
-    <TextInput
-      bind:this={applicantNickname}
-      label="Никнейм"
-      placeholder="cyber_ninja"
-      icon="badge"
-      bind:value={$formStore.applicant.nickname}
-      required={true}
-    />
-    <TextInput
-      bind:this={applicantFirstName}
-      label="Имя"
-      placeholder="Иван"
-      icon="person"
-      bind:value={$formStore.applicant.firstName}
-    />
-    <TextInput
-      bind:this={applicantLastName}
-      label="Фамилия"
-      placeholder="Иванов"
-      icon="person"
-      bind:value={$formStore.applicant.lastName}
-    />
-    <PhoneInput
-      bind:this={applicantPhone}
-      label="Номер телефона"
-      bind:value={$formStore.applicant.phone}
-      required={true}
-    />
+    <div class="section-content">
+      <TextInput
+        bind:this={applicantNickname}
+        label="Никнейм"
+        placeholder="cyber_ninja"
+        icon="badge"
+        bind:value={$formStore.applicant.nickname}
+        required={true}
+      />
+      <TextInput
+        bind:this={applicantFirstName}
+        label="Имя"
+        placeholder="Иван"
+        icon="person"
+        bind:value={$formStore.applicant.firstName}
+      />
+      <TextInput
+        bind:this={applicantLastName}
+        label="Фамилия"
+        placeholder="Иванов"
+        icon="person"
+        bind:value={$formStore.applicant.lastName}
+      />
+      <PhoneInput
+        bind:this={applicantPhone}
+        label="Номер телефона"
+        bind:value={$formStore.applicant.phone}
+        required={true}
+      />
+    </div>
   </div>
 
   {#if $formStore.applicationType === APPLICATION_TYPE.GROUP && $formStore.guests.length > 0}
     <div class="section-container" transition:slide>
       <h3 class="section-title">2.2. Гости</h3>
-      {#each $formStore.guests as guest, i}
-        <div transition:slide>
-          <SubBlockCard title={`Гость #${i + 1}`}>
-            <TextInput
-              bind:this={guestFirstNames[i]}
-              label="Имя"
-              placeholder="Иван"
-              icon="person"
-              bind:value={$formStore.guests[i].firstName}
-              required={true}
-            />
-            <TextInput
-              bind:this={guestLastNames[i]}
-              label="Фамилия"
-              placeholder="Иванов"
-              icon="person"
-              bind:value={$formStore.guests[i].lastName}
-            />
-            <TextInput
-              bind:this={guestNicknames[i]}
-              label="Никнейм"
-              placeholder="cyber_ninja"
-              icon="badge"
-              bind:value={$formStore.guests[i].nickname}
-            />
-            <PhoneInput
-              bind:this={guestPhones[i]}
-              label="Номер телефона"
-              bind:value={$formStore.guests[i].phone}
-            />
-          </SubBlockCard>
-        </div>
-      {/each}
+      <div class="section-content">
+        {#each $formStore.guests as guest, i}
+          <div transition:slide>
+            <SubBlockCard title={`Гость #${i + 1}`}>
+              <TextInput
+                bind:this={guestFirstNames[i]}
+                label="Имя"
+                placeholder="Иван"
+                icon="person"
+                bind:value={$formStore.guests[i].firstName}
+                required={true}
+              />
+              <TextInput
+                bind:this={guestLastNames[i]}
+                label="Фамилия"
+                placeholder="Иванов"
+                icon="person"
+                bind:value={$formStore.guests[i].lastName}
+              />
+              <TextInput
+                bind:this={guestNicknames[i]}
+                label="Никнейм"
+                placeholder="cyber_ninja"
+                icon="badge"
+                bind:value={$formStore.guests[i].nickname}
+              />
+              <PhoneInput
+                bind:this={guestPhones[i]}
+                label="Номер телефона"
+                bind:value={$formStore.guests[i].phone}
+              />
+            </SubBlockCard>
+          </div>
+        {/each}
+      </div>
     </div>
   {/if}
 </div>

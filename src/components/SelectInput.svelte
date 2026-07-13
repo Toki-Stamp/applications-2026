@@ -24,11 +24,13 @@
   /** @type {string} */
   export let icon = "";
 
+  let isTouched = false;
   let error = false;
   let errorText = "";
 
   /** @param {Event} e */
   function handleChange(e) {
+    isTouched = true;
     const target = /** @type {HTMLSelectElement} */ (e.target);
     value = target.value;
     validate();
@@ -36,16 +38,19 @@
 
   /** @param {Event} e */
   function clearValue(e) {
+    isTouched = true;
     e.preventDefault();
     e.stopPropagation();
     value = null;
     validate();
   }
 
-  export function validate() {
-    if (required && !value) {
-      error = true;
-      errorText = ERROR_MESSAGES.TEXT;
+  export function validate(forceTouch = false) {
+    if (forceTouch) isTouched = true;
+    let isError = required && (!value || value === "");
+    if (isTouched) {
+      error = isError;
+      errorText = isError ? "Это поле обязательно для заполнения" : "";
     } else {
       error = false;
       errorText = "";

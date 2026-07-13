@@ -54,18 +54,28 @@
     guestAlcoholPeriods = guestAlcoholPeriods.slice(0, len);
   }
 
-  export function validate() {
+  export function validate(forceTouch = false) {
     let errors = [];
-    if (applicantFood && !applicantFood.validate()) errors.push(applicantFood.label + " (Заявитель)");
-    if (applicantFoodPeriods && !applicantFoodPeriods.validate()) errors.push(applicantFoodPeriods.label + " (Еда, Заявитель)");
-    if (applicantAlcohol && !applicantAlcohol.validate()) errors.push(applicantAlcohol.label + " (Заявитель)");
-    if (applicantAlcoholPeriods && !applicantAlcoholPeriods.validate()) errors.push(applicantAlcoholPeriods.label + " (Алкоголь, Заявитель)");
+    if (applicantFood && !applicantFood.validate(forceTouch)) errors.push(applicantFood.label + " (Заявитель)");
+    if ($formStore.applicant.provisions.food === PROVISION_TYPE.REQUIRED) {
+      if (applicantFoodPeriods && !applicantFoodPeriods.validate(forceTouch)) errors.push(applicantFoodPeriods.label + " (Еда, Заявитель)");
+    }
+    if (applicantAlcohol && !applicantAlcohol.validate(forceTouch)) errors.push(applicantAlcohol.label + " (Заявитель)");
+    if ($formStore.applicant.provisions.alcohol === PROVISION_TYPE.REQUIRED) {
+      if (applicantAlcoholPeriods && !applicantAlcoholPeriods.validate(forceTouch)) errors.push(applicantAlcoholPeriods.label + " (Алкоголь, Заявитель)");
+    }
 
-    for (let i = 0; i < $formStore.guests.length; i++) {
-      if (guestFood[i] && !guestFood[i].validate()) errors.push(`${guestFood[i].label} (Гость ${i + 1})`);
-      if (guestFoodPeriods[i] && !guestFoodPeriods[i].validate()) errors.push(`${guestFoodPeriods[i].label} (Еда, Гость ${i + 1})`);
-      if (guestAlcohol[i] && !guestAlcohol[i].validate()) errors.push(`${guestAlcohol[i].label} (Гость ${i + 1})`);
-      if (guestAlcoholPeriods[i] && !guestAlcoholPeriods[i].validate()) errors.push(`${guestAlcoholPeriods[i].label} (Алкоголь, Гость ${i + 1})`);
+    if ($formStore.applicationType === APPLICATION_TYPE.GROUP && $formStore.groupConditions === GROUP_CONDITIONS.DIFFERENTIAL) {
+      for (let i = 0; i < $formStore.guests.length; i++) {
+        if (guestFood[i] && !guestFood[i].validate(forceTouch)) errors.push(`${guestFood[i].label} (Гость ${i + 1})`);
+        if ($formStore.guests[i].provisions.food === PROVISION_TYPE.REQUIRED) {
+          if (guestFoodPeriods[i] && !guestFoodPeriods[i].validate(forceTouch)) errors.push(`${guestFoodPeriods[i].label} (Еда, Гость ${i + 1})`);
+        }
+        if (guestAlcohol[i] && !guestAlcohol[i].validate(forceTouch)) errors.push(`${guestAlcohol[i].label} (Гость ${i + 1})`);
+        if ($formStore.guests[i].provisions.alcohol === PROVISION_TYPE.REQUIRED) {
+          if (guestAlcoholPeriods[i] && !guestAlcoholPeriods[i].validate(forceTouch)) errors.push(`${guestAlcoholPeriods[i].label} (Алкоголь, Гость ${i + 1})`);
+        }
+      }
     }
     return errors;
   }
@@ -77,45 +87,49 @@
   {#if $formStore.applicationType === APPLICATION_TYPE.INDIVIDUAL || $formStore.groupConditions === GROUP_CONDITIONS.UNIFIED}
     <div class="section-container first-section">
       <h3 class="section-title">{stepNumber}.1. Продукты питания</h3>
-      <div class="provision-item">
-        <RadioGroup
-          bind:this={applicantFood}
-          label="Потребность в питании"
-          bind:value={$formStore.applicant.provisions.food}
-          options={foodOptions}
-          required={true}
-        />
-        {#if $formStore.applicant.provisions.food === PROVISION_TYPE.REQUIRED}
-          <div transition:slide>
-            <PeriodsGrid
-              bind:this={applicantFoodPeriods}
-              required={true}
-              bind:values={$formStore.applicant.provisions.foodPeriods}
-            />
-          </div>
-        {/if}
+      <div class="section-content">
+        <div class="provision-item">
+          <RadioGroup
+            bind:this={applicantFood}
+            label="Потребность в питании"
+            bind:value={$formStore.applicant.provisions.food}
+            options={foodOptions}
+            required={true}
+          />
+          {#if $formStore.applicant.provisions.food === PROVISION_TYPE.REQUIRED}
+            <div transition:slide>
+              <PeriodsGrid
+                bind:this={applicantFoodPeriods}
+                required={true}
+                bind:values={$formStore.applicant.provisions.foodPeriods}
+              />
+            </div>
+          {/if}
+        </div>
       </div>
     </div>
 
     <div class="section-container">
       <h3 class="section-title">{stepNumber}.2. Алкогольные напитки</h3>
-      <div class="provision-item">
-        <RadioGroup
-          bind:this={applicantAlcohol}
-          label="Потребность в алкоголе"
-          bind:value={$formStore.applicant.provisions.alcohol}
-          options={alcoholOptions}
-          required={true}
-        />
-        {#if $formStore.applicant.provisions.alcohol === PROVISION_TYPE.REQUIRED}
-          <div transition:slide>
-            <PeriodsGrid
-              bind:this={applicantAlcoholPeriods}
-              required={true}
-              bind:values={$formStore.applicant.provisions.alcoholPeriods}
-            />
-          </div>
-        {/if}
+      <div class="section-content">
+        <div class="provision-item">
+          <RadioGroup
+            bind:this={applicantAlcohol}
+            label="Потребность в алкоголе"
+            bind:value={$formStore.applicant.provisions.alcohol}
+            options={alcoholOptions}
+            required={true}
+          />
+          {#if $formStore.applicant.provisions.alcohol === PROVISION_TYPE.REQUIRED}
+            <div transition:slide>
+              <PeriodsGrid
+                bind:this={applicantAlcoholPeriods}
+                required={true}
+                bind:values={$formStore.applicant.provisions.alcoholPeriods}
+              />
+            </div>
+          {/if}
+        </div>
       </div>
     </div>
   {:else}
