@@ -363,4 +363,94 @@ test.describe('Form E2E Tests', () => {
     await expect(page.locator('text=Пожалуйста, выберите один из вариантов')).toBeVisible();
   });
 
+  test('Case 7: Group Differential Complex Provisions and Accommodation', async ({ page }) => {
+    let submittedData = null;
+    page.on('console', msg => {
+      if (msg.text().includes('Submitting payload to Google Apps Script:')) {
+        msg.args().forEach(async arg => {
+          const val = await arg.jsonValue();
+          if (typeof val === 'object' && val.applicationType) submittedData = val;
+        });
+      }
+    });
+
+    await page.goto('/');
+    await page.locator('button:has-text("Начать заполнение")').click();
+    
+    await selectRadio(page, 'Тип заявки', 'Групповая');
+    await page.waitForTimeout(500);
+    await selectDropdown(page, 'Общее количество участников Вашей группы', 'Всего 3 участника');
+    await selectRadio(page, 'Условия для участников Вашей группы', 'Дифференцированные условия');
+    await clickNext(page);
+
+    // Personal Data
+    await fillText(page, 'Никнейм', 'leader');
+    await fillText(page, 'Имя', 'Leader');
+    await fillText(page, 'Номер телефона', '+375 29 111 22 33');
+    
+    const guest1Group = page.locator('.sub-block-card').filter({ hasText: 'Гость #1' }).first();
+    await guest1Group.locator('.form-group').filter({ hasText: 'Имя' }).locator('md-outlined-text-field').locator('input').fill('GuestOne');
+    
+    const guest2Group = page.locator('.sub-block-card').filter({ hasText: 'Гость #2' }).first();
+    await guest2Group.locator('.form-group').filter({ hasText: 'Имя' }).locator('md-outlined-text-field').locator('input').fill('GuestTwo');
+    await clickNext(page);
+
+    // Transport (Global for the group)
+    await selectDropdown(page, 'Способ прибытия', 'Самостоятельно');
+    await selectDropdown(page, 'День отправления на базу', 'Пятница');
+    await fillText(page, 'Ориентировочное время отправления', '18:00');
+    await fillText(page, 'Город отправления', 'Минск');
+    
+    await selectDropdown(page, 'Способ отъезда', 'Самостоятельно');
+    await selectDropdown(page, 'День отъезда с базы', 'Воскресенье');
+    await fillText(page, 'Ориентировочное время отъезда', '12:00');
+    await clickNext(page);
+
+    // Provisions - Differential
+    await selectGuestRadio(page, 'Для leader', 'Потребность в питании', 'Буду кушать');
+    await checkGuestPeriod(page, 'Для leader', 'Потребность в питании', 'В пятницу', 'Вечер');
+    await selectGuestRadio(page, 'Для leader', 'Потребность в алкоголе', 'Без алкоголя');
+    
+    await selectGuestRadio(page, 'Для GuestOne', 'Потребность в питании', 'Без питания');
+    await selectGuestRadio(page, 'Для GuestOne', 'Потребность в алкоголе', 'Буду выпивать');
+    await checkGuestPeriod(page, 'Для GuestOne', 'Потребность в алкоголе', 'В субботу', 'Вечер');
+
+    await selectGuestRadio(page, 'Для GuestTwo', 'Потребность в питании', 'Буду кушать');
+    await checkGuestPeriod(page, 'Для GuestTwo', 'Потребность в питании', 'В субботу', 'Утро');
+    await selectGuestRadio(page, 'Для GuestTwo', 'Потребность в алкоголе', 'Буду выпивать');
+    await checkGuestPeriod(page, 'Для GuestTwo', 'Потребность в алкоголе', 'В субботу', 'Утро');
+    await clickNext(page);
+
+    // Accommodation - Differential
+    await selectGuestRadio(page, 'Для leader', 'Потребность в проживании', 'Размещаюсь самостоятельно');
+    
+    await selectGuestRadio(page, 'Для GuestOne', 'Потребность в проживании', 'Требуется забронировать номер на базе');
+    await checkGuestNight(page, 'Для GuestOne', 'С пятницы на субботу');
+    await fillGuestText(page, 'Для GuestOne', 'Дополнительные комментарии к проживанию и обеспечению', 'Хочу отдельный номер');
+
+    await selectGuestRadio(page, 'Для GuestTwo', 'Потребность в проживании', 'Требуется забронировать номер на базе');
+    await checkGuestNight(page, 'Для GuestTwo', 'С субботы на воскресенье');
+    await clickNext(page);
+
+    await page.waitForTimeout(500); // Wait for transition
+    await clickSubmit(page);
+    await expect(page.locator('text=Ваша заявка принята')).toBeVisible();
+    
+    expect(submittedData.applicationType).toBe('group');
+    expect(submittedData.groupConditions).toBe('differential');
+    expect(submittedData.guests.length).toBe(2);
+    
+    // Check Provisions
+    expect(submittedData.applicant.provisions.foodPeriods).toContain('fri-eve');
+    expect(submittedData.guests[0].provisions.alcoholPeriods).toContain('sat-eve');
+    expect(submittedData.guests[0].provisions.foodPeriods.length).toBe(0);
+    expect(submittedData.guests[1].provisions.foodPeriods).toContain('sat-morn');
+
+    // Check Accommodation
+    expect(submittedData.applicant.accommodation.type).toBe('self');
+    expect(submittedData.guests[0].accommodation.type).toBe('booking');
+    expect(submittedData.guests[0].accommodation.nights).toContain('fri-sat');
+    expect(submittedData.guests[0].accommodation.comment).toBe('Хочу отдельный номер');
+    expect(submittedData.guests[1].accommodation.nights).toContain('sat-sun');
+  });
 });
