@@ -427,24 +427,6 @@
 </main>
 
 <style>
-  :global(body) {
-    margin: 0;
-    padding: 0;
-    background-color: var(--bg-color);
-    overflow: hidden;
-  }
-
-  :global(#app) {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
-    padding: 0 !important;
-    max-width: 100% !important;
-    width: 100%;
-  }
-
   .app-form {
     display: flex;
     flex-direction: column;
