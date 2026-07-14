@@ -869,7 +869,7 @@ h1::after {
   transform: translateX(-50%) scale(0.9);
 
   /* Match ThemeSwitcher Tooltip */
-  background: rgba(18, 18, 20, 0.95);
+  background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
   color: var(--text-primary) !important;
   border: 1px solid var(--border-color);
   backdrop-filter: blur(16px);

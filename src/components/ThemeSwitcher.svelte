@@ -125,7 +125,7 @@
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
-    background: rgba(18, 18, 20, 0.95);
+    background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
@@ -143,7 +143,7 @@
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
-    background: rgba(18, 18, 20, 0.95);
+    background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
     color: var(--text-primary);
     padding: 0.4rem 0.8rem;
     border-radius: 8px;
