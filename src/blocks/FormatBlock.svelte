@@ -1,7 +1,7 @@
 <script>
   import { slide } from "svelte/transition";
 
-  import { formStore } from "../store.js";
+  import { formStore } from "../store.svelte.js";
   import {
     APPLICATION_TYPE,
     GROUP_CONDITIONS,
@@ -10,41 +10,22 @@
   import RadioGroup from "../components/RadioGroup.svelte";
   import SelectInput from "../components/SelectInput.svelte";
 
-  $: {
-    if ($formStore.applicationType === APPLICATION_TYPE.GROUP) {
-      const size = parseInt($formStore.totalGroupSize, 10);
+  let { errors = {} } = $props();
+
+  $effect(() => {
+    if (formStore.data.applicationType === APPLICATION_TYPE.GROUP) {
+      const size = parseInt(formStore.data.totalGroupSize, 10);
       const targetGuests = isNaN(size) ? 0 : size - 1;
-      if (targetGuests !== $formStore.guests.length) {
-        formStore.updateGuestsCount(
-          targetGuests,
-          $formStore.applicant.nickname,
-        );
+      if (targetGuests !== formStore.data.guests.length) {
+        formStore.updateGuestsCount(targetGuests);
       }
-    } else if ($formStore.applicationType === APPLICATION_TYPE.INDIVIDUAL) {
-      if ($formStore.totalGroupSize !== null || $formStore.groupConditions !== null) {
-        formStore.update(s => {
-          s.totalGroupSize = null;
-          s.groupConditions = null;
-          return s;
-        });
+    } else if (formStore.data.applicationType === APPLICATION_TYPE.INDIVIDUAL) {
+      if (formStore.data.totalGroupSize !== null || formStore.data.groupConditions !== null) {
+        formStore.data.totalGroupSize = null;
+        formStore.data.groupConditions = null;
       }
     }
-  }
-
-  /** @type {any} */ let appTypeInput;
-  /** @type {any} */ let groupSizeInput;
-  /** @type {any} */ let groupCondInput;
-
-  export function validate(forceTouch = false) {
-    let errors = [];
-    if (appTypeInput && !appTypeInput.validate(forceTouch)) errors.push(appTypeInput.label || "Тип заявки");
-    
-    if ($formStore.applicationType === APPLICATION_TYPE.GROUP) {
-      if (groupSizeInput && !groupSizeInput.validate(forceTouch)) errors.push(groupSizeInput.label || "Количество участников");
-      if (groupCondInput && !groupCondInput.validate(forceTouch)) errors.push(groupCondInput.label || "Условия группы");
-    }
-    return errors;
-  }
+  });
 </script>
 
 <div class="block-card">
@@ -52,10 +33,11 @@
   <div class="section-container first-section">
     <div class="section-content">
       <RadioGroup
-        bind:this={appTypeInput}
         label="Тип заявки"
         required={true}
-        bind:value={$formStore.applicationType}
+        bind:value={formStore.data.applicationType}
+        errorText={errors['applicationType']}
+        onchange={() => formStore.markTouched('applicationType')}
         options={[
           {
             label: "Индивидуальная",
@@ -71,22 +53,24 @@
         ]}
       />
 
-      {#if $formStore.applicationType === APPLICATION_TYPE.GROUP}
+      {#if formStore.data.applicationType === APPLICATION_TYPE.GROUP}
         <div transition:slide class="slide-container">
           <SelectInput
-            bind:this={groupSizeInput}
             label="Общее количество участников Вашей группы"
             helperText="указывается общее число людей, включая Вас как руководителя группы"
             placeholder="Выберите размер группы..."
             icon="group_add"
             options={groupSizeOptions}
-            bind:value={$formStore.totalGroupSize}
+            bind:value={formStore.data.totalGroupSize}
+            errorText={errors['totalGroupSize']}
+            onchange={() => formStore.markTouched('totalGroupSize')}
             required={true}
           />
           <RadioGroup
-            bind:this={groupCondInput}
             label="Условия для участников Вашей группы"
-            bind:value={$formStore.groupConditions}
+            bind:value={formStore.data.groupConditions}
+            errorText={errors['groupConditions']}
+            onchange={() => formStore.markTouched('groupConditions')}
             required={true}
             options={[
               {

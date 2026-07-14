@@ -1,23 +1,20 @@
 <script>
-  import { createEventDispatcher } from "svelte";
-
-  export let currentStep;
-  export let totalSteps;
-  export let hasErrors = false;
-  export let isSubmitting = false;
-
-  const dispatch = createEventDispatcher();
+  let {
+    currentStep,
+    totalSteps,
+    hasErrors = false,
+    isSubmitting = false,
+    onprev,
+    onnext,
+    onclear,
+  } = $props();
 </script>
 
 <footer class="app-footer">
   <div class="footer-content">
     {#if currentStep === 1}
       <div class="center-buttons intro-nav-wrapper">
-        <button
-          type="button"
-          class="btn-primary start-btn"
-          on:click={() => dispatch("next")}
-        >
+        <button type="button" class="btn-primary start-btn" onclick={onnext}>
           Начать заполнение
         </button>
       </div>
@@ -29,7 +26,7 @@
             class="btn-danger icon-only"
             data-tooltip="Очистить форму"
             data-tooltip-pos="left"
-            on:click={() => dispatch("clear")}
+            onclick={onclear}
           >
             <md-icon>delete</md-icon>
           </button>
@@ -41,7 +38,7 @@
               class="btn-secondary icon-only"
               data-tooltip="Назад"
               data-tooltip-pos="right"
-              on:click={() => dispatch("prev")}
+              onclick={onprev}
             >
               <md-icon>arrow_back</md-icon>
             </button>
@@ -50,23 +47,27 @@
           {#if currentStep < totalSteps}
             <button
               type="button"
-              class="{hasErrors ? 'btn-secondary btn-locked' : 'btn-primary'} icon-only"
+              class="{hasErrors
+                ? 'btn-secondary btn-locked'
+                : 'btn-primary'} icon-only"
               disabled={hasErrors}
               data-tooltip={hasErrors
-                ? "Исправьте ошибки, чтобы продолжить"
+                ? "Заполните данные, чтобы продолжить"
                 : "Далее"}
               data-tooltip-pos="right"
-              on:click={() => dispatch("next")}
+              onclick={onnext}
             >
               <md-icon>{hasErrors ? "lock" : "arrow_forward"}</md-icon>
             </button>
           {:else}
             <button
               type="submit"
-              class="{hasErrors ? 'btn-submit btn-locked' : 'btn-submit'} icon-only"
-              disabled={isSubmitting}
+              class="{hasErrors
+                ? 'btn-submit btn-locked'
+                : 'btn-submit'} icon-only"
+              disabled={isSubmitting || hasErrors}
               data-tooltip={hasErrors
-                ? "Данные заполнены некорректно"
+                ? "Недостаточно данных для отправки"
                 : isSubmitting
                   ? "Подождите, идет отправка"
                   : "Отправить заявку"}

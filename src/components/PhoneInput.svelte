@@ -11,23 +11,26 @@
   import examples from 'libphonenumber-js/mobile/examples';
   import { generateId } from '../utils.js';
 
-  export let value = '';
-  export let label = '';
-  export let helperText = '';
-  export let required = false;
-  export let id = generateId('phoneinput');
+  let {
+    value = $bindable(''),
+    label = '',
+    helperText = '',
+    required = false,
+    id = generateId('phoneinput'),
+    errorText = '',
+    ...restProps
+  } = $props();
 
-  let error = false;
-  let errorText = '';
+  const hasError = $derived(!!errorText);
 
   /** @type {import('libphonenumber-js').CountryCode} */
-  let selectedCountry = 'BY';
-  let rawPhoneNumber = '';
+  let selectedCountry = $state('BY');
+  let rawPhoneNumber = $state('');
 
   // Dropdown state
-  let dropdownOpen = false;
-  let openUpwards = false;
-  let searchQuery = '';
+  let dropdownOpen = $state(false);
+  let openUpwards = $state(false);
+  let searchQuery = $state('');
   
   /** @type {HTMLElement} */
   let dropdownRef;
@@ -60,16 +63,16 @@
   const otherCountries = allCountries.filter(c => !priorityCodes.includes(c.code));
   let sortedCountries = [...validPriorityCountries, ...otherCountries];
 
-  $: filteredCountries = sortedCountries.filter(c => {
+  const filteredCountries = $derived(sortedCountries.filter(c => {
     const q = searchQuery.toLowerCase();
     return c.name.toLowerCase().includes(q) || c.dialCode.includes(q) || c.code.toLowerCase().includes(q);
-  });
+  }));
 
   // Derived selected country object for UI
-  $: selectedCountryObj = allCountries.find(c => c.code === selectedCountry) || allCountries[0];
+  const selectedCountryObj = $derived(allCountries.find(c => c.code === selectedCountry) || allCountries[0]);
 
   // Dynamic placeholder mask based on selected country
-  $: dynamicPlaceholder = (() => {
+  const dynamicPlaceholder = $derived((() => {
     try {
       const phoneNumber = getExampleNumber(selectedCountry, examples);
       if (phoneNumber) {
@@ -81,7 +84,7 @@
     } catch (e) {
       return '';
     }
-  })();
+  })());
 
   /** @param {Event} e */
   function handleInput(e) {
@@ -132,8 +135,6 @@
     } else {
       value = fullNumberToFormat === currentDialCode ? '' : fullNumberToFormat;
     }
-    
-    validate();
   }
 
   /** @param {Event} e */
@@ -141,7 +142,6 @@
     e.preventDefault();
     value = '';
     rawPhoneNumber = '';
-    validate();
   }
 
   /** @param {import('libphonenumber-js').CountryCode} code */
@@ -172,27 +172,6 @@
         value = fullNumber;
       }
     }
-    validate();
-  }
-
-  export function validate() {
-    if (required && (!rawPhoneNumber || rawPhoneNumber.trim() === '')) {
-      error = true;
-      errorText = ERROR_MESSAGES.TEXT;
-      return false;
-    }
-    
-    if (rawPhoneNumber && rawPhoneNumber.trim() !== '') {
-      if (!isValidPhoneNumber(rawPhoneNumber, selectedCountry)) {
-        error = true;
-        errorText = 'Неверный номер телефона';
-        return false;
-      }
-    }
-
-    error = false;
-    errorText = '';
-    return true;
   }
   
   onMount(() => {
@@ -247,7 +226,7 @@
   }
 
   // supporting-text is now only used for errors or empty
-  $: computedSupportingText = error ? errorText : '';
+  const computedSupportingText = $derived(hasError ? errorText : '');
 </script>
 
 <div class="form-group">
@@ -276,7 +255,7 @@
         type="button" 
         class="country-selector-btn" 
         class:active={dropdownOpen}
-        on:click={toggleDropdown}
+        onclick={toggleDropdown}
       >
         <span class="fi fi-{selectedCountryObj?.code?.toLowerCase()} flag-icon"></span>
         <span class="dial-code">{selectedCountryObj?.dialCode}</span>
@@ -300,7 +279,7 @@
                 type="button" 
                 class="country-item" 
                 class:selected={selectedCountry === country.code}
-                on:click={() => selectCountry(country.code)}
+                onclick={() => selectCountry(country.code)}
               >
                 <span class="fi fi-{country.code.toLowerCase()} flag-icon"></span>
                 <span class="name">{country.name}</span>
@@ -322,15 +301,14 @@
         value={rawPhoneNumber}
         placeholder={dynamicPlaceholder}
         supporting-text={computedSupportingText}
-        {error}
-        on:input={handleInput}
-        on:change={validate}
-        on:blur={validate}
+        error={hasError}
+        oninput={handleInput}
+        {...restProps}
       >
         {#if rawPhoneNumber && String(rawPhoneNumber).length > 0}
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <!-- svelte-ignore a11y_click_events_have_key_events -->
-          <md-icon-button slot="trailing-icon" type="button" on:click={clearValue}>
+          <md-icon-button slot="trailing-icon" type="button" onclick={clearValue}>
             <md-icon>close</md-icon>
           </md-icon-button>
         {/if}

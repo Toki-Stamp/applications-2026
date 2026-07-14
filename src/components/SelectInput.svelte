@@ -6,60 +6,49 @@
   import { generateId } from "../utils.js";
   import { ERROR_MESSAGES } from "../constants.js";
 
-  /** @type {any} */
-  export let value;
-  /** @type {string} */
-  export let label = "";
-  /** @type {string} */
-  export let helperText = "";
-  /** @type {any[]} */
-  export let options = [];
-  /** @type {boolean} */
-  export let required = false;
-  /** @type {string} */
-  export let placeholder = "";
-
-  /** @type {string} */
-  export let id = generateId("select");
-  /** @type {string} */
-  export let icon = "";
-
-  let isTouched = false;
-  let error = false;
-  let errorText = "";
+  let {
+    value = $bindable(),
+    label = '',
+    helperText = '',
+    options = [],
+    required = false,
+    placeholder = '',
+    id = generateId('select'),
+    icon = '',
+    errorText = '',
+    onchange,
+    ...restProps
+  } = $props();
 
   /** @param {Event} e */
   function handleChange(e) {
-    isTouched = true;
-    const target = /** @type {HTMLSelectElement} */ (e.target);
-    value = target.value;
-    validate();
+    const target = /** @type {any} */ (e.target);
+    const rawVal = target.value;
+    // Find the matching option to get the original typed value (e.g. number instead of string)
+    const match = options.find(opt => {
+      const v = opt.value !== undefined ? String(opt.value) : String(opt);
+      return v === rawVal;
+    });
+    if (match !== undefined) {
+      value = match.value !== undefined ? match.value : match;
+    } else if (rawVal === '') {
+      value = null;
+    } else {
+      value = rawVal;
+    }
+    onchange?.();
   }
 
   /** @param {Event} e */
   function clearValue(e) {
-    isTouched = true;
     e.preventDefault();
     e.stopPropagation();
     value = null;
-    validate();
+    onchange?.();
   }
 
-  export function validate(forceTouch = false) {
-    if (forceTouch) isTouched = true;
-    let isError = required && (!value || value === "");
-    if (isTouched) {
-      error = isError;
-      errorText = isError ? "Это поле обязательно для заполнения" : "";
-    } else {
-      error = false;
-      errorText = "";
-    }
-    return !error;
-  }
-
-  // supporting-text is now only used for errors or empty
-  $: computedSupportingText = error ? errorText : "";
+  const hasError = $derived(!!errorText);
+  const computedSupportingText = $derived(hasError ? errorText : '');
 
   /**
    * Svelte action to sync value to the Web Component AFTER children are mounted
@@ -103,11 +92,12 @@
       class="select-field"
       class:is-empty={!value || value === ""}
       {id}
-      {error}
+      error={hasError}
       error-text={errorText}
       supporting-text={computedSupportingText}
       use:syncValue={value}
-      on:change={handleChange}
+      {...restProps}
+      onchange={handleChange}
     >
       {#if icon}
         <md-icon slot="leading-icon">{icon}</md-icon>
@@ -134,8 +124,8 @@
     {#if value && String(value).length > 0}
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <!-- svelte-ignore a11y_click_events_have_key_events -->
-      <div class="clear-button-wrapper" class:has-error={error}>
-        <md-icon-button type="button" on:click={clearValue}>
+      <div class="clear-button-wrapper" class:has-error={hasError}>
+        <md-icon-button type="button" onclick={clearValue}>
           <md-icon>close</md-icon>
         </md-icon-button>
       </div>

@@ -1,6 +1,5 @@
 <script>
-  export let currentStep;
-  export let totalSteps;
+  let { currentStep, totalSteps } = $props();
 </script>
 
 <div class="progress-container">

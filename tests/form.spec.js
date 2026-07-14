@@ -150,7 +150,7 @@ test.describe('Form E2E Tests', () => {
     await selectDropdown(page, 'День отправления на базу', 'Пятница');
     await fillText(page, 'Ориентировочное время отправления', '18:00');
     
-    await selectDropdown(page, 'Способ отъезда', 'Тот же, что и туда');
+    await selectDropdown(page, 'Способ отъезда', 'Ищу место в авто');
     await selectDropdown(page, 'День отъезда с базы', 'Воскресенье');
     await fillText(page, 'Ориентировочное время отъезда', '15:00');
     await clickNext(page);

@@ -4,14 +4,16 @@
   import { generateId } from "../utils.js";
   import { onMount } from "svelte";
 
-  export let value = "";
-  export let label = "";
-  export let helperText = "";
-  export let required = false;
-  export let placeholder = "";
-  export let icon = "";
-
-  export let id = generateId("textarea");
+  let {
+    value = $bindable(''),
+    label = '',
+    helperText = '',
+    required = false,
+    placeholder = '',
+    icon = '',
+    id = generateId('textarea'),
+    ...restProps
+  } = $props();
 
   /** @type {HTMLTextAreaElement} */
   let textareaRef;
@@ -29,7 +31,6 @@
 
   /** @param {Event} e */
   function handleInput(e) {
-    isTouched = true;
     const target = /** @type {HTMLTextAreaElement} */ (e.target);
     value = target.value;
     adjustHeight();
@@ -78,13 +79,14 @@
       {id}
       {placeholder}
       {value}
-      on:input={handleInput}
+      oninput={handleInput}
+      {...restProps}
     ></textarea>
     {#if value && String(value).length > 0}
       <div class="trailing-icon">
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <md-icon-button type="button" on:click={clearValue}>
+        <md-icon-button type="button" onclick={clearValue}>
           <md-icon>close</md-icon>
         </md-icon-button>
       </div>

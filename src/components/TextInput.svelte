@@ -5,54 +5,35 @@
   import { generateId } from '../utils.js';
   import { ERROR_MESSAGES } from '../constants.js';
 
-  /** @type {any} */
-  export let value = '';
-  export let label = '';
-  export let helperText = '';
-  export let type = 'text'; // 'text', 'tel', 'number', 'time'
-  export let required = false;
-  export let min = undefined;
-  export let max = undefined;
-  export let id = generateId('textinput');
-  
-  export let icon = '';
-  export let placeholder = '';
-
-  let isTouched = false;
-  let error = false;
-  let errorText = '';
+  let {
+    value = $bindable(''),
+    label = '',
+    helperText = '',
+    type = 'text',
+    required = false,
+    min = undefined,
+    max = undefined,
+    id = generateId('textinput'),
+    icon = '',
+    placeholder = '',
+    errorText = '',
+    ...restProps
+  } = $props();
 
   /** @param {Event} e */
   function handleInput(e) {
-    isTouched = true;
     const target = /** @type {HTMLInputElement} */ (e.target);
     value = target.value;
-    validate();
   }
 
   /** @param {Event} e */
   function clearValue(e) {
-    isTouched = true;
     e.preventDefault();
     value = '';
-    validate();
   }
 
-  export function validate(forceTouch = false) {
-    if (forceTouch) isTouched = true;
-    let isError = required && !value;
-    if (isTouched) {
-      error = isError;
-      errorText = isError ? ERROR_MESSAGES.TEXT : '';
-    } else {
-      error = false;
-      errorText = '';
-    }
-    return !error;
-  }
-
-  // supporting-text is now only used for errors or empty
-  $: computedSupportingText = error ? errorText : '';
+  const hasError = $derived(!!errorText);
+  const computedSupportingText = $derived(hasError ? errorText : '');
 </script>
 
 <div class="form-group">
@@ -78,16 +59,13 @@
     {type}
     class:is-time-empty={type === 'time' && (!value || value === '')}
     supporting-text={computedSupportingText}
-    {error}
+    error={hasError}
     {value}
     {min}
     {max}
     {placeholder}
-    on:input={handleInput}
-    on:change={() => validate(true)}
-    on:blur={() => validate(true)}
-    on:input
-    on:change
+    oninput={handleInput}
+    {...restProps}
   >
     {#if icon}
       <md-icon slot="leading-icon">{icon}</md-icon>
@@ -95,7 +73,7 @@
     {#if value && String(value).length > 0}
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <!-- svelte-ignore a11y_click_events_have_key_events -->
-      <md-icon-button slot="trailing-icon" type="button" on:click={clearValue}>
+      <md-icon-button slot="trailing-icon" type="button" onclick={clearValue}>
         <md-icon>close</md-icon>
       </md-icon-button>
     {/if}

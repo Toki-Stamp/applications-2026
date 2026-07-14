@@ -2,8 +2,9 @@
   import { onMount } from "svelte";
   import "./app.css";
   import { fade } from "svelte/transition";
-  import { formStore, sanitizeFormData } from "./store.js";
+  import { formStore, sanitizeFormData } from "./store.svelte.js";
   import { GOOGLE_SCRIPT_URL } from "./constants.js";
+  import { validateStepData } from "./schema.js";
 
   import IntroBlock from "./blocks/IntroBlock.svelte";
   import FormatBlock from "./blocks/FormatBlock.svelte";
@@ -18,57 +19,128 @@
   import Header from "./components/Header.svelte";
   import NavigationButtons from "./components/NavigationButtons.svelte";
 
-  let isSubmitted = false;
-  let isSubmitting = false;
-  /** @type {HTMLFormElement} */
-  let formElement;
-  let showDraftModal =
+  let isSubmitted = $state(false);
+  let isSubmitting = $state(false);
+  /** @type {HTMLFormElement | undefined} */
+  let formElement = $state();
+
+  const STEP_STORAGE_KEY = "zubr_step_draft_v2";
+
+  let showDraftModal = $state(
     typeof window !== "undefined"
-      ? !!localStorage.getItem("zubr_form_draft_2026")
-      : false;
+      ? !!localStorage.getItem("zubr_form_draft_2026_v2")
+      : false,
+  );
 
-  let currentStep =
-    showDraftModal && typeof window !== "undefined"
-      ? Number(localStorage.getItem("zubr_step_draft")) || 1
-      : 1;
+  // Compute initial step directly from localStorage to avoid capturing $state reference
+  let currentStep = $state(
+    typeof window !== "undefined" &&
+      !!localStorage.getItem("zubr_form_draft_2026_v2")
+      ? Number(localStorage.getItem(STEP_STORAGE_KEY)) || 1
+      : 1,
+  );
   const totalSteps = 7;
-  let headerHeight = 100;
+  let headerHeight = $state(100);
 
-  /** @type {any} */ let formatBlock;
-  /** @type {any} */ let personalDataBlock;
-  /** @type {any} */ let transportBlock;
-  /** @type {any} */ let provisionsBlock;
-  /** @type {any} */ let accommodationBlock;
-  /** @type {any} */ let freeMicBlock;
-
-  /** @type {string[]} */
-  let stepErrors = [];
-  let showClearModal = false;
+  let showClearModal = $state(false);
   /** @type {string | null} */
-  let submitErrorMessage = null; // Хранит текст ошибки отправки
+  let submitErrorMessage = $state(null);
 
-  // Реактивно перепроверяем форму при любых изменениях.
-  $: {
-    if ($formStore) {
-      // Используем setTimeout чтобы избежать циклических обновлений Svelte при рендеринге
-      setTimeout(() => {
-        stepErrors = getStepErrors(false);
-      }, 0);
+  // --- Zod-based validation ---
+  /** @type {Record<string, string>} */
+  let stepErrors = $state({});
+
+  /**
+   * Validates the current step using Zod.
+   * If touchAll=true, marks all fields as touched (e.g. on "Next" click).
+   * @param {boolean} touchAll
+   */
+  function validateCurrentStep(touchAll = false) {
+    const data = formStore.data;
+    let dataSlice = {};
+
+    if (currentStep === 2) {
+      dataSlice = {
+        applicationType: data.applicationType,
+        totalGroupSize: data.totalGroupSize,
+        groupConditions: data.groupConditions,
+      };
+    } else if (currentStep === 3) {
+      dataSlice = {
+        applicationType: data.applicationType,
+        applicant: data.applicant,
+        guests: data.guests,
+      };
+    } else if (currentStep === 4) {
+      dataSlice = {
+        transportTo: data.transportTo,
+        transportFrom: data.transportFrom,
+        transportComment: data.transportComment,
+      };
+    } else if (currentStep === 5) {
+      dataSlice = {
+        applicationType: data.applicationType,
+        groupConditions: data.groupConditions,
+        applicant: data.applicant,
+        guests: data.guests,
+      };
+    } else if (currentStep === 6) {
+      dataSlice = {
+        accommodation: data.accommodation,
+        nights: data.nights,
+        accommodationComment: data.accommodationComment,
+      };
+    } else if (currentStep === 7) {
+      dataSlice = { freeMic: data.freeMic };
     }
+
+    const result = validateStepData(currentStep, dataSlice);
+
+    if (touchAll) {
+      // Mark all fields from error keys as touched
+      Object.keys(result.errors).forEach((path) => formStore.markTouched(path));
+    }
+
+    // Only show errors for touched fields (unless touchAll)
+    if (touchAll) {
+      stepErrors = result.errors;
+    } else {
+      /** @type {Record<string, string>} */
+      const filtered = {};
+      const touched = formStore.meta.touchedFields;
+      Object.entries(result.errors).forEach(([key, val]) => {
+        if (touched.has(key)) filtered[key] = val;
+      });
+      stepErrors = filtered;
+    }
+
+    return result.success || Object.keys(stepErrors).length === 0;
   }
 
-  $: {
+  // Re-validate when store data OR touchedFields changes
+  $effect(() => {
+    // JSON.stringify walks all nested properties, subscribing to every data change
+    // This ensures text field inputs (oninput) also trigger re-validation
+    JSON.stringify(formStore.data);
+    const _t = formStore.meta.touchedFields;
+    // Defer to avoid infinite loops during Svelte's own update cycle
+    setTimeout(() => validateCurrentStep(false), 0);
+  });
+
+  // Persist step to localStorage
+  $effect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("zubr_step_draft", String(currentStep));
+      localStorage.setItem(STEP_STORAGE_KEY, String(currentStep));
     }
-  }
+  });
 
-  $: {
+  // Body overflow for modals
+  $effect(() => {
     if (typeof document !== "undefined") {
       document.body.style.overflow =
         showClearModal || submitErrorMessage || showDraftModal ? "hidden" : "";
     }
-  }
+  });
 
   onMount(() => {
     // Dynamically calculate sticky header heights to prevent overlap bugs
@@ -111,62 +183,14 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function getStepErrors(forceTouch = false) {
-    /** @type {string[]} */
-    let errors = [];
-    if (
-      currentStep === 2 &&
-      formatBlock &&
-      typeof formatBlock.validate === "function"
-    )
-      errors = formatBlock.validate(forceTouch);
-    if (
-      currentStep === 3 &&
-      personalDataBlock &&
-      typeof personalDataBlock.validate === "function"
-    )
-      errors = personalDataBlock.validate(forceTouch);
-    if (
-      currentStep === 4 &&
-      transportBlock &&
-      typeof transportBlock.validate === "function"
-    )
-      errors = transportBlock.validate(forceTouch);
-    if (
-      currentStep === 5 &&
-      provisionsBlock &&
-      typeof provisionsBlock.validate === "function"
-    )
-      errors = provisionsBlock.validate(forceTouch);
-    if (
-      currentStep === 6 &&
-      accommodationBlock &&
-      typeof accommodationBlock.validate === "function"
-    )
-      errors = accommodationBlock.validate(forceTouch);
-    if (
-      currentStep === 7 &&
-      freeMicBlock &&
-      typeof freeMicBlock.validate === "function"
-    )
-      errors = freeMicBlock.validate(forceTouch);
-
-    if (formElement && !formElement.checkValidity()) {
-      if (errors.length === 0) {
-        errors.push("Некоторые обязательные поля не заполнены");
-      }
-    }
-    return errors;
-  }
-
   function nextStep() {
-    stepErrors = getStepErrors(true);
-
-    if (stepErrors.length > 0) return;
+    const isValid = validateCurrentStep(true);
+    if (!isValid) return;
 
     if (currentStep < totalSteps) {
       currentStep++;
-      stepErrors = [];
+      stepErrors = {};
+      formStore.meta.touchedFields = new Set();
       scrollToTop();
     }
   }
@@ -174,7 +198,8 @@
   function prevStep() {
     if (currentStep > 1) {
       currentStep--;
-      stepErrors = [];
+      stepErrors = {};
+      formStore.meta.touchedFields = new Set();
       scrollToTop();
     }
   }
@@ -183,7 +208,7 @@
     formStore.reset();
     currentStep = 1;
     showDraftModal = false;
-    stepErrors = [];
+    stepErrors = {};
     showClearModal = false;
     scrollToTop();
   }
@@ -192,16 +217,16 @@
     formStore.reset();
     isSubmitted = false;
     currentStep = 1;
+    stepErrors = {};
   }
 
   const submitForm = async () => {
     if (isSubmitting) return;
 
-    stepErrors = getStepErrors(true);
+    const isValid = validateCurrentStep(true);
+    if (!isValid) return;
 
-    if (stepErrors.length > 0) return;
-
-    const finalData = sanitizeFormData($formStore);
+    const finalData = sanitizeFormData(formStore.data);
     isSubmitting = true;
 
     try {
@@ -230,7 +255,9 @@
 
       isSubmitted = true;
       formStore.reset();
-      localStorage.removeItem("zubr_step_draft");
+      if (typeof localStorage !== "undefined") {
+        localStorage.removeItem(STEP_STORAGE_KEY);
+      }
       currentStep = 1;
       showDraftModal = false;
     } catch (e) {
@@ -241,16 +268,21 @@
       isSubmitting = false;
     }
   };
+
+  const hasErrors = $derived(Object.keys(stepErrors).length > 0);
 </script>
 
-<main id="app" on:focusout={() => { setTimeout(() => { stepErrors = getStepErrors(false); }, 0); }}>
+<main id="app">
   <div class="app-transition-wrapper">
     {#if !isSubmitted}
       <form
         class="app-form"
         novalidate
         bind:this={formElement}
-        on:submit|preventDefault={submitForm}
+        onsubmit={(e) => {
+          e.preventDefault();
+          submitForm();
+        }}
         transition:fade={{ duration: 300 }}
       >
         <Header bind:headerHeight {currentStep} {totalSteps} />
@@ -264,33 +296,33 @@
               </div>
             {:else if currentStep === 2}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <FormatBlock bind:this={formatBlock} />
+                <FormatBlock errors={stepErrors} />
               </div>
             {:else if currentStep === 3}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <PersonalDataBlock bind:this={personalDataBlock} />
+                <PersonalDataBlock errors={stepErrors} />
               </div>
             {:else if currentStep === 4}
               <div transition:fade={{ duration: 300 }} class="step-layer">
                 <TransportBlock
-                  bind:this={transportBlock}
                   stepNumber={currentStep - 1}
+                  errors={stepErrors}
                 />
               </div>
             {:else if currentStep === 5}
               <div transition:fade={{ duration: 300 }} class="step-layer">
                 <ProvisionsBlock
-                  bind:this={provisionsBlock}
                   stepNumber={currentStep - 1}
+                  errors={stepErrors}
                 />
               </div>
             {:else if currentStep === 6}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <AccommodationBlock bind:this={accommodationBlock} />
+                <AccommodationBlock errors={stepErrors} />
               </div>
             {:else if currentStep === 7}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <FreeMicBlock bind:this={freeMicBlock} />
+                <FreeMicBlock errors={stepErrors} />
               </div>
             {/if}
           </div>
@@ -300,54 +332,58 @@
         <NavigationButtons
           {currentStep}
           {totalSteps}
-          hasErrors={stepErrors.length > 0}
+          {hasErrors}
           {isSubmitting}
-          on:prev={prevStep}
-          on:next={nextStep}
-          on:clear={() => (showClearModal = true)}
+          onprev={prevStep}
+          onnext={nextStep}
+          onclear={() => (showClearModal = true)}
         />
       </form>
     {:else}
       <!-- Success Screen -->
-      <SuccessScreen on:reset={handleReset} />
+      <SuccessScreen onreset={handleReset} />
     {/if}
   </div>
 
   {#if showClearModal}
-    <Modal on:close={() => (showClearModal = false)}>
-      <h2 slot="header" class="block-title">Очистить форму?</h2>
+    <Modal onclose={() => (showClearModal = false)}>
+      {#snippet header()}
+        <h2 class="block-title">Очистить форму?</h2>
+      {/snippet}
       <p>Вы уверены, что хотите безвозвратно удалить все введенные данные?</p>
-      <svelte:fragment slot="actions">
+      {#snippet actions()}
         <button
           type="button"
           class="btn-secondary"
-          on:click={() => (showClearModal = false)}>Отмена</button
+          onclick={() => (showClearModal = false)}>Отмена</button
         >
-        <button type="button" class="btn-danger" on:click={clearForm}
+        <button type="button" class="btn-danger" onclick={clearForm}
           >Очистить</button
         >
-      </svelte:fragment>
+      {/snippet}
     </Modal>
   {/if}
 
   {#if submitErrorMessage}
-    <Modal variant="danger" on:close={() => (submitErrorMessage = null)}>
-      <h2 slot="header" class="block-title">
-        <span>Сбой при отправке!</span>
-      </h2>
+    <Modal variant="danger" onclose={() => (submitErrorMessage = null)}>
+      {#snippet header()}
+        <h2 class="block-title">
+          <span>Сбой при отправке!</span>
+        </h2>
+      {/snippet}
       <p>
         Причина: <strong style="color: #fca5a5;">{submitErrorMessage}</strong>
       </p>
       <p style="margin-top: 1rem;">
         Попробуйте позже или проверьте правильность развертывания скрипта
       </p>
-      <svelte:fragment slot="actions">
+      {#snippet actions()}
         <button
           type="button"
           class="btn-danger"
-          on:click={() => (submitErrorMessage = null)}>Понятно</button
+          onclick={() => (submitErrorMessage = null)}>Понятно</button
         >
-      </svelte:fragment>
+      {/snippet}
     </Modal>
   {/if}
 
@@ -355,27 +391,29 @@
     <Modal
       variant="info"
       dismissible={false}
-      on:close={() => (showDraftModal = false)}
+      onclose={() => (showDraftModal = false)}
     >
-      <h2 slot="header" class="block-title">С возвращением!</h2>
-      <p>У вас осталась неотправленная заявка.</p>
+      {#snippet header()}
+        <h2 class="block-title">С возвращением!</h2>
+      {/snippet}
+      <p>У Вас осталась неотправленная заявка.</p>
       <p>Хотите продолжить её заполнение или начать всё заново?</p>
-      <svelte:fragment slot="actions">
+      {#snippet actions()}
         <button
           type="button"
           class="btn-secondary"
-          on:click={() => {
+          onclick={() => {
             showDraftModal = false;
             clearForm();
-            currentStep = 1; // Идём опять на интро
+            currentStep = 1;
           }}>Начать заново</button
         >
         <button
           type="button"
           class="btn-primary"
-          on:click={() => (showDraftModal = false)}>Продолжить</button
+          onclick={() => (showDraftModal = false)}>Продолжить</button
         >
-      </svelte:fragment>
+      {/snippet}
     </Modal>
   {/if}
 </main>

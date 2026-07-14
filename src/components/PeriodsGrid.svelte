@@ -3,14 +3,16 @@
   import HintBox from "./HintBox.svelte";
   import "@material/web/icon/icon.js";
 
-  /** @type {string[]} */
-  export let values = [];
-  /** @type {string} */
-  export const label = "Периоды";
+  let {
+    values = $bindable([]),
+    required = false,
+    errorText = '',
+  } = $props();
+
+  export const label = 'Периоды';
 
   /** @param {string} id */
   function handleToggle(id) {
-    isTouched = true;
     if (values.includes(id)) {
       values = values.filter((v) => v !== id);
     } else {
@@ -20,34 +22,11 @@
 
   /** @param {string} label */
   function getIcon(label) {
-    // Return different Material icons based on time of day
-    return label === "Утро" ? "wb_sunny" : "nightlight_round";
+    return label === 'Утро' ? 'wb_sunny' : 'nightlight_round';
   }
 
-  export let required = false;
-  let isTouched = false;
-  let error = false;
-  /** @type {{prefix: string, label: string, suffix: string} | null} */
-  let errorMsg = null;
-
-  export function validate(forceTouch = false) {
-    if (forceTouch) isTouched = true;
-    let isError = required && (!values || values.length === 0);
-    if (isTouched) {
-      error = isError;
-      errorMsg = isError ? ERROR_MESSAGES.PERIODS(label || 'Значение') : null;
-    } else {
-      error = false;
-      errorMsg = null;
-    }
-    return !error;
-  }
-
-  $: {
-    if (error && values.length > 0) {
-      validate();
-    }
-  }
+  const hasError = $derived(!!errorText);
+  const errorMsg = $derived(hasError ? ERROR_MESSAGES.PERIODS(label || 'Значение') : null);
 </script>
 
 <div class="form-group">
@@ -63,7 +42,7 @@
           <div
             class="period-card"
             class:selected={values.includes(period.id)}
-            on:click={() => handleToggle(period.id)}
+            onclick={() => handleToggle(period.id)}
           >
             <div class="card-icon">
               <md-icon>{getIcon(period.label)}</md-icon>
@@ -84,7 +63,7 @@
       </div>
     </div>
   {/each}
-  {#if error && errorMsg}
+  {#if hasError && errorMsg}
     <div class="error-wrapper">
       <HintBox type="error">
         {errorMsg.prefix}<strong class="text-primary">{errorMsg.label}</strong>{errorMsg.suffix}

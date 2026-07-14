@@ -4,41 +4,27 @@
   import HintBox from "./HintBox.svelte";
   import { ERROR_MESSAGES } from "../constants.js";
 
-  /** @type {any} */
-  export let value;
-  /** @type {string} */
-  export let label = "";
-  /** @type {any[]} */
-  export let options = [];
-  /** @type {boolean} */
-  export let required = false;
-  /** @type {string} */
-  export let name = generateId("radiogroup");
+  let {
+    value = $bindable(),
+    label = '',
+    options = [],
+    required = false,
+    name = generateId('radiogroup'),
+    errorText = '',
+    onchange,
+    ...restProps
+  } = $props();
 
   /** @param {any} optValue */
   function handleChange(optValue) {
-    isTouched = true;
     value = optValue;
-    validate();
+    onchange?.();
   }
 
-  let isTouched = false;
-  let error = false;
-  /** @type {{prefix: string, label: string, suffix: string} | null} */
-  let errorMsg = null;
-
-  export function validate(forceTouch = false) {
-    if (forceTouch) isTouched = true;
-    let isError = required && (value === undefined || value === null || value === "");
-    if (isTouched) {
-      error = isError;
-      errorMsg = isError ? ERROR_MESSAGES.RADIO(label || 'Значение') : null;
-    } else {
-      error = false;
-      errorMsg = null;
-    }
-    return !error;
-  }
+  const hasError = $derived(!!errorText);
+  
+  // Create formatted error message matching the old structure
+  const errorMsg = $derived(hasError ? ERROR_MESSAGES.RADIO(label || 'Значение') : null);
 </script>
 
 <div class="form-group">
@@ -56,13 +42,16 @@
       {@const mainLabel = opt.label !== undefined ? opt.label : String(opt)}
       {@const suppText = opt.helperText || null}
       <!-- svelte-ignore a11y_label_has_associated_control -->
-      <label class="radio-label">
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+      <label class="radio-label" onclick={() => handleChange(optVal)}>
         <md-radio
           class="radio-input"
           {name}
           value={optVal}
           checked={value === optVal}
-          on:change={() => handleChange(optVal)}
+          {...restProps}
+          onchange={() => handleChange(optVal)}
         ></md-radio>
         <div class="text-container">
           <span class="main-label">{mainLabel}</span>
@@ -76,7 +65,7 @@
       </label>
     {/each}
   </div>
-  {#if error && errorMsg}
+  {#if hasError && errorMsg}
     <div class="error-wrapper">
       <HintBox type="error">
         {errorMsg.prefix}<strong class="text-primary">{errorMsg.label}</strong>{errorMsg.suffix}

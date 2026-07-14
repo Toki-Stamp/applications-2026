@@ -27,12 +27,14 @@ export const TRANSPORT_METHOD = {
 
 export const days = ['Пятница', 'Суббота', 'Воскресенье'];
 
-export const transportMethods = [
+export const transportMethodsTo = [
   { label: 'Как водитель', value: TRANSPORT_METHOD.DRIVER },
   { label: 'Ищу место в авто', value: TRANSPORT_METHOD.PASSENGER },
   { label: 'На организованной маршрутке', value: TRANSPORT_METHOD.BUS },
   { label: 'Самостоятельно', value: TRANSPORT_METHOD.SELF }
 ];
+
+// transportMethodsFrom is removed, use transportMethodsTo for both directions.
 
 
 

@@ -1,7 +1,7 @@
 <script>
   import { onMount } from 'svelte';
-  import { fade, slide } from 'svelte/transition';
-  
+  import { fade } from 'svelte/transition';
+
   const themes = [
     { id: 'cyberpunk', name: 'Cyberpunk', primary: '#06b6d4', accent: '#6366f1' },
     { id: 'original', name: 'Neon Pink', primary: '#8b5cf6', accent: '#ec4899' },
@@ -10,11 +10,11 @@
     { id: 'ocean', name: 'Ocean', primary: '#3b82f6', accent: '#4f46e5' },
     { id: 'minimal', name: 'Minimal', primary: '#94a3b8', accent: '#e4e4e7' }
   ];
-  
-  let currentTheme = 'cyberpunk';
-  let isOpen = false;
-  let isHovered = false;
-  
+
+  let currentTheme = $state('cyberpunk');
+  let isOpen = $state(false);
+  let isHovered = $state(false);
+
   onMount(() => {
     const saved = localStorage.getItem('app-theme');
     if (saved && themes.some(t => t.id === saved)) {
@@ -32,7 +32,7 @@
     document.addEventListener('click', closeListener);
     return () => document.removeEventListener('click', closeListener);
   });
-  
+
   /** @param {string} id */
   function setTheme(id) {
     currentTheme = id;
@@ -42,16 +42,16 @@
   }
 </script>
 
-<div 
+<div
   class="theme-switcher-wrapper"
   role="presentation"
-  on:mouseenter={() => isHovered = true}
-  on:mouseleave={() => isHovered = false}
+  onmouseenter={() => isHovered = true}
+  onmouseleave={() => isHovered = false}
 >
-  <button 
+  <button
     type="button"
-    class="icon-btn" 
-    on:click={() => isOpen = !isOpen}
+    class="icon-btn"
+    onclick={() => isOpen = !isOpen}
     aria-label="Выбрать тему оформления"
   >
     <div class="swatch-circle" style="--t-primary: var(--primary); --t-accent: var(--accent);">
@@ -69,12 +69,12 @@
   {#if isOpen}
     <div class="theme-popover" transition:fade={{ duration: 150 }}>
       {#each themes as theme}
-        <button 
+        <button
           type="button"
-          class="theme-row-btn" 
+          class="theme-row-btn"
           class:active={currentTheme === theme.id}
           style="--t-primary: {theme.primary}; --t-accent: {theme.accent};"
-          on:click={() => setTheme(theme.id)}
+          onclick={() => setTheme(theme.id)}
         >
           <div class="swatch-circle">
             <div class="color-half primary"></div>
@@ -192,7 +192,7 @@
     width: 100%;
     height: 50%;
   }
-  
+
   .color-half.primary { background-color: var(--t-primary); }
   .color-half.accent { background-color: var(--t-accent); }
 

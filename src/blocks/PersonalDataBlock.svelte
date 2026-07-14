@@ -1,45 +1,12 @@
 <script>
   import { slide } from "svelte/transition";
-  import { formStore } from "../store.js";
+  import { formStore } from "../store.svelte.js";
   import { APPLICATION_TYPE } from "../constants.js";
   import TextInput from "../components/TextInput.svelte";
   import PhoneInput from "../components/PhoneInput.svelte";
   import SubBlockCard from "../components/SubBlockCard.svelte";
 
-  /** @type {any} */ let applicantNickname;
-  /** @type {any} */ let applicantFirstName;
-  /** @type {any} */ let applicantLastName;
-  /** @type {any} */ let applicantPhone;
-  /** @type {any[]} */ let guestFirstNames = [];
-  /** @type {any[]} */ let guestLastNames = [];
-  /** @type {any[]} */ let guestNicknames = [];
-  /** @type {any[]} */ let guestPhones = [];
-
-  $: {
-    const len = $formStore.guests.length;
-    guestFirstNames = guestFirstNames.slice(0, len);
-    guestLastNames = guestLastNames.slice(0, len);
-    guestNicknames = guestNicknames.slice(0, len);
-    guestPhones = guestPhones.slice(0, len);
-  }
-
-  export function validate(forceTouch = false) {
-    let errors = [];
-    if (applicantNickname && !applicantNickname.validate(forceTouch)) errors.push(applicantNickname.label + " (Заявитель)");
-    if (applicantFirstName && !applicantFirstName.validate(forceTouch)) errors.push(applicantFirstName.label + " (Заявитель)");
-    if (applicantLastName && !applicantLastName.validate(forceTouch)) errors.push(applicantLastName.label + " (Заявитель)");
-    if (applicantPhone && !applicantPhone.validate(forceTouch)) errors.push(applicantPhone.label + " (Заявитель)");
-
-    if ($formStore.applicationType === APPLICATION_TYPE.GROUP) {
-      for (let i = 0; i < $formStore.guests.length; i++) {
-        if (guestFirstNames[i] && !guestFirstNames[i].validate(forceTouch)) errors.push(`${guestFirstNames[i].label} (Гость ${i + 1})`);
-        if (guestLastNames[i] && !guestLastNames[i].validate(forceTouch)) errors.push(`${guestLastNames[i].label} (Гость ${i + 1})`);
-        if (guestNicknames[i] && !guestNicknames[i].validate(forceTouch)) errors.push(`${guestNicknames[i].label} (Гость ${i + 1})`);
-        if (guestPhones[i] && !guestPhones[i].validate(forceTouch)) errors.push(`${guestPhones[i].label} (Гость ${i + 1})`);
-      }
-    }
-    return errors;
-  }
+  let { errors = {} } = $props();
 </script>
 
 <div class="block-card">
@@ -48,69 +15,77 @@
     <h3 class="section-title">2.1. Заявитель</h3>
     <div class="section-content">
       <TextInput
-        bind:this={applicantNickname}
         label="Никнейм"
         placeholder="cyber_ninja"
         icon="badge"
-        bind:value={$formStore.applicant.nickname}
+        bind:value={formStore.data.applicant.nickname}
+        errorText={errors['applicant.nickname']}
+        onblur={() => formStore.markTouched('applicant.nickname')}
         required={true}
       />
       <TextInput
-        bind:this={applicantFirstName}
         label="Имя"
         placeholder="Иван"
         icon="person"
-        bind:value={$formStore.applicant.firstName}
+        bind:value={formStore.data.applicant.firstName}
+        errorText={errors['applicant.firstName']}
+        onblur={() => formStore.markTouched('applicant.firstName')}
       />
       <TextInput
-        bind:this={applicantLastName}
         label="Фамилия"
         placeholder="Иванов"
         icon="person"
-        bind:value={$formStore.applicant.lastName}
+        bind:value={formStore.data.applicant.lastName}
+        errorText={errors['applicant.lastName']}
+        onblur={() => formStore.markTouched('applicant.lastName')}
       />
       <PhoneInput
-        bind:this={applicantPhone}
         label="Номер телефона"
-        bind:value={$formStore.applicant.phone}
+        bind:value={formStore.data.applicant.phone}
+        errorText={errors['applicant.phone']}
+        onblur={() => formStore.markTouched('applicant.phone')}
         required={true}
       />
     </div>
   </div>
 
-  {#if $formStore.applicationType === APPLICATION_TYPE.GROUP && $formStore.guests.length > 0}
+  {#if formStore.data.applicationType === APPLICATION_TYPE.GROUP && formStore.data.guests.length > 0}
     <div class="section-container" transition:slide>
       <h3 class="section-title">2.2. Гости</h3>
       <div class="section-content">
-        {#each $formStore.guests as guest, i}
+        {#each formStore.data.guests as guest, i}
           <div transition:slide>
             <SubBlockCard title={`Гость #${i + 1}`}>
               <TextInput
-                bind:this={guestFirstNames[i]}
                 label="Имя"
                 placeholder="Иван"
                 icon="person"
-                bind:value={$formStore.guests[i].firstName}
+                bind:value={formStore.data.guests[i].firstName}
+                errorText={errors[`guests.${i}.firstName`]}
+                onblur={() => formStore.markTouched(`guests.${i}.firstName`)}
                 required={true}
               />
               <TextInput
-                bind:this={guestLastNames[i]}
                 label="Фамилия"
                 placeholder="Иванов"
                 icon="person"
-                bind:value={$formStore.guests[i].lastName}
+                bind:value={formStore.data.guests[i].lastName}
+                errorText={errors[`guests.${i}.lastName`]}
+                onblur={() => formStore.markTouched(`guests.${i}.lastName`)}
               />
               <TextInput
-                bind:this={guestNicknames[i]}
                 label="Никнейм"
                 placeholder="cyber_ninja"
                 icon="badge"
-                bind:value={$formStore.guests[i].nickname}
+                bind:value={formStore.data.guests[i].nickname}
+                errorText={errors[`guests.${i}.nickname`]}
+                onblur={() => formStore.markTouched(`guests.${i}.nickname`)}
               />
               <PhoneInput
-                bind:this={guestPhones[i]}
                 label="Номер телефона"
-                bind:value={$formStore.guests[i].phone}
+                bind:value={formStore.data.guests[i].phone}
+                errorText={errors[`guests.${i}.phone`]}
+                onblur={() => formStore.markTouched(`guests.${i}.phone`)}
               />
             </SubBlockCard>
           </div>

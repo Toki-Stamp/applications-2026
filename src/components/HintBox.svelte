@@ -1,13 +1,16 @@
 <script>
-  export let type = "info"; // "info" | "error"
-  export let icon = null; // optional override
+  let {
+    type = 'info', // "info" | "error"
+    icon = null,   // optional override
+    children,
+  } = $props();
 
-  $: computedIcon = icon || (type === "error" ? "touch_app" : "campaign");
+  const computedIcon = $derived(icon || (type === 'error' ? 'touch_app' : 'campaign'));
 </script>
 
-<div class="hint-box" class:error={type === "error"}>
+<div class="hint-box" class:error={type === 'error'}>
   <md-icon class="hint-icon">{computedIcon}</md-icon>
-  <span><slot></slot></span>
+  <span>{#if children}{@render children()}{/if}</span>
 </div>
 
 <style>

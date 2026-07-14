@@ -1,4 +1,3 @@
-import { writable } from 'svelte/store';
 import { APPLICATION_TYPE, GROUP_CONDITIONS, PROVISION_TYPE, ACCOMMODATION_TYPE, TRANSPORT_METHOD } from './constants.js';
 
 export const defaultProvisions = () => ({
@@ -9,7 +8,7 @@ export const defaultProvisions = () => ({
 });
 
 const initialState = {
-  _version: 1,
+  _version: 2,
   applicationType: null,
   totalGroupSize: null,
   groupConditions: null,
@@ -24,9 +23,9 @@ const initialState = {
   freeMic: ''
 };
 
-const STORAGE_KEY = 'zubr_form_draft_2026';
+const STORAGE_KEY = 'zubr_form_draft_2026_v2';
 
-function createFormStore() {
+export function createFormStore() {
   let initial = JSON.parse(JSON.stringify(initialState));
 
   if (typeof window !== 'undefined') {
@@ -46,85 +45,94 @@ function createFormStore() {
     }
   }
 
-  const { subscribe, set, update } = writable(initial);
+  let data = $state(initial);
+  let meta = $state({ touchedFields: new Set() });
 
-  if (typeof window !== 'undefined') {
-    const initialStateStr = JSON.stringify(initialState);
-    subscribe(state => {
-      if (JSON.stringify(state) === initialStateStr) {
+  function saveToLocalStorage() {
+    if (typeof window !== 'undefined') {
+      if (JSON.stringify(data) === JSON.stringify(initialState)) {
         localStorage.removeItem(STORAGE_KEY);
       } else {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       }
-    });
+    }
   }
 
+  // Auto-save any change to data into localStorage
+  $effect.root(() => {
+    $effect(() => {
+      // Accessing data triggers reactivity tracking; JSON.stringify walks all fields
+      saveToLocalStorage();
+    });
+  });
+
   return {
-    subscribe,
-    set,
-    update,
-    updateGuestsCount: (targetGuests, applicantNickname) => update(state => {
-      const newState = { ...state };
-      
-      if (newState.applicationType === APPLICATION_TYPE.INDIVIDUAL) {
-        newState.additionalGuestsCount = 0;
+    get data() { return data; },
+    set data(v) { data = v; },
+    get meta() { return meta; },
+
+    updateGuestsCount(targetGuests) {
+      if (data.applicationType === APPLICATION_TYPE.INDIVIDUAL) {
+        data.additionalGuestsCount = 0;
         targetGuests = 0;
       }
-      
-      newState.additionalGuestsCount = targetGuests;
-      
-      if (targetGuests > newState.guests.length) {
-        const newGuests = [...newState.guests];
-        for (let i = newState.guests.length; i < targetGuests; i++) {
-          newGuests.push({
+
+      data.additionalGuestsCount = targetGuests;
+
+      if (targetGuests > data.guests.length) {
+        for (let i = data.guests.length; i < targetGuests; i++) {
+          data.guests.push({
             firstName: '',
             lastName: '', nickname: '', phone: '', provisions: defaultProvisions()
           });
         }
-        newState.guests = newGuests;
-      } else if (targetGuests < newState.guests.length) {
-        newState.guests = newState.guests.slice(0, targetGuests);
+      } else if (targetGuests < data.guests.length) {
+        data.guests = data.guests.slice(0, targetGuests);
       }
-      
-      return newState;
-    }),
-    reset: () => {
-      set(JSON.parse(JSON.stringify(initialState)));
+    },
+
+    reset() {
+      data = JSON.parse(JSON.stringify(initialState));
+      meta.touchedFields = new Set();
       if (typeof window !== 'undefined') {
         localStorage.removeItem(STORAGE_KEY);
       }
-    }
+    },
+
+    markTouched(path) {
+      const newSet = new Set(meta.touchedFields);
+      newSet.add(path);
+      meta.touchedFields = newSet;
+    },
+
+    touchAllInStep(stepPaths) {
+      const newSet = new Set(meta.touchedFields);
+      stepPaths.forEach(p => newSet.add(p));
+      meta.touchedFields = newSet;
+    },
   };
 }
 
 export const formStore = createFormStore();
 
 export function sanitizeFormData(data) {
-  // Create a deep copy to avoid mutating the reactive store directly
   const payload = JSON.parse(JSON.stringify(data));
 
-  // 1. Format & Guests
   if (payload.applicationType === APPLICATION_TYPE.INDIVIDUAL) {
     payload.additionalGuestsCount = 0;
     payload.guests = [];
     payload.groupConditions = null;
   }
 
-  // 2. Transport To
   if (payload.transportTo.method !== TRANSPORT_METHOD.DRIVER) {
     delete payload.transportTo.freeSeats;
   }
 
-  // 3. Transport From
-  // (No freeSeats for transportFrom according to updated PRD)
-
-  // 4. Accommodation
   if (payload.accommodation === ACCOMMODATION_TYPE.SELF) {
     payload.nights = [];
     payload.accommodationComment = '';
   }
 
-  // 5. Provisions
   const sanitizeProvisions = (prov) => {
     if (prov.food === PROVISION_TYPE.NONE) {
       prov.foodPeriods = [];
@@ -135,13 +143,11 @@ export function sanitizeFormData(data) {
   };
 
   if (payload.applicationType === APPLICATION_TYPE.INDIVIDUAL || payload.groupConditions === GROUP_CONDITIONS.UNIFIED) {
-    // Only applicant provisions matter, guests shouldn't have unique provisions
     sanitizeProvisions(payload.applicant.provisions);
     payload.guests.forEach(guest => {
       guest.provisions = JSON.parse(JSON.stringify(payload.applicant.provisions));
     });
   } else {
-    // Differential conditions
     sanitizeProvisions(payload.applicant.provisions);
     payload.guests.forEach(guest => sanitizeProvisions(guest.provisions));
   }

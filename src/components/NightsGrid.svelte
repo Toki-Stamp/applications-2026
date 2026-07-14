@@ -3,10 +3,12 @@
   import HintBox from "./HintBox.svelte";
   import '@material/web/icon/icon.js';
 
-  /** @type {string[]} */
-  export let values = [];
-  /** @type {string} */
-  export let label = '';
+  let {
+    values = $bindable([]),
+    label = '',
+    required = false,
+    errorText = ''
+  } = $props();
 
   /** @param {string} id */
   function handleToggle(id) {
@@ -17,27 +19,8 @@
     }
   }
 
-  export let required = false;
-  let error = false;
-  /** @type {{prefix: string, label: string, suffix: string} | null} */
-  let errorMsg = null;
-
-  export function validate() {
-    if (required && (!values || values.length === 0)) {
-      error = true;
-      errorMsg = ERROR_MESSAGES.NIGHTS(label || 'Значение');
-    } else {
-      error = false;
-      errorMsg = null;
-    }
-    return !error;
-  }
-
-  $: {
-    if (error && values.length > 0) {
-      validate();
-    }
-  }
+  const hasError = $derived(!!errorText);
+  const errorMsg = $derived(hasError ? ERROR_MESSAGES.NIGHTS(label || 'Значение') : null);
 </script>
 
 <div class="form-group">
@@ -53,7 +36,7 @@
       <div 
         class="night-card"
         class:selected={values.includes(night.id)}
-        on:click={() => handleToggle(night.id)}
+        onclick={() => handleToggle(night.id)}
       >
         <div class="card-icon">
           <md-icon>bedtime</md-icon>
@@ -71,7 +54,7 @@
       </div>
     {/each}
   </div>
-  {#if error && errorMsg}
+  {#if hasError && errorMsg}
     <div class="error-wrapper">
       <HintBox type="error">
         {errorMsg.prefix}<strong class="text-primary">{errorMsg.label}</strong>{errorMsg.suffix}

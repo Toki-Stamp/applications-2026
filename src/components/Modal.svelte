@@ -1,43 +1,59 @@
 <script>
   import { fade, scale } from "svelte/transition";
-  import { createEventDispatcher } from "svelte";
 
-  export let variant = "default"; // 'default' or 'danger'
-  export let dismissible = true;
-
-  const dispatch = createEventDispatcher();
+  /** @type {{ variant?: string, dismissible?: boolean, onclose?: () => void, header?: import('svelte').Snippet, children?: import('svelte').Snippet, actions?: import('svelte').Snippet }} */
+  let {
+    variant = 'default',
+    dismissible = true,
+    onclose,
+    header,
+    children,
+    actions,
+  } = $props();
 
   /** @param {KeyboardEvent} event */
   function handleKeydown(event) {
     if (dismissible && event.key === "Escape") {
-      dispatch("close");
+      onclose?.();
     }
   }
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="modal-overlay"
   transition:fade={{ duration: 200 }}
-  on:click={() => dismissible && dispatch("close")}
+  onclick={() => dismissible && onclose?.()}
+  role="presentation"
 >
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="block-card modal-card variant-{variant}"
     transition:scale={{ start: 0.95, duration: 200 }}
-    on:click|stopPropagation
+    onclick={(e) => e.stopPropagation()}
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
   >
-    <slot name="header"></slot>
-    
+    {#if header}
+      {@render header()}
+    {/if}
+
     <div class="modal-content">
-      <slot></slot>
+      {#if children}
+        {@render children()}
+      {/if}
     </div>
-    
-    <div class="modal-actions">
-      <slot name="actions"></slot>
-    </div>
+
+    {#if actions}
+      <div class="modal-actions">
+        {@render actions()}
+      </div>
+    {/if}
   </div>
 </div>
 

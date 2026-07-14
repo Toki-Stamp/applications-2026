@@ -1,8 +1,7 @@
 <script>
   import { fade } from "svelte/transition";
-  import { createEventDispatcher } from "svelte";
 
-  const dispatch = createEventDispatcher();
+  let { onreset } = $props();
 </script>
 
 <div class="success-container" transition:fade={{ duration: 300 }}>
@@ -16,7 +15,7 @@
     <button
       type="button"
       class="btn-primary mt-1"
-      on:click={() => dispatch('reset')}
+      onclick={onreset}
     >
       Заполнить новую заявку
     </button>

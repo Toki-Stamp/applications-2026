@@ -2,9 +2,11 @@
   import ThemeSwitcher from "./ThemeSwitcher.svelte";
   import ProgressBar from "./ProgressBar.svelte";
 
-  export let currentStep;
-  export let totalSteps;
-  export let headerHeight = 0;
+  let {
+    currentStep,
+    totalSteps,
+    headerHeight = $bindable(0),
+  } = $props();
 </script>
 
 <header class="app-header" bind:clientHeight={headerHeight}>

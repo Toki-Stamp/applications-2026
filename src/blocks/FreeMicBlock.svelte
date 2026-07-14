@@ -1,15 +1,8 @@
 <script>
-  import { formStore } from "../store.js";
+  import { formStore } from "../store.svelte.js";
   import TextArea from "../components/TextArea.svelte";
 
-  /** @type {any} */
-  let commentInput;
-
-  export function validate(forceTouch = false) {
-    let errors = [];
-    if (commentInput && typeof commentInput.validate === 'function' && !commentInput.validate(forceTouch)) errors.push(commentInput.label || "Свободный микрофон");
-    return errors;
-  }
+  let { errors = {} } = $props();
 </script>
 
 <div class="block-card">
@@ -17,11 +10,12 @@
   <div class="section-container first-section">
     <div class="section-content">
       <TextArea
-        bind:this={commentInput}
         label="Комментарий или пожелания"
         placeholder="Напишите здесь всё, что считаете важным..."
         icon="edit_note"
-        bind:value={$formStore.freeMic}
+        bind:value={formStore.data.freeMic}
+        errorText={errors['freeMic']}
+        onblur={() => formStore.markTouched('freeMic')}
       />
     </div>
   </div>

@@ -1,16 +1,18 @@
 <script>
-  export let title = "";
-  export let stickyLevel = 3; // 2 = stick under main block title, 3 = stick under section title
+  let {
+    title = '',
+    stickyLevel = 3, // 2 = stick under main block title, 3 = stick under section title
+    children,
+  } = $props();
 </script>
 
 <div class="sub-block-card level-{stickyLevel}">
   {#if title}
     <h3 class="sub-block-title">{@html title}</h3>
   {/if}
-  <slot name="title"></slot>
 
   <div class="sub-block-content">
-    <slot></slot>
+    {#if children}{@render children()}{/if}
   </div>
 </div>
 
