@@ -563,12 +563,12 @@ h1::after {
   z-index: 40;
 
   background: var(--bg-color-accent);
-  background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
-  /* Чуть плотнее фон, реагирующий на тему */
+  background: linear-gradient(to right, color-mix(in srgb, var(--primary) 10%, transparent), transparent),
+              linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)), 
+              color-mix(in srgb, var(--bg-color-accent) 85%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
-  /* Легкая тень под заголовком */
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
 /* Второстепенные липкие заголовки (под-секции) */
@@ -590,11 +590,14 @@ h1::after {
   z-index: 39;
   /* Под главным заголовком */
 
-  background: rgba(24, 24, 27, 0.95);
+  background: var(--bg-color-accent);
+  background: linear-gradient(to right, color-mix(in srgb, var(--accent) 8%, transparent), transparent),
+              linear-gradient(rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.03)), 
+              color-mix(in srgb, var(--bg-color-accent) 85%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.02);
 }
 
 /* Компенсируем gap от block-card для первого подзаголовка, чтобы он слипся с главным */

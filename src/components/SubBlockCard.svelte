@@ -45,12 +45,15 @@
     align-items: center;
     gap: 0.5rem;
 
-    background: rgba(30, 30, 35, 0.95);
+    background: var(--bg-color-accent);
+    background: linear-gradient(to right, color-mix(in srgb, var(--accent) 5%, transparent), transparent),
+                linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)), 
+                color-mix(in srgb, var(--bg-color-accent) 85%, transparent);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-radius: 8px 8px 0 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 4px 10px -5px rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.02);
     position: sticky;
     z-index: 38;
   }
