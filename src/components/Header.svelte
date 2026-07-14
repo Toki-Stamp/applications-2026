@@ -31,9 +31,9 @@
 
 <style>
   .app-header {
-    position: sticky;
-    top: 0;
+    position: relative;
     width: 100%;
+    flex-shrink: 0;
     background: color-mix(in srgb, var(--bg-color) 70%, transparent);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);

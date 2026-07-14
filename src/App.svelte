@@ -437,8 +437,9 @@
   :global(#app) {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    min-height: 100dvh;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
     padding: 0 !important;
     max-width: 100% !important;
     width: 100%;
@@ -452,6 +453,7 @@
 
   .app-body {
     flex: 1;
+    min-height: 0;
     max-width: 800px;
     margin: 0 auto;
     width: 100%;
