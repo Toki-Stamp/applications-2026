@@ -12,7 +12,10 @@
     { id: 'military', name: 'Military', primary: '#858f6b', accent: '#5c6348' },
     { id: 'marshmallow', name: 'Marshmallow', primary: '#fda4af', accent: '#fbcfe8' },
     { id: 'lava', name: 'Lava', primary: '#ef4444', accent: '#f97316' },
-    { id: 'galaxy', name: 'Galaxy', primary: '#a855f7', accent: '#6366f1' }
+    { id: 'galaxy', name: 'Galaxy', primary: '#a855f7', accent: '#6366f1' },
+    { id: 'light-daylight', name: 'Daylight (Light)', primary: '#0ea5e9', accent: '#4f46e5' },
+    { id: 'light-cotton', name: 'Cotton (Light)', primary: '#a855f7', accent: '#ec4899' },
+    { id: 'light-sunrise', name: 'Sunrise (Light)', primary: '#f97316', accent: '#f59e0b' }
   ];
 
   let currentTheme = $state('cyberpunk');
