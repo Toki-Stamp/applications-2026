@@ -176,6 +176,7 @@ test.describe('Validation UX Tests', () => {
     // Force touch again to see if old freeSeats error is gone (it should just complain about other missing fields, but let's fill them)
     await selectDropdown(page, 'День отправления на базу', 'Пятница');
     await fillText(page, 'Ориентировочное время отправления', '10:00');
+    await fillText(page, 'Город отправления', 'Минск');
     await selectDropdown(page, 'Способ отъезда', 'Ищу место в авто');
     await selectDropdown(page, 'День отъезда с базы', 'Воскресенье');
     await fillText(page, 'Ориентировочное время отъезда', '12:00');
@@ -196,6 +197,7 @@ test.describe('Validation UX Tests', () => {
     await selectDropdown(page, 'Способ прибытия', 'Самостоятельно');
     await selectDropdown(page, 'День отправления на базу', 'Пятница');
     await fillText(page, 'Ориентировочное время отправления', '10:00');
+    await fillText(page, 'Город отправления', 'Минск');
     await selectDropdown(page, 'Способ отъезда', 'Самостоятельно');
     await selectDropdown(page, 'День отъезда с базы', 'Воскресенье');
     await fillText(page, 'Ориентировочное время отъезда', '12:00');
@@ -228,6 +230,128 @@ test.describe('Validation UX Tests', () => {
     // Now Next is locked, but we can't go forward!
     // So this test is actually proving the system is robust.
     // If we can't bypass Next, we can't bypass Submit.
+  });
+
+  test('Test 7: Accommodation State Clearing (Race Condition)', async ({ page }) => {
+    const nextBtn = await getNextBtn(page);
+    
+    // Quick fill to get to step 5 (Accommodation)
+    await page.goto('/');
+    await page.locator('button:has-text("Начать заполнение")').click();
+    await selectRadio(page, 'Тип заявки', 'Индивидуальная');
+    await nextBtn.click();
+    await fillText(page, 'Никнейм', 'tester');
+    await fillText(page, 'Номер телефона', '+375 29 111 22 33');
+    await nextBtn.click();
+    await selectDropdown(page, 'Способ прибытия', 'Самостоятельно');
+    await selectDropdown(page, 'День отправления на базу', 'Пятница');
+    await fillText(page, 'Ориентировочное время отправления', '10:00');
+    await fillText(page, 'Город отправления', 'Минск');
+    await selectDropdown(page, 'Способ отъезда', 'Самостоятельно');
+    await selectDropdown(page, 'День отъезда с базы', 'Воскресенье');
+    await fillText(page, 'Ориентировочное время отъезда', '12:00');
+    await nextBtn.click();
+    await selectRadio(page, 'Потребность в питании', 'Без питания');
+    await selectRadio(page, 'Потребность в алкоголе', 'Без алкоголя');
+    await nextBtn.click();
+
+    // Now on Accommodation
+    await expect(page.locator('h2.block-title', { hasText: 'Проживание' })).toBeVisible();
+
+    // 1. Select Booking, but leave nights empty
+    await selectRadio(page, 'Потребность в проживании', 'Требуется забронировать номер на базе');
+    
+    // Force touch
+    await nextBtn.click();
+    await expect(nextBtn).toBeDisabled();
+
+    // 2. Error should show for nights
+    await expect(page.locator('.form-group', { hasText: 'Укажите ночевки' }).locator('.hint-box.error')).toBeVisible();
+
+    // 3. Select a night, verify unlock
+    await page.locator('.night-card', { hasText: 'С пятницы на субботу' }).first().click();
+    await expect(nextBtn).not.toBeDisabled();
+
+    // 4. Switch to Self, verify nights are cleared in background
+    await selectRadio(page, 'Потребность в проживании', 'Размещаюсь самостоятельно');
+    await expect(nextBtn).not.toBeDisabled();
+    
+    // Check that nights grid is hidden
+    await expect(page.locator('.form-group', { hasText: 'Укажите ночевки' })).toBeHidden();
+
+    // Switch back to booking to see if nights were cleared
+    await selectRadio(page, 'Потребность в проживании', 'Требуется забронировать номер на базе');
+    await expect(page.locator('.night-card', { hasText: 'С пятницы на субботу' }).first()).not.toHaveClass(/selected/);
+  });
+
+  test('Test 8: Accommodation Differential Validation', async ({ page }) => {
+    const nextBtn = await getNextBtn(page);
+    
+    // Quick fill to get to step 5 (Accommodation)
+    await page.goto('/');
+    await page.locator('button:has-text("Начать заполнение")').click();
+    await selectRadio(page, 'Тип заявки', 'Групповая');
+    await page.waitForTimeout(500);
+    await selectDropdown(page, 'Общее количество участников Вашей группы', 'Всего 2 участника');
+    await selectRadio(page, 'Условия для участников Вашей группы', 'Дифференцированные условия');
+    await nextBtn.click();
+    
+    await fillText(page, 'Никнейм', 'leader');
+    await fillText(page, 'Номер телефона', '+375 29 111 22 33');
+    
+    const guestGroup = page.locator('.sub-block-card').filter({ hasText: 'Гость #1' }).first();
+    const guestNameField = guestGroup.locator('.form-group').filter({ hasText: 'Имя' }).locator('md-outlined-text-field').first();
+    await guestNameField.locator('input').fill('Петр');
+    await guestNameField.evaluate((el) => el.dispatchEvent(new Event('change')));
+    await nextBtn.click();
+    
+    await selectDropdown(page, 'Способ прибытия', 'Самостоятельно');
+    await selectDropdown(page, 'День отправления на базу', 'Пятница');
+    await fillText(page, 'Ориентировочное время отправления', '10:00');
+    await fillText(page, 'Город отправления', 'Минск');
+    await selectDropdown(page, 'Способ отъезда', 'Самостоятельно');
+    await selectDropdown(page, 'День отъезда с базы', 'Воскресенье');
+    await fillText(page, 'Ориентировочное время отъезда', '12:00');
+    await nextBtn.click();
+    
+    // Fast Provision
+    const leaderProv = page.locator('.sub-block-card').filter({ hasText: 'leader' }).first();
+    await leaderProv.locator('.radio-label').filter({ hasText: 'Без питания' }).first().click();
+    await leaderProv.locator('.radio-label').filter({ hasText: 'Без алкоголя' }).first().click();
+
+    const petrProv = page.locator('.sub-block-card').filter({ hasText: 'Для Петр' }).first();
+    await petrProv.locator('.radio-label').filter({ hasText: 'Без питания' }).first().click();
+    await petrProv.locator('.radio-label').filter({ hasText: 'Без алкоголя' }).first().click();
+    await nextBtn.click();
+
+    // Now on Accommodation
+    await expect(page.locator('h2.block-title', { hasText: 'Проживание' })).toBeVisible();
+
+    const accommodationBlock = page.locator('.step-layer').filter({ hasText: 'Проживание' }).first();
+
+    // Fill leader
+    const leaderAcc = accommodationBlock.locator('.sub-block-card').filter({ hasText: 'leader' }).first();
+    await leaderAcc.locator('.radio-label').filter({ hasText: 'Размещаюсь самостоятельно' }).first().click();
+    
+    // Force touch
+    await nextBtn.click();
+    await expect(nextBtn).toBeDisabled();
+    
+    // Petr should have error
+    const petrAcc = accommodationBlock.locator('.sub-block-card').filter({ hasText: 'Для Петр' });
+    await expect(petrAcc.first().locator('.hint-box.error').first()).toBeVisible();
+    
+    // Fill Petr
+    await petrAcc.first().locator('.radio-label').filter({ hasText: 'Требуется забронировать номер на базе' }).first().click();
+    await nextBtn.click(); // force touch again
+    
+    // Missing nights for Petr
+    await expect(nextBtn).toBeDisabled();
+    await expect(petrAcc.first().locator('.form-group', { hasText: 'Укажите ночевки' }).locator('.hint-box.error')).toBeVisible();
+    
+    // Check night for Petr
+    await petrAcc.first().locator('.night-card', { hasText: 'С пятницы на субботу' }).first().click();
+    await expect(nextBtn).not.toBeDisabled();
   });
 
 });

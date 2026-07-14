@@ -7,19 +7,22 @@ export const defaultProvisions = () => ({
   alcoholPeriods: []
 });
 
+export const defaultAccommodation = () => ({
+  type: null,
+  nights: [],
+  comment: ''
+});
+
 const initialState = {
   _version: 2,
   applicationType: null,
   totalGroupSize: null,
   groupConditions: null,
-  applicant: { nickname: '', firstName: '', lastName: '', phone: '', provisions: defaultProvisions() },
+  applicant: { nickname: '', firstName: '', lastName: '', phone: '', provisions: defaultProvisions(), accommodation: defaultAccommodation() },
   guests: [],
-  transportTo: { method: null, freeSeats: null, day: null, time: '' },
+  transportTo: { method: null, freeSeats: null, day: null, time: '', departureCity: '' },
   transportFrom: { method: null, day: null, time: '' },
   transportComment: '',
-  accommodation: null,
-  nights: [],
-  accommodationComment: '',
   freeMic: ''
 };
 
@@ -83,7 +86,7 @@ export function createFormStore() {
         for (let i = data.guests.length; i < targetGuests; i++) {
           data.guests.push({
             firstName: '',
-            lastName: '', nickname: '', phone: '', provisions: defaultProvisions()
+            lastName: '', nickname: '', phone: '', provisions: defaultProvisions(), accommodation: defaultAccommodation()
           });
         }
       } else if (targetGuests < data.guests.length) {
@@ -128,10 +131,12 @@ export function sanitizeFormData(data) {
     delete payload.transportTo.freeSeats;
   }
 
-  if (payload.accommodation === ACCOMMODATION_TYPE.SELF) {
-    payload.nights = [];
-    payload.accommodationComment = '';
-  }
+  const sanitizeAccommodation = (acc) => {
+    if (acc.type === ACCOMMODATION_TYPE.SELF) {
+      acc.nights = [];
+      acc.comment = '';
+    }
+  };
 
   const sanitizeProvisions = (prov) => {
     if (prov.food === PROVISION_TYPE.NONE) {
@@ -144,12 +149,18 @@ export function sanitizeFormData(data) {
 
   if (payload.applicationType === APPLICATION_TYPE.INDIVIDUAL || payload.groupConditions === GROUP_CONDITIONS.UNIFIED) {
     sanitizeProvisions(payload.applicant.provisions);
+    sanitizeAccommodation(payload.applicant.accommodation);
     payload.guests.forEach(guest => {
       guest.provisions = JSON.parse(JSON.stringify(payload.applicant.provisions));
+      guest.accommodation = JSON.parse(JSON.stringify(payload.applicant.accommodation));
     });
   } else {
     sanitizeProvisions(payload.applicant.provisions);
-    payload.guests.forEach(guest => sanitizeProvisions(guest.provisions));
+    sanitizeAccommodation(payload.applicant.accommodation);
+    payload.guests.forEach(guest => {
+      sanitizeProvisions(guest.provisions);
+      sanitizeAccommodation(guest.accommodation);
+    });
   }
 
   return payload;

@@ -91,7 +91,8 @@ export const transportSchema = z.object({
     method: z.string().nullable(),
     freeSeats: z.number().nullable(),
     day: z.string().nullable(),
-    time: z.string().nullable()
+    time: z.string().nullable(),
+    departureCity: z.string().nullable()
   }),
   transportFrom: z.object({
     method: z.string().nullable(),
@@ -112,6 +113,9 @@ export const transportSchema = z.object({
   }
   if (!data.transportTo.time) {
     ctx.addIssue({ path: ['transportTo', 'time'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
+  }
+  if (!data.transportTo.departureCity || data.transportTo.departureCity.trim() === '') {
+    ctx.addIssue({ path: ['transportTo', 'departureCity'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
   }
 
   // Validate transportFrom
@@ -163,16 +167,40 @@ export const provisionsStepSchema = z.object({
 });
 
 // Step 6: Accommodation
-export const accommodationSchema = z.object({
-  accommodation: z.string().nullable(),
+const looseAccommodationShape = z.object({
+  type: z.string().nullable(),
   nights: z.array(z.string()),
-  accommodationComment: z.string().optional()
+  comment: z.string().optional()
+});
+
+const baseAccommodationSchema = z.object({
+  type: z.string().nullable(),
+  nights: z.array(z.string()),
+  comment: z.string().optional()
 }).superRefine((data, ctx) => {
-  if (!data.accommodation) {
-    ctx.addIssue({ path: ['accommodation'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
+  if (!data.type) {
+    ctx.addIssue({ path: ['type'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
   }
-  if (data.accommodation === ACCOMMODATION_TYPE.BOOKING && data.nights.length === 0) {
+  if (data.type === ACCOMMODATION_TYPE.BOOKING && data.nights.length === 0) {
     ctx.addIssue({ path: ['nights'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.SELECT_NIGHTS });
+  }
+});
+
+export const accommodationStepSchema = z.object({
+  applicationType: z.string().nullable(),
+  groupConditions: z.string().nullable(),
+  applicant: z.object({ accommodation: baseAccommodationSchema }),
+  guests: z.array(z.object({ accommodation: looseAccommodationShape }))
+}).superRefine((data, ctx) => {
+  if (data.applicationType === 'group' && data.groupConditions === 'differential') {
+    data.guests.forEach((guest, i) => {
+      if (!guest.accommodation.type) {
+        ctx.addIssue({ path: ['guests', i, 'accommodation', 'type'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
+      }
+      if (guest.accommodation.type === ACCOMMODATION_TYPE.BOOKING && guest.accommodation.nights.length === 0) {
+        ctx.addIssue({ path: ['guests', i, 'accommodation', 'nights'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.SELECT_NIGHTS });
+      }
+    });
   }
 });
 
@@ -201,7 +229,7 @@ export function validateStepData(step, data) {
     case 3: result = personalDataSchema.safeParse(data); break;
     case 4: result = transportSchema.safeParse(data); break;
     case 5: result = provisionsStepSchema.safeParse(data); break;
-    case 6: result = accommodationSchema.safeParse(data); break;
+    case 6: result = accommodationStepSchema.safeParse(data); break;
     case 7: result = freeMicSchema.safeParse(data); break;
     default: return { success: true, errors: {} };
   }

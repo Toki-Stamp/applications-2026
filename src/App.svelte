@@ -86,15 +86,20 @@
       };
     } else if (currentStep === 6) {
       dataSlice = {
-        accommodation: data.accommodation,
-        nights: data.nights,
-        accommodationComment: data.accommodationComment,
+        applicationType: data.applicationType,
+        groupConditions: data.groupConditions,
+        applicant: data.applicant,
+        guests: data.guests,
       };
     } else if (currentStep === 7) {
       dataSlice = { freeMic: data.freeMic };
     }
 
     const result = validateStepData(currentStep, dataSlice);
+    
+    if (currentStep === 6) {
+      console.log('Accommodation Validation Errors:', result.errors);
+    }
 
     if (touchAll) {
       // Mark all fields from error keys as touched

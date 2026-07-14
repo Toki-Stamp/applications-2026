@@ -49,11 +49,31 @@ async function checkNight(page, nightLabel) {
   await card.click();
 }
 
+async function checkGuestNight(page, guestName, nightLabel) {
+  const guestGroup = page.locator('.sub-block-card').filter({ hasText: guestName }).first();
+  const card = guestGroup.locator('.night-card').filter({ hasText: nightLabel }).first();
+  await card.click();
+}
+
 async function selectGuestRadio(page, guestName, labelText, valueText) {
   const guestGroup = page.locator('.sub-block-card').filter({ hasText: guestName }).first();
   const group = guestGroup.locator('.form-group').filter({ hasText: labelText }).first();
   const option = group.locator('.radio-label').filter({ hasText: valueText }).first();
   await option.click();
+}
+
+async function fillGuestText(page, guestName, labelText, value) {
+  const guestGroup = page.locator('.sub-block-card').filter({ hasText: guestName }).first();
+  const group = guestGroup.locator('.form-group').filter({ hasText: labelText }).first();
+  const host = group.locator('md-outlined-text-field, textarea').first();
+  await host.waitFor({ state: 'attached' });
+  const tagName = await host.evaluate(el => el.tagName.toLowerCase());
+  if (tagName === 'textarea') {
+    await host.fill(value);
+  } else {
+    await host.locator('input').fill(value);
+  }
+  await host.evaluate((el) => el.dispatchEvent(new Event('change')));
 }
 
 async function clickNext(page) {
@@ -101,6 +121,7 @@ test.describe('Form E2E Tests', () => {
     await selectDropdown(page, 'Способ прибытия', 'Самостоятельно');
     await selectDropdown(page, 'День отправления на базу', 'Пятница');
     await fillText(page, 'Ориентировочное время отправления', '10:00');
+    await fillText(page, 'Город отправления', 'Минск');
     await selectDropdown(page, 'Способ отъезда', 'Самостоятельно');
     await selectDropdown(page, 'День отъезда с базы', 'Воскресенье');
     await fillText(page, 'Ориентировочное время отъезда', '12:00');
@@ -120,7 +141,7 @@ test.describe('Form E2E Tests', () => {
     expect(submittedData.applicationType).toBe('individual');
     expect(submittedData.applicant.nickname).toBe('tester_01');
     expect(submittedData.transportTo.method).toBe('self');
-    expect(submittedData.accommodation).toBe('self');
+    expect(submittedData.applicant.accommodation.type).toBe('self');
   });
 
   test('Case 2: Individual Maximum (Driver, Food, Booking)', async ({ page }) => {
@@ -149,6 +170,7 @@ test.describe('Form E2E Tests', () => {
     await selectDropdown(page, 'Свободных мест для попутчиков', '3 места');
     await selectDropdown(page, 'День отправления на базу', 'Пятница');
     await fillText(page, 'Ориентировочное время отправления', '18:00');
+    await fillText(page, 'Город отправления', 'Брест');
     
     await selectDropdown(page, 'Способ отъезда', 'Ищу место в авто');
     await selectDropdown(page, 'День отъезда с базы', 'Воскресенье');
@@ -174,8 +196,8 @@ test.describe('Form E2E Tests', () => {
     expect(String(submittedData.transportTo.freeSeats)).toBe('3');
     expect(submittedData.applicant.provisions.foodPeriods).toContain('fri-eve');
     expect(submittedData.applicant.provisions.alcoholPeriods).toContain('sat-eve');
-    expect(submittedData.accommodation).toBe('booking');
-    expect(submittedData.nights).toContain('fri-sat');
+    expect(submittedData.applicant.accommodation.type).toBe('booking');
+    expect(submittedData.applicant.accommodation.nights).toContain('fri-sat');
   });
 
   test('Case 3: Group Unified', async ({ page }) => {
@@ -213,6 +235,7 @@ test.describe('Form E2E Tests', () => {
     await selectDropdown(page, 'Способ прибытия', 'Самостоятельно');
     await selectDropdown(page, 'День отправления на базу', 'Пятница');
     await fillText(page, 'Ориентировочное время отправления', '10:00');
+    await fillText(page, 'Город отправления', 'Минск');
     await selectDropdown(page, 'Способ отъезда', 'Самостоятельно');
     await selectDropdown(page, 'День отъезда с базы', 'Воскресенье');
     await fillText(page, 'Ориентировочное время отъезда', '12:00');
@@ -268,6 +291,7 @@ test.describe('Form E2E Tests', () => {
     await selectDropdown(page, 'Способ прибытия', 'Самостоятельно');
     await selectDropdown(page, 'День отправления на базу', 'Пятница');
     await fillText(page, 'Ориентировочное время отправления', '10:00');
+    await fillText(page, 'Город отправления', 'Минск');
     await selectDropdown(page, 'Способ отъезда', 'Самостоятельно');
     await selectDropdown(page, 'День отъезда с базы', 'Воскресенье');
     await fillText(page, 'Ориентировочное время отъезда', '12:00');
@@ -284,9 +308,16 @@ test.describe('Form E2E Tests', () => {
     await checkGuestPeriod(page, 'Для Иван', 'Потребность в алкоголе', 'В субботу', 'Вечер');
     await clickNext(page);
 
-    await selectRadio(page, 'Потребность в проживании', 'Размещаюсь самостоятельно');
+    // Accommodation for Applicant
+    await selectGuestRadio(page, 'Для leader_diff', 'Потребность в проживании', 'Размещаюсь самостоятельно');
+    
+    // Accommodation for Guest
+    await selectGuestRadio(page, 'Для Иван', 'Потребность в проживании', 'Требуется забронировать номер на базе');
+    await checkGuestNight(page, 'Для Иван', 'С пятницы на субботу');
+    await fillGuestText(page, 'Для Иван', 'Дополнительные комментарии к проживанию и обеспечению', 'Вид на лес');
     await clickNext(page);
 
+    await page.waitForTimeout(500); // Wait for fade transition to settle so the submit button is stable
     await clickSubmit(page);
     await expect(page.locator('text=Ваша заявка принята')).toBeVisible();
     
@@ -295,6 +326,10 @@ test.describe('Form E2E Tests', () => {
     expect(submittedData.applicant.provisions.alcoholPeriods).toEqual([]);
     expect(submittedData.guests[0].provisions.foodPeriods).toEqual([]);
     expect(submittedData.guests[0].provisions.alcoholPeriods).toContain('sat-eve');
+    expect(submittedData.applicant.accommodation.type).toBe('self');
+    expect(submittedData.guests[0].accommodation.type).toBe('booking');
+    expect(submittedData.guests[0].accommodation.nights).toContain('fri-sat');
+    expect(submittedData.guests[0].accommodation.comment).toBe('Вид на лес');
   });
 
   test('Case 5: Validation Check (Negative Path)', async ({ page }) => {

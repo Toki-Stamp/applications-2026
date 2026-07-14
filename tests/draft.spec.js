@@ -44,7 +44,12 @@ async function fillGuestText(page, guestName, labelText, value) {
   const group = guestGroup.locator('.form-group').filter({ hasText: labelText }).first();
   const host = group.locator('md-outlined-text-field, textarea').first();
   await host.waitFor({ state: 'attached' });
-  await host.locator('input').fill(value);
+  const tagName = await host.evaluate(el => el.tagName.toLowerCase());
+  if (tagName === 'textarea') {
+    await host.fill(value);
+  } else {
+    await host.locator('input').fill(value);
+  }
   await host.evaluate((el) => el.dispatchEvent(new Event('change')));
 }
 
@@ -62,6 +67,12 @@ async function checkPeriod(page, provisionLabel, dayLabel, periodLabel) {
 
 async function checkNight(page, nightLabel) {
   const card = page.locator('.night-card').filter({ hasText: nightLabel }).first();
+  await card.click();
+}
+
+async function checkGuestNight(page, guestName, nightLabel) {
+  const guestGroup = page.locator('.sub-block-card').filter({ hasText: guestName }).first();
+  const card = guestGroup.locator('.night-card').filter({ hasText: nightLabel }).first();
   await card.click();
 }
 
@@ -116,6 +127,12 @@ async function verifyPeriodChecked(page, provisionLabel, dayLabel, periodLabel) 
 
 async function verifyNightChecked(page, nightLabel) {
   const card = page.locator('.night-card').filter({ hasText: nightLabel }).first();
+  await expect(card).toHaveClass(/selected/);
+}
+
+async function verifyGuestNightChecked(page, guestName, nightLabel) {
+  const guestGroup = page.locator('.sub-block-card').filter({ hasText: guestName }).first();
+  const card = guestGroup.locator('.night-card').filter({ hasText: nightLabel }).first();
   await expect(card).toHaveClass(/selected/);
 }
 
@@ -174,6 +191,7 @@ test.describe('Draft Restoration E2E Tests', () => {
     await selectDropdown(page, 'Свободных мест для попутчиков', '3 места');
     await selectDropdown(page, 'День отправления на базу', 'Пятница');
     await fillText(page, 'Ориентировочное время отправления', '14:30');
+    await fillText(page, 'Город отправления', 'Минск');
     
     await selectDropdown(page, 'Способ отъезда', 'Ищу место в авто');
     await selectDropdown(page, 'День отъезда с базы', 'Воскресенье');
@@ -187,6 +205,7 @@ test.describe('Draft Restoration E2E Tests', () => {
     await verifyDropdownSelected(page, 'Свободных мест для попутчиков');
     await verifyDropdownSelected(page, 'День отправления на базу');
     await verifyText(page, 'Ориентировочное время отправления', '14:30');
+    await verifyText(page, 'Город отправления', 'Минск');
     await verifyDropdownSelected(page, 'Способ отъезда');
     await verifyDropdownSelected(page, 'День отъезда с базы');
     await verifyText(page, 'Ориентировочное время отъезда', '16:00');
@@ -214,15 +233,23 @@ test.describe('Draft Restoration E2E Tests', () => {
     await clickNext(page);
 
     // --- STEP 5 (Accommodation) ---
-    await selectRadio(page, 'Потребность в проживании', 'Требуется забронировать номер на базе');
-    await checkNight(page, 'С пятницы на субботу');
+    await selectGuestRadio(page, 'Для leader_nick', 'Потребность в проживании', 'Требуется забронировать номер на базе');
+    await checkGuestNight(page, 'Для leader_nick', 'С пятницы на субботу');
+    await fillGuestText(page, 'Для leader_nick', 'Дополнительные комментарии к проживанию и обеспечению', 'Нужен тихий номер');
+    
+    await selectGuestRadio(page, 'Для guest_name', 'Потребность в проживании', 'Размещаюсь самостоятельно');
+    await fillGuestText(page, 'Для guest_name', 'Дополнительные комментарии к проживанию и обеспечению', 'Беру палатку');
 
     await page.reload();
     await page.locator('button:has-text("Продолжить")').click();
     await expect(page.locator('.step-indicator').filter({ hasText: 'Шаг 5' })).toBeVisible();
 
-    await verifyRadioChecked(page, 'Потребность в проживании', 'Требуется забронировать номер на базе');
-    await verifyNightChecked(page, 'С пятницы на субботу');
+    await verifyGuestRadioChecked(page, 'Для leader_nick', 'Потребность в проживании', 'Требуется забронировать номер на базе');
+    await verifyGuestNightChecked(page, 'Для leader_nick', 'С пятницы на субботу');
+    await verifyGuestText(page, 'Для leader_nick', 'Дополнительные комментарии к проживанию и обеспечению', 'Нужен тихий номер');
+    
+    await verifyGuestRadioChecked(page, 'Для guest_name', 'Потребность в проживании', 'Размещаюсь самостоятельно');
+    await verifyGuestText(page, 'Для guest_name', 'Дополнительные комментарии к проживанию и обеспечению', 'Беру палатку');
 
     await clickNext(page);
 

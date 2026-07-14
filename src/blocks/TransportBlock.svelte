@@ -32,6 +32,16 @@
       formStore.data.transportFrom.method = null;
     }
   });
+
+  let transportHint = $derived.by(() => {
+    const isDriver =
+      formStore.data.transportTo.method === TRANSPORT_METHOD.DRIVER ||
+      formStore.data.transportFrom.method === TRANSPORT_METHOD.DRIVER;
+    if (isDriver) {
+      return '"есть багажник для общих вещей", "готов забрать груз до 1 тонны" или "еду на мотоцикле без мест"';
+    }
+    return '"укачивает на заднем сиденье", "беру с собой большую гитару" или "готов помочь с погрузкой"';
+  });
 </script>
 
 <div class="block-card">
@@ -105,6 +115,15 @@
         onblur={() => formStore.markTouched("transportTo.time")}
         required={true}
       />
+      <TextInput
+        label="Город отправления"
+        icon="location_city"
+        placeholder="Введите город..."
+        bind:value={formStore.data.transportTo.departureCity}
+        errorText={errors["transportTo.departureCity"]}
+        onblur={() => formStore.markTouched("transportTo.departureCity")}
+        required={true}
+      />
     </div>
   </div>
 
@@ -151,6 +170,7 @@
         label="Комментарий к дороге"
         icon="edit_note"
         placeholder="Напишите здесь всё, что считаете важным..."
+        helperText={transportHint}
         bind:value={formStore.data.transportComment}
         errorText={errors["transportComment"]}
         onblur={() => formStore.markTouched("transportComment")}

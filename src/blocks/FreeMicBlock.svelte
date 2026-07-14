@@ -12,10 +12,11 @@
       <TextArea
         label="Комментарий или пожелания"
         placeholder="Напишите здесь всё, что считаете важным..."
+        helperText="В этом пункте Вы можете уточнить любые детали или добавить информацию, которая не вошла в предыдущие шаги заявки"
         icon="edit_note"
         bind:value={formStore.data.freeMic}
-        errorText={errors['freeMic']}
-        onblur={() => formStore.markTouched('freeMic')}
+        errorText={errors["freeMic"]}
+        onblur={() => formStore.markTouched("freeMic")}
       />
     </div>
   </div>
