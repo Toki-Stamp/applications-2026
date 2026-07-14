@@ -282,12 +282,12 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: color-mix(in srgb, var(--text-primary) 15%, transparent);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: color-mix(in srgb, var(--text-primary) 25%, transparent);
 }
 
 .btn-primary,
@@ -634,7 +634,7 @@ h1::after {
 
   /* Умный sticky-заголовок (для всех экранов) */
   position: sticky;
-  top: calc(var(--header-height, 100px) - 1px);
+  top: -1px;
   z-index: 40;
 
   background: var(--bg-color-accent);
@@ -661,7 +661,7 @@ h1::after {
 
   /* Sticky behavior: stacks under .block-title (для всех экранов) */
   position: sticky;
-  top: calc(var(--header-height, 100px) + var(--block-title-height, 69px) - 2px);
+  top: calc(var(--block-title-height, 69px) - 2px);
   z-index: 39;
   /* Под главным заголовком */
 

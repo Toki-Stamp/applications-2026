@@ -60,12 +60,12 @@
 
   .sub-block-card.level-2 .sub-block-title {
     top: calc(
-      var(--header-height, 100px) + var(--block-title-height, 69px) - 2px
+      var(--block-title-height, 69px) - 2px
     );
   }
   .sub-block-card.level-3 .sub-block-title {
     top: calc(
-      var(--header-height, 100px) + var(--block-title-height, 69px) +
+      var(--block-title-height, 69px) +
         var(--section-title-height, 52px) - 3px
     );
   }

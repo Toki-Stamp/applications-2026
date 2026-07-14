@@ -185,7 +185,10 @@
   });
 
   function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const appBody = document.querySelector('.app-body');
+    if (appBody) {
+      appBody.scrollTo({ top: 0, behavior: "smooth" });
+    }
   }
 
   function nextStep() {
@@ -428,6 +431,7 @@
     margin: 0;
     padding: 0;
     background-color: var(--bg-color);
+    overflow: hidden;
   }
 
   :global(#app) {
@@ -452,6 +456,8 @@
     margin: 0 auto;
     width: 100%;
     padding: 1.5rem 1.5rem 6rem; /* Отступ снизу под фиксированный футер */
+    overflow-y: auto;
+    scrollbar-gutter: stable;
   }
 
   .step-container {
