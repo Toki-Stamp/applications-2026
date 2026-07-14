@@ -58,7 +58,9 @@
     position: relative;
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-bottom: 0.5rem;
+    z-index: 10;
   }
 
   .theme-switcher-container {
