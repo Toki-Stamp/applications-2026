@@ -269,10 +269,6 @@ select {
   font-family: inherit;
 }
 
-html {
-  scrollbar-gutter: stable;
-}
-
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -962,7 +958,7 @@ h1::after {
   }
 
   .block-title {
-    top: calc(var(--header-height, 60px) - 1px);
+    top: -1px;
     padding: 1.125rem 1.25rem;
     margin: -1.5rem -1.25rem 0 -1.25rem;
     font-size: 1.1rem;
@@ -971,7 +967,7 @@ h1::after {
   .section-title {
     margin: 0 -1.25rem 0 -1.25rem;
     padding: 0.75rem 1.25rem;
-    top: calc(var(--header-height, 60px) + var(--block-title-height, 68px) - 2px);
+    top: calc(var(--block-title-height, 69px) - 2px);
   }
 
   .first-section .section-title {

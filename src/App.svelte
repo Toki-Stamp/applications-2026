@@ -148,28 +148,6 @@
   });
 
   onMount(() => {
-    // Dynamically calculate sticky header heights to prevent overlap bugs
-    const updateHeaderHeights = () => {
-      const bt = /** @type {HTMLElement} */ (
-        document.querySelector(".block-title")
-      );
-      if (bt) {
-        document.documentElement.style.setProperty(
-          "--block-title-height",
-          `${bt.offsetHeight}px`,
-        );
-      }
-      const st = /** @type {HTMLElement} */ (
-        document.querySelector(".section-title")
-      );
-      if (st) {
-        document.documentElement.style.setProperty(
-          "--section-title-height",
-          `${st.offsetHeight}px`,
-        );
-      }
-    };
-
     let lastWidth = 0;
     const observer = new ResizeObserver(() => {
       if (window.innerWidth !== lastWidth) {
@@ -182,6 +160,35 @@
     return () => {
       observer.disconnect();
     };
+  });
+
+  // Dynamically calculate sticky header heights to prevent overlap bugs
+  const updateHeaderHeights = () => {
+    const bt = /** @type {HTMLElement} */ (
+      document.querySelector(".block-title")
+    );
+    if (bt) {
+      document.documentElement.style.setProperty(
+        "--block-title-height",
+        `${bt.offsetHeight}px`,
+      );
+    }
+    const st = /** @type {HTMLElement} */ (
+      document.querySelector(".section-title")
+    );
+    if (st) {
+      document.documentElement.style.setProperty(
+        "--section-title-height",
+        `${st.offsetHeight}px`,
+      );
+    }
+  };
+
+  $effect(() => {
+    // Re-calculate heights when step changes, wait for DOM update
+    // Use currentStep as a dependency
+    let step = currentStep;
+    setTimeout(updateHeaderHeights, 50);
   });
 
   function scrollToTop() {
@@ -436,17 +443,17 @@
   .app-body {
     flex: 1;
     min-height: 0;
-    max-width: 800px;
-    margin: 0 auto;
     width: 100%;
-    padding: 1.5rem 1.5rem 6rem; /* Отступ снизу под фиксированный футер */
-    overflow-y: auto;
-    scrollbar-gutter: stable;
+    padding: 0;
+    overflow-y: scroll;
   }
 
   .step-container {
     display: grid;
     min-height: 400px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 1.5rem calc(1.5rem + 10px);
   }
 
   .step-layer {
@@ -458,16 +465,18 @@
     display: grid;
     width: 100%;
     flex: 1;
+    min-height: 0;
   }
 
   .app-form {
     grid-area: 1 / 1;
     width: 100%;
+    min-height: 0;
   }
 
   @media (max-width: 600px) {
-    .app-body {
-      padding: 1rem 1rem 6rem;
+    .step-container {
+      padding: 1rem 1rem 1rem calc(1rem + 10px);
     }
   }
 </style>
