@@ -453,4 +453,36 @@ test.describe('Form E2E Tests', () => {
     expect(submittedData.guests[0].accommodation.comment).toBe('Хочу отдельный номер');
     expect(submittedData.guests[1].accommodation.nights).toContain('sat-sun');
   });
+  test('Case 8: Switching from Group to Individual should clear guests and not block submission', async ({ page }) => {
+    await page.goto('/');
+
+    await page.locator('button:has-text("Начать заполнение")').click();
+
+    // Step 1: Group
+    await selectRadio(page, 'Тип заявки', 'Групповая');
+    await selectDropdown(page, 'Общее количество участников Вашей группы', 'Всего 2 участника');
+    await selectRadio(page, 'Условия для участников Вашей группы', 'Единые условия');
+    await clickNext(page);
+
+    // Step 2: Applicant Data
+    await fillText(page, 'Никнейм', 'тестер');
+    await fillText(page, 'Номер телефона', '29 858 70 70');
+    
+    // Do NOT fill Guest Name
+    
+    // Go Back to Step 1
+    await page.locator('button[data-tooltip="Назад"]').click();
+    
+    // Switch to Individual
+    await selectRadio(page, 'Тип заявки', 'Индивидуальная');
+    
+    // Go Next to Step 2
+    await clickNext(page);
+    
+    // Try to go to Step 3 (Transport)
+    await clickNext(page);
+    
+    // It should successfully transition to Transport block without blocking
+    await expect(page.locator('.block-title', { hasText: 'Транспорт' }).first()).toBeVisible();
+  });
 });

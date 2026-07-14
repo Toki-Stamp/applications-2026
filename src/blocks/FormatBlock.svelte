@@ -20,9 +20,10 @@
         formStore.updateGuestsCount(targetGuests);
       }
     } else if (formStore.data.applicationType === APPLICATION_TYPE.INDIVIDUAL) {
-      if (formStore.data.totalGroupSize !== null || formStore.data.groupConditions !== null) {
+      if (formStore.data.totalGroupSize !== null || formStore.data.groupConditions !== null || formStore.data.guests.length > 0) {
         formStore.data.totalGroupSize = null;
         formStore.data.groupConditions = null;
+        formStore.updateGuestsCount(0);
       }
     }
   });
