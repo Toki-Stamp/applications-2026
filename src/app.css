@@ -49,6 +49,10 @@
   --accent: #6366f1;
   --accent-glow: rgba(99, 102, 241, 0.6);
   --cyan: #06b6d4;
+  
+  --bg-color: #060b13;
+  --bg-color-accent: #0a1220;
+  --glass-bg: rgba(10, 18, 32, 0.5);
 }
 
 /* Theme: Original (Neon Pink) */
@@ -59,6 +63,10 @@
   --accent: #ec4899;
   --accent-glow: rgba(236, 72, 153, 0.6);
   --cyan: #06b6d4;
+
+  --bg-color: #0a0410;
+  --bg-color-accent: #130820;
+  --glass-bg: rgba(19, 8, 32, 0.5);
 }
 
 /* Theme: Mint */
@@ -69,6 +77,10 @@
   --accent: #14b8a6;
   --accent-glow: rgba(20, 184, 166, 0.6);
   --cyan: #10b981;
+
+  --bg-color: #04100c;
+  --bg-color-accent: #081d17;
+  --glass-bg: rgba(8, 29, 23, 0.5);
 }
 
 /* Theme: Sunset */
@@ -79,6 +91,10 @@
   --accent: #f59e0b;
   --accent-glow: rgba(245, 158, 11, 0.6);
   --cyan: #f97316;
+
+  --bg-color: #130904;
+  --bg-color-accent: #20100a;
+  --glass-bg: rgba(32, 16, 10, 0.5);
 }
 
 /* Theme: Ocean */
@@ -89,6 +105,10 @@
   --accent: #4f46e5;
   --accent-glow: rgba(79, 70, 229, 0.6);
   --cyan: #3b82f6;
+
+  --bg-color: #040b16;
+  --bg-color-accent: #08152a;
+  --glass-bg: rgba(8, 21, 42, 0.5);
 }
 
 /* Theme: Minimal */
@@ -99,6 +119,66 @@
   --accent: #e4e4e7;
   --accent-glow: rgba(228, 228, 231, 0.6);
   --cyan: #94a3b8;
+
+  --bg-color: #09090b;
+  --bg-color-accent: #18181b;
+  --glass-bg: rgba(24, 24, 27, 0.5);
+}
+
+/* Theme: Military */
+:root[data-theme="military"] {
+  --primary-glow: rgba(133, 143, 107, 0.6);
+  --primary: #858f6b;
+  --primary-hover: #697254;
+  --accent: #5c6348;
+  --accent-glow: rgba(92, 99, 72, 0.6);
+  --cyan: #858f6b;
+
+  --bg-color: #0d100b;
+  --bg-color-accent: #161c13;
+  --glass-bg: rgba(22, 28, 19, 0.5);
+}
+
+/* Theme: Marshmallow */
+:root[data-theme="marshmallow"] {
+  --primary-glow: rgba(253, 164, 175, 0.6);
+  --primary: #fda4af;
+  --primary-hover: #fb7185;
+  --accent: #fbcfe8;
+  --accent-glow: rgba(251, 207, 232, 0.6);
+  --cyan: #fda4af;
+
+  --bg-color: #140a0e;
+  --bg-color-accent: #201217;
+  --glass-bg: rgba(32, 18, 23, 0.5);
+}
+
+/* Theme: Lava */
+:root[data-theme="lava"] {
+  --primary-glow: rgba(239, 68, 68, 0.6);
+  --primary: #ef4444;
+  --primary-hover: #dc2626;
+  --accent: #f97316;
+  --accent-glow: rgba(249, 115, 22, 0.6);
+  --cyan: #ef4444;
+
+  --bg-color: #130404;
+  --bg-color-accent: #200808;
+  --glass-bg: rgba(32, 8, 8, 0.5);
+}
+
+/* Theme: Galaxy */
+:root[data-theme="galaxy"] {
+  --primary-glow: rgba(168, 85, 247, 0.6);
+  --primary: #a855f7;
+  --primary-hover: #9333ea;
+  --accent: #6366f1;
+  --accent-glow: rgba(99, 102, 241, 0.6);
+  --cyan: #a855f7;
+
+  --bg-color: #0b0512;
+  --bg-color-accent: #150a24;
+  --glass-bg: rgba(21, 10, 36, 0.5);
 }
 
 * {
@@ -482,8 +562,9 @@ h1::after {
   top: calc(var(--header-height, 100px) - 1px);
   z-index: 40;
 
-  background: rgba(24, 24, 27, 0.95);
-  /* Чуть плотнее фон */
+  background: var(--bg-color-accent);
+  background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
+  /* Чуть плотнее фон, реагирующий на тему */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);

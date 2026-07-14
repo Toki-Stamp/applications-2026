@@ -8,7 +8,11 @@
     { id: 'mint', name: 'Mint', primary: '#10b981', accent: '#14b8a6' },
     { id: 'sunset', name: 'Sunset', primary: '#f97316', accent: '#f59e0b' },
     { id: 'ocean', name: 'Ocean', primary: '#3b82f6', accent: '#4f46e5' },
-    { id: 'minimal', name: 'Minimal', primary: '#94a3b8', accent: '#e4e4e7' }
+    { id: 'minimal', name: 'Minimal', primary: '#94a3b8', accent: '#e4e4e7' },
+    { id: 'military', name: 'Military', primary: '#858f6b', accent: '#5c6348' },
+    { id: 'marshmallow', name: 'Marshmallow', primary: '#fda4af', accent: '#fbcfe8' },
+    { id: 'lava', name: 'Lava', primary: '#ef4444', accent: '#f97316' },
+    { id: 'galaxy', name: 'Galaxy', primary: '#a855f7', accent: '#6366f1' }
   ];
 
   let currentTheme = $state('cyberpunk');
