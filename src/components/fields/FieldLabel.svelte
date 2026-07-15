@@ -14,7 +14,8 @@
     {/if}
     {#if helperText}
       <div class="helper-text">
-        <strong>Подсказка:</strong> {helperText}
+        <strong>Подсказка:</strong>
+        {helperText}
       </div>
     {/if}
   </div>

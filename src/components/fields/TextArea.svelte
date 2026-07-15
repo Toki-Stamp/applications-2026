@@ -7,13 +7,13 @@
   import Button from "../ui/Button.svelte";
 
   let {
-    value = $bindable(''),
-    label = '',
-    helperText = '',
+    value = $bindable(""),
+    label = "",
+    helperText = "",
     required = false,
-    placeholder = '',
-    icon = '',
-    id = generateId('textarea'),
+    placeholder = "",
+    icon = "",
+    id = generateId("textarea"),
     ...restProps
   } = $props();
 
@@ -66,8 +66,7 @@
       {placeholder}
       {value}
       oninput={handleInput}
-      {...restProps}
-    ></textarea>
+      {...restProps}></textarea>
     {#if value && String(value).length > 0}
       <div class="clear-button-wrapper">
         <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -78,8 +77,6 @@
       </div>
     {/if}
   </div>
-
-
 </div>
 
 <style>
@@ -90,64 +87,64 @@
   }
 
   .leading-icon {
-      position: absolute;
-      left: 16px;
-      top: 16px;
-      color: var(--text-secondary);
-      pointer-events: none;
-      z-index: 1;
-      transition: color 0.2s;
-    }
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    color: var(--text-secondary);
+    pointer-events: none;
+    z-index: 1;
+    transition: color 0.2s;
+  }
 
-    .clear-button-wrapper {
-      position: absolute;
-      right: 16px;
-      top: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg-color-accent);
-      border-radius: 50%;
-      z-index: 10;
-    }
+  .clear-button-wrapper {
+    position: absolute;
+    right: 16px;
+    top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-color-accent);
+    border-radius: 50%;
+    z-index: 10;
+  }
 
-    .custom-textarea {
-      width: 100%;
-      min-height: 104px; /* 3 rows: 32px padding + (24px * 3) */
-      padding: 16px;
-      padding-right: 52px; /* space for clear button */
-      font-family: inherit;
-      font-size: 1rem;
-      color: var(--text-primary);
-      caret-color: var(--primary);
-      background-color: transparent;
-      border: 1px solid var(--input-border-color);
-      border-radius: 8px;
-      resize: none;
-      outline: none;
-      overflow: hidden; /* Hide scrollbar since it grows infinitely */
-      box-sizing: border-box;
-      line-height: 1.5;
-      transition:
-        border-color 0.2s,
-        box-shadow 0.2s;
-    }
+  .custom-textarea {
+    width: 100%;
+    min-height: 104px; /* 3 rows: 32px padding + (24px * 3) */
+    padding: 16px;
+    padding-right: 52px; /* space for clear button */
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text-primary);
+    caret-color: var(--primary);
+    background-color: transparent;
+    border: 1px solid var(--input-border-color);
+    border-radius: 8px;
+    resize: none;
+    outline: none;
+    overflow: hidden; /* Hide scrollbar since it grows infinitely */
+    box-sizing: border-box;
+    line-height: 1.5;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
 
-    .custom-textarea.has-icon {
-      padding-left: 52px;
-    }
+  .custom-textarea.has-icon {
+    padding-left: 52px;
+  }
 
-    .custom-textarea:hover {
-      border-color: var(--primary-hover);
-    }
+  .custom-textarea:hover {
+    border-color: var(--primary-hover);
+  }
 
-    .custom-textarea:focus {
-      border-color: var(--primary);
-      /* box-shadow to mimic Material Design thicker border */
-      box-shadow: 0 0 0 2px var(--primary);
-    }
+  .custom-textarea:focus {
+    border-color: var(--primary);
+    /* box-shadow to mimic Material Design thicker border */
+    box-shadow: 0 0 0 2px var(--primary);
+  }
 
-    .custom-textarea::placeholder {
-      color: var(--text-placeholder);
-    }
+  .custom-textarea::placeholder {
+    color: var(--text-placeholder);
+  }
 </style>

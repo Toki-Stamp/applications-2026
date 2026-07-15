@@ -1,40 +1,75 @@
-import { z } from 'zod';
-import { isValidPhoneNumber } from 'libphonenumber-js';
-import { APPLICATION_TYPE, GROUP_CONDITIONS, PROVISION_TYPE, ACCOMMODATION_TYPE, TRANSPORT_METHOD } from './constants.js';
+import { z } from "zod";
+import { isValidPhoneNumber } from "libphonenumber-js";
+import {
+  APPLICATION_TYPE,
+  GROUP_CONDITIONS,
+  PROVISION_TYPE,
+  ACCOMMODATION_TYPE,
+  TRANSPORT_METHOD,
+} from "./constants.js";
 
 export const ERROR_MESSAGES = {
-  REQUIRED: 'Это поле обязательно для заполнения',
-  INVALID_PHONE: 'Неверный номер телефона',
-  SELECT_PERIODS: 'Пожалуйста, выберите периоды',
-  SELECT_NIGHTS: 'Пожалуйста, выберите хотя бы одну ночь'
+  REQUIRED: "Это поле обязательно для заполнения",
+  INVALID_PHONE: "Неверный номер телефона",
+  SELECT_PERIODS: "Пожалуйста, выберите периоды",
+  SELECT_NIGHTS: "Пожалуйста, выберите хотя бы одну ночь",
 };
 
-const provisionsSchema = z.object({
-  food: z.string().nullable(),
-  foodPeriods: z.array(z.string()),
-  alcohol: z.string().nullable(),
-  alcoholPeriods: z.array(z.string())
-}).superRefine((data, ctx) => {
-  if (!data.food) {
-    ctx.addIssue({ path: ['food'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-  }
-  if (!data.alcohol) {
-    ctx.addIssue({ path: ['alcohol'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-  }
-  if (data.food === PROVISION_TYPE.REQUIRED && data.foodPeriods.length === 0) {
-    ctx.addIssue({ path: ['foodPeriods'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.SELECT_PERIODS });
-  }
-  if (data.alcohol === PROVISION_TYPE.REQUIRED && data.alcoholPeriods.length === 0) {
-    ctx.addIssue({ path: ['alcoholPeriods'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.SELECT_PERIODS });
-  }
-});
+const provisionsSchema = z
+  .object({
+    food: z.string().nullable(),
+    foodPeriods: z.array(z.string()),
+    alcohol: z.string().nullable(),
+    alcoholPeriods: z.array(z.string()),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.food) {
+      ctx.addIssue({
+        path: ["food"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.REQUIRED,
+      });
+    }
+    if (!data.alcohol) {
+      ctx.addIssue({
+        path: ["alcohol"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.REQUIRED,
+      });
+    }
+    if (
+      data.food === PROVISION_TYPE.REQUIRED &&
+      data.foodPeriods.length === 0
+    ) {
+      ctx.addIssue({
+        path: ["foodPeriods"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.SELECT_PERIODS,
+      });
+    }
+    if (
+      data.alcohol === PROVISION_TYPE.REQUIRED &&
+      data.alcoholPeriods.length === 0
+    ) {
+      ctx.addIssue({
+        path: ["alcoholPeriods"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.SELECT_PERIODS,
+      });
+    }
+  });
 
 const applicantSchema = z.object({
   nickname: z.string().trim().min(1, ERROR_MESSAGES.REQUIRED),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
-  phone: z.string().min(1, ERROR_MESSAGES.REQUIRED).refine((val) => isValidPhoneNumber(val), { message: ERROR_MESSAGES.INVALID_PHONE }),
-  provisions: provisionsSchema
+  phone: z
+    .string()
+    .min(1, ERROR_MESSAGES.REQUIRED)
+    .refine((val) => isValidPhoneNumber(val), {
+      message: ERROR_MESSAGES.INVALID_PHONE,
+    }),
+  provisions: provisionsSchema,
 });
 
 const guestSchema = z.object({
@@ -42,34 +77,53 @@ const guestSchema = z.object({
   nickname: z.string().optional(),
   lastName: z.string().optional(),
   phone: z.string().optional(),
-  provisions: provisionsSchema
+  provisions: provisionsSchema,
 });
 
 // Step 2: Format
-export const formatSchema = z.object({
-  applicationType: z.string().nullable(),
-  totalGroupSize: z.number().nullable(),
-  groupConditions: z.string().nullable()
-}).superRefine((data, ctx) => {
-  if (!data.applicationType) {
-    ctx.addIssue({ path: ['applicationType'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-  }
-  if (data.applicationType === APPLICATION_TYPE.GROUP) {
-    if (!data.totalGroupSize) {
-      ctx.addIssue({ path: ['totalGroupSize'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
+export const formatSchema = z
+  .object({
+    applicationType: z.string().nullable(),
+    totalGroupSize: z.number().nullable(),
+    groupConditions: z.string().nullable(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.applicationType) {
+      ctx.addIssue({
+        path: ["applicationType"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.REQUIRED,
+      });
     }
-    if (!data.groupConditions) {
-      ctx.addIssue({ path: ['groupConditions'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
+    if (data.applicationType === APPLICATION_TYPE.GROUP) {
+      if (!data.totalGroupSize) {
+        ctx.addIssue({
+          path: ["totalGroupSize"],
+          code: z.ZodIssueCode.custom,
+          message: ERROR_MESSAGES.REQUIRED,
+        });
+      }
+      if (!data.groupConditions) {
+        ctx.addIssue({
+          path: ["groupConditions"],
+          code: z.ZodIssueCode.custom,
+          message: ERROR_MESSAGES.REQUIRED,
+        });
+      }
     }
-  }
-});
+  });
 
 // Step 3: Personal Data — separate schemas WITHOUT provisions (those are validated on step 5)
 const applicantPersonalSchema = z.object({
   nickname: z.string().trim().min(1, ERROR_MESSAGES.REQUIRED),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
-  phone: z.string().min(1, ERROR_MESSAGES.REQUIRED).refine((val) => isValidPhoneNumber(val), { message: ERROR_MESSAGES.INVALID_PHONE }),
+  phone: z
+    .string()
+    .min(1, ERROR_MESSAGES.REQUIRED)
+    .refine((val) => isValidPhoneNumber(val), {
+      message: ERROR_MESSAGES.INVALID_PHONE,
+    }),
 });
 
 const guestPersonalSchema = z.object({
@@ -82,139 +136,232 @@ const guestPersonalSchema = z.object({
 export const personalDataSchema = z.object({
   applicationType: z.string().nullable(),
   applicant: applicantPersonalSchema,
-  guests: z.array(guestPersonalSchema)
+  guests: z.array(guestPersonalSchema),
 });
 
 // Step 4: Transport
-export const transportSchema = z.object({
-  transportTo: z.object({
-    method: z.string().nullable(),
-    freeSeats: z.number().nullable(),
-    day: z.string().nullable(),
-    time: z.string().nullable(),
-    departureCity: z.string().nullable()
-  }),
-  transportFrom: z.object({
-    method: z.string().nullable(),
-    day: z.string().nullable(),
-    time: z.string().nullable()
-  }),
-  transportComment: z.string().optional()
-}).superRefine((data, ctx) => {
-  // Validate transportTo
-  if (!data.transportTo.method) {
-    ctx.addIssue({ path: ['transportTo', 'method'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-  } else if (data.transportTo.method === TRANSPORT_METHOD.DRIVER && data.transportTo.freeSeats === null) {
-    ctx.addIssue({ path: ['transportTo', 'freeSeats'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-  }
-  
-  if (!data.transportTo.day) {
-    ctx.addIssue({ path: ['transportTo', 'day'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-  }
-  if (!data.transportTo.time) {
-    ctx.addIssue({ path: ['transportTo', 'time'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-  }
-  if (!data.transportTo.departureCity || data.transportTo.departureCity.trim() === '') {
-    ctx.addIssue({ path: ['transportTo', 'departureCity'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-  }
+export const transportSchema = z
+  .object({
+    transportTo: z.object({
+      method: z.string().nullable(),
+      freeSeats: z.number().nullable(),
+      day: z.string().nullable(),
+      time: z.string().nullable(),
+      departureCity: z.string().nullable(),
+    }),
+    transportFrom: z.object({
+      method: z.string().nullable(),
+      day: z.string().nullable(),
+      time: z.string().nullable(),
+    }),
+    transportComment: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    // Validate transportTo
+    if (!data.transportTo.method) {
+      ctx.addIssue({
+        path: ["transportTo", "method"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.REQUIRED,
+      });
+    } else if (
+      data.transportTo.method === TRANSPORT_METHOD.DRIVER &&
+      data.transportTo.freeSeats === null
+    ) {
+      ctx.addIssue({
+        path: ["transportTo", "freeSeats"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.REQUIRED,
+      });
+    }
 
-  // Validate transportFrom
-  if (!data.transportFrom.method) {
-    ctx.addIssue({ path: ['transportFrom', 'method'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-  }
-  
-  if (!data.transportFrom.day) {
-    ctx.addIssue({ path: ['transportFrom', 'day'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-  }
-  if (!data.transportFrom.time) {
-    ctx.addIssue({ path: ['transportFrom', 'time'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-  }
-});
+    if (!data.transportTo.day) {
+      ctx.addIssue({
+        path: ["transportTo", "day"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.REQUIRED,
+      });
+    }
+    if (!data.transportTo.time) {
+      ctx.addIssue({
+        path: ["transportTo", "time"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.REQUIRED,
+      });
+    }
+    if (
+      !data.transportTo.departureCity ||
+      data.transportTo.departureCity.trim() === ""
+    ) {
+      ctx.addIssue({
+        path: ["transportTo", "departureCity"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.REQUIRED,
+      });
+    }
+
+    // Validate transportFrom
+    if (!data.transportFrom.method) {
+      ctx.addIssue({
+        path: ["transportFrom", "method"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.REQUIRED,
+      });
+    }
+
+    if (!data.transportFrom.day) {
+      ctx.addIssue({
+        path: ["transportFrom", "day"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.REQUIRED,
+      });
+    }
+    if (!data.transportFrom.time) {
+      ctx.addIssue({
+        path: ["transportFrom", "time"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.REQUIRED,
+      });
+    }
+  });
 
 // Loose guest provision type without validation rules — used in the base schema shape
 const looseProvisionShape = z.object({
   food: z.string().nullable(),
   foodPeriods: z.array(z.string()),
   alcohol: z.string().nullable(),
-  alcoholPeriods: z.array(z.string())
+  alcoholPeriods: z.array(z.string()),
 });
 
 // Step 5: Provisions
 // For INDIVIDUAL or GROUP+UNIFIED, guest provisions are copied from applicant (sanitizeFormData).
 // Only GROUP+DIFFERENTIAL needs each guest's provisions validated individually.
-export const provisionsStepSchema = z.object({
-  applicationType: z.string().nullable(),
-  groupConditions: z.string().nullable(),
-  applicant: z.object({ provisions: provisionsSchema }),
-  guests: z.array(z.object({ provisions: looseProvisionShape }))
-}).superRefine((data, ctx) => {
-  if (data.applicationType === 'group' && data.groupConditions === 'differential') {
-    data.guests.forEach((guest, i) => {
-      if (!guest.provisions.food) {
-        ctx.addIssue({ path: ['guests', i, 'provisions', 'food'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-      }
-      if (!guest.provisions.alcohol) {
-        ctx.addIssue({ path: ['guests', i, 'provisions', 'alcohol'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-      }
-      if (guest.provisions.food === PROVISION_TYPE.REQUIRED && guest.provisions.foodPeriods.length === 0) {
-        ctx.addIssue({ path: ['guests', i, 'provisions', 'foodPeriods'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.SELECT_PERIODS });
-      }
-      if (guest.provisions.alcohol === PROVISION_TYPE.REQUIRED && guest.provisions.alcoholPeriods.length === 0) {
-        ctx.addIssue({ path: ['guests', i, 'provisions', 'alcoholPeriods'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.SELECT_PERIODS });
-      }
-    });
-  }
-});
+export const provisionsStepSchema = z
+  .object({
+    applicationType: z.string().nullable(),
+    groupConditions: z.string().nullable(),
+    applicant: z.object({ provisions: provisionsSchema }),
+    guests: z.array(z.object({ provisions: looseProvisionShape })),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.applicationType === "group" &&
+      data.groupConditions === "differential"
+    ) {
+      data.guests.forEach((guest, i) => {
+        if (!guest.provisions.food) {
+          ctx.addIssue({
+            path: ["guests", i, "provisions", "food"],
+            code: z.ZodIssueCode.custom,
+            message: ERROR_MESSAGES.REQUIRED,
+          });
+        }
+        if (!guest.provisions.alcohol) {
+          ctx.addIssue({
+            path: ["guests", i, "provisions", "alcohol"],
+            code: z.ZodIssueCode.custom,
+            message: ERROR_MESSAGES.REQUIRED,
+          });
+        }
+        if (
+          guest.provisions.food === PROVISION_TYPE.REQUIRED &&
+          guest.provisions.foodPeriods.length === 0
+        ) {
+          ctx.addIssue({
+            path: ["guests", i, "provisions", "foodPeriods"],
+            code: z.ZodIssueCode.custom,
+            message: ERROR_MESSAGES.SELECT_PERIODS,
+          });
+        }
+        if (
+          guest.provisions.alcohol === PROVISION_TYPE.REQUIRED &&
+          guest.provisions.alcoholPeriods.length === 0
+        ) {
+          ctx.addIssue({
+            path: ["guests", i, "provisions", "alcoholPeriods"],
+            code: z.ZodIssueCode.custom,
+            message: ERROR_MESSAGES.SELECT_PERIODS,
+          });
+        }
+      });
+    }
+  });
 
 // Step 6: Accommodation
 const looseAccommodationShape = z.object({
   type: z.string().nullable(),
   nights: z.array(z.string()),
-  comment: z.string().optional()
+  comment: z.string().optional(),
 });
 
-const baseAccommodationSchema = z.object({
-  type: z.string().nullable(),
-  nights: z.array(z.string()),
-  comment: z.string().optional()
-}).superRefine((data, ctx) => {
-  if (!data.type) {
-    ctx.addIssue({ path: ['type'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-  }
-  if (data.type === ACCOMMODATION_TYPE.BOOKING && data.nights.length === 0) {
-    ctx.addIssue({ path: ['nights'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.SELECT_NIGHTS });
-  }
-});
+const baseAccommodationSchema = z
+  .object({
+    type: z.string().nullable(),
+    nights: z.array(z.string()),
+    comment: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.type) {
+      ctx.addIssue({
+        path: ["type"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.REQUIRED,
+      });
+    }
+    if (data.type === ACCOMMODATION_TYPE.BOOKING && data.nights.length === 0) {
+      ctx.addIssue({
+        path: ["nights"],
+        code: z.ZodIssueCode.custom,
+        message: ERROR_MESSAGES.SELECT_NIGHTS,
+      });
+    }
+  });
 
-export const accommodationStepSchema = z.object({
-  applicationType: z.string().nullable(),
-  groupConditions: z.string().nullable(),
-  applicant: z.object({ accommodation: baseAccommodationSchema }),
-  guests: z.array(z.object({ accommodation: looseAccommodationShape }))
-}).superRefine((data, ctx) => {
-  if (data.applicationType === 'group' && data.groupConditions === 'differential') {
-    data.guests.forEach((guest, i) => {
-      if (!guest.accommodation.type) {
-        ctx.addIssue({ path: ['guests', i, 'accommodation', 'type'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.REQUIRED });
-      }
-      if (guest.accommodation.type === ACCOMMODATION_TYPE.BOOKING && guest.accommodation.nights.length === 0) {
-        ctx.addIssue({ path: ['guests', i, 'accommodation', 'nights'], code: z.ZodIssueCode.custom, message: ERROR_MESSAGES.SELECT_NIGHTS });
-      }
-    });
-  }
-});
+export const accommodationStepSchema = z
+  .object({
+    applicationType: z.string().nullable(),
+    groupConditions: z.string().nullable(),
+    applicant: z.object({ accommodation: baseAccommodationSchema }),
+    guests: z.array(z.object({ accommodation: looseAccommodationShape })),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.applicationType === "group" &&
+      data.groupConditions === "differential"
+    ) {
+      data.guests.forEach((guest, i) => {
+        if (!guest.accommodation.type) {
+          ctx.addIssue({
+            path: ["guests", i, "accommodation", "type"],
+            code: z.ZodIssueCode.custom,
+            message: ERROR_MESSAGES.REQUIRED,
+          });
+        }
+        if (
+          guest.accommodation.type === ACCOMMODATION_TYPE.BOOKING &&
+          guest.accommodation.nights.length === 0
+        ) {
+          ctx.addIssue({
+            path: ["guests", i, "accommodation", "nights"],
+            code: z.ZodIssueCode.custom,
+            message: ERROR_MESSAGES.SELECT_NIGHTS,
+          });
+        }
+      });
+    }
+  });
 
 // Step 7: Free Mic
 export const freeMicSchema = z.object({
-  freeMic: z.string().optional()
+  freeMic: z.string().optional(),
 });
 
 // Helper: flatten Zod errors to { 'path.to.field': 'message' }
 export function formatZodErrors(zodError) {
   const errors = {};
   if (!zodError) return errors;
-  zodError.issues.forEach(issue => {
-    const path = issue.path.join('.');
+  zodError.issues.forEach((issue) => {
+    const path = issue.path.join(".");
     if (!errors[path]) {
       errors[path] = issue.message;
     }
@@ -225,13 +372,26 @@ export function formatZodErrors(zodError) {
 export function validateStepData(step, data) {
   let result;
   switch (step) {
-    case 2: result = formatSchema.safeParse(data); break;
-    case 3: result = personalDataSchema.safeParse(data); break;
-    case 4: result = transportSchema.safeParse(data); break;
-    case 5: result = provisionsStepSchema.safeParse(data); break;
-    case 6: result = accommodationStepSchema.safeParse(data); break;
-    case 7: result = freeMicSchema.safeParse(data); break;
-    default: return { success: true, errors: {} };
+    case 2:
+      result = formatSchema.safeParse(data);
+      break;
+    case 3:
+      result = personalDataSchema.safeParse(data);
+      break;
+    case 4:
+      result = transportSchema.safeParse(data);
+      break;
+    case 5:
+      result = provisionsStepSchema.safeParse(data);
+      break;
+    case 6:
+      result = accommodationStepSchema.safeParse(data);
+      break;
+    case 7:
+      result = freeMicSchema.safeParse(data);
+      break;
+    default:
+      return { success: true, errors: {} };
   }
 
   if (result.success) {

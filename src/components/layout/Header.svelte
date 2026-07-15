@@ -2,11 +2,7 @@
   import ThemeSwitcher from "../ui/ThemeSwitcher.svelte";
   import ProgressBar from "../ui/ProgressBar.svelte";
 
-  let {
-    currentStep,
-    totalSteps,
-    headerHeight = $bindable(0),
-  } = $props();
+  let { currentStep, totalSteps, headerHeight = $bindable(0) } = $props();
 </script>
 
 <header class="app-header" bind:clientHeight={headerHeight}>
@@ -68,8 +64,6 @@
     top: 50%;
     transform: translateY(-50%);
   }
-
-
 
   h1 {
     font-size: 1.6rem;

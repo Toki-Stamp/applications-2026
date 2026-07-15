@@ -3,7 +3,7 @@
 
   /** @type {{ variant?: string, dismissible?: boolean, onclose?: () => void, header?: import('svelte').Snippet, children?: import('svelte').Snippet, actions?: import('svelte').Snippet }} */
   let {
-    variant = 'default',
+    variant = "default",
     dismissible = true,
     onclose,
     header,

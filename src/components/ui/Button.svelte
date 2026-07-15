@@ -22,12 +22,16 @@
     ...rest
   } = $props();
 
-  let buttonClass = $derived([
-    variant === 'clear' ? 'compact-clear-btn' : `btn-${variant}`,
-    iconOnly ? 'icon-only' : '',
-    locked ? 'btn-locked' : '',
-    className
-  ].filter(Boolean).join(' '));
+  let buttonClass = $derived(
+    [
+      variant === "clear" ? "compact-clear-btn" : `btn-${variant}`,
+      iconOnly ? "icon-only" : "",
+      locked ? "btn-locked" : "",
+      className,
+    ]
+      .filter(Boolean)
+      .join(" "),
+  );
 </script>
 
 <button {type} class={buttonClass} {onclick} disabled={locked} {...rest}>
@@ -59,7 +63,11 @@
 
   button:disabled,
   .btn-locked {
-    background: linear-gradient(135deg, rgba(82, 82, 91, 0.5) 0%, rgba(63, 63, 70, 0.5) 100%) !important;
+    background: linear-gradient(
+      135deg,
+      rgba(82, 82, 91, 0.5) 0%,
+      rgba(63, 63, 70, 0.5) 100%
+    ) !important;
     color: rgba(255, 255, 255, 0.4) !important;
     cursor: not-allowed !important;
     box-shadow: none !important;
@@ -105,7 +113,10 @@
   .btn-primary::before {
     content: "";
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(135deg, var(--cyan) 0%, var(--primary) 100%);
     border-radius: inherit;
     z-index: -1;
@@ -116,7 +127,9 @@
     box-shadow: 0 8px 25px var(--primary-glow);
     transform: translateY(-2px) scale(1.01);
   }
-  .btn-primary:hover::before { opacity: 1; }
+  .btn-primary:hover::before {
+    opacity: 1;
+  }
 
   /* Secondary Variant */
   .btn-secondary {
@@ -128,7 +141,10 @@
   .btn-secondary::before {
     content: "";
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(135deg, #3f3f46 0%, #52525b 100%);
     border-radius: inherit;
     z-index: -1;
@@ -139,7 +155,9 @@
     box-shadow: 0 8px 25px rgba(82, 82, 91, 0.4);
     transform: translateY(-2px) scale(1.01);
   }
-  .btn-secondary:hover::before { opacity: 1; }
+  .btn-secondary:hover::before {
+    opacity: 1;
+  }
 
   /* Danger Variant */
   .btn-danger {
@@ -151,7 +169,10 @@
   .btn-danger::before {
     content: "";
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
     border-radius: inherit;
     z-index: -1;
@@ -162,7 +183,9 @@
     box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
     transform: translateY(-2px) scale(1.01);
   }
-  .btn-danger:hover::before { opacity: 1; }
+  .btn-danger:hover::before {
+    opacity: 1;
+  }
 
   /* Submit Variant */
   .btn-submit {
@@ -175,7 +198,10 @@
   .btn-submit::before {
     content: "";
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
     border-radius: inherit;
     z-index: -1;
@@ -186,8 +212,12 @@
     transform: translateY(-2px) scale(1.01);
     box-shadow: 0 8px 30px var(--accent-glow);
   }
-  .btn-submit:hover::before { opacity: 1; }
-  .btn-submit:active { transform: translateY(0) scale(0.99); }
+  .btn-submit:hover::before {
+    opacity: 1;
+  }
+  .btn-submit:active {
+    transform: translateY(0) scale(0.99);
+  }
 
   /* Clear Variant */
   .compact-clear-btn {
@@ -203,12 +233,20 @@
     border-radius: 50%;
     width: 28px;
     height: 28px;
-    transition: background-color 0.2s, color 0.2s;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
     z-index: 2;
   }
-  :global(.compact-clear-btn md-icon) { font-size: 20px; }
+  :global(.compact-clear-btn md-icon) {
+    font-size: 20px;
+  }
   .compact-clear-btn:hover {
-    background: color-mix(in srgb, var(--primary) 20%, var(--glass-border-hover));
+    background: color-mix(
+      in srgb,
+      var(--primary) 20%,
+      var(--glass-border-hover)
+    );
     color: var(--text-primary);
   }
   .compact-clear-btn:focus-visible {

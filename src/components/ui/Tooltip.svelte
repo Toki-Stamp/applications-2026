@@ -43,7 +43,9 @@
     white-space: nowrap;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.15s ease, transform 0.15s ease;
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease;
     z-index: 1000;
   }
 

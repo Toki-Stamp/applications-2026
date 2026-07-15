@@ -7,7 +7,7 @@
     PROVISION_TYPE,
     foodOptions,
     alcoholOptions,
-    groupedPeriods
+    groupedPeriods,
   } from "../constants.js";
   import RadioGroup from "../components/fields/RadioGroup.svelte";
   import SelectionGrid from "../components/fields/SelectionGrid.svelte";
@@ -15,6 +15,7 @@
   import HintBox from "../components/ui/HintBox.svelte";
   import Block from "../components/layout/Block.svelte";
   import Section from "../components/layout/Section.svelte";
+  import ExpandableSection from "../components/layout/ExpandableSection.svelte";
   import "@material/web/icon/icon.js";
 
   let { stepNumber, errors = {} } = $props();
@@ -41,47 +42,51 @@
 <Block title="Обеспечение">
   {#if formStore.data.applicationType === APPLICATION_TYPE.INDIVIDUAL || formStore.data.groupConditions === GROUP_CONDITIONS.UNIFIED}
     <Section title={`${stepNumber}.1. Продукты питания`} isFirst={true}>
-        <div class="provision-item">
-          <RadioGroup
-            label="Потребность в питании"
-            bind:value={formStore.data.applicant.provisions.food}
-            errorText={errors['applicant.provisions.food']}
-            onchange={() => formStore.markTouched('applicant.provisions.food')}
-            options={foodOptions}
+      <div class="provision-item">
+        <RadioGroup
+          label="Потребность в питании"
+          bind:value={formStore.data.applicant.provisions.food}
+          errorText={errors["applicant.provisions.food"]}
+          onchange={() => formStore.markTouched("applicant.provisions.food")}
+          options={foodOptions}
+          required={true}
+        />
+        <ExpandableSection
+          show={formStore.data.applicant.provisions.food ===
+            PROVISION_TYPE.REQUIRED}
+        >
+          <SelectionGrid
+            groups={groupedPeriods}
             required={true}
+            bind:values={formStore.data.applicant.provisions.foodPeriods}
+            errorText={errors["applicant.provisions.foodPeriods"]}
           />
-          {#if formStore.data.applicant.provisions.food === PROVISION_TYPE.REQUIRED}
-            <div transition:slide>
-              <SelectionGrid groups={groupedPeriods}
-                required={true}
-                bind:values={formStore.data.applicant.provisions.foodPeriods}
-                errorText={errors['applicant.provisions.foodPeriods']}
-              />
-            </div>
-          {/if}
-        </div>
+        </ExpandableSection>
+      </div>
     </Section>
 
     <Section title={`${stepNumber}.2. Алкогольные напитки`}>
-        <div class="provision-item">
-          <RadioGroup
-            label="Потребность в алкоголе"
-            bind:value={formStore.data.applicant.provisions.alcohol}
-            errorText={errors['applicant.provisions.alcohol']}
-            onchange={() => formStore.markTouched('applicant.provisions.alcohol')}
-            options={alcoholOptions}
+      <div class="provision-item">
+        <RadioGroup
+          label="Потребность в алкоголе"
+          bind:value={formStore.data.applicant.provisions.alcohol}
+          errorText={errors["applicant.provisions.alcohol"]}
+          onchange={() => formStore.markTouched("applicant.provisions.alcohol")}
+          options={alcoholOptions}
+          required={true}
+        />
+        <ExpandableSection
+          show={formStore.data.applicant.provisions.alcohol ===
+            PROVISION_TYPE.REQUIRED}
+        >
+          <SelectionGrid
+            groups={groupedPeriods}
             required={true}
+            bind:values={formStore.data.applicant.provisions.alcoholPeriods}
+            errorText={errors["applicant.provisions.alcoholPeriods"]}
           />
-          {#if formStore.data.applicant.provisions.alcohol === PROVISION_TYPE.REQUIRED}
-            <div transition:slide>
-              <SelectionGrid groups={groupedPeriods}
-                required={true}
-                bind:values={formStore.data.applicant.provisions.alcoholPeriods}
-                errorText={errors['applicant.provisions.alcoholPeriods']}
-              />
-            </div>
-          {/if}
-        </div>
+        </ExpandableSection>
+      </div>
     </Section>
   {:else}
     <HintBox>Укажите потребности для каждого участника группы отдельно</HintBox>
@@ -94,44 +99,48 @@
         <RadioGroup
           label="Потребность в питании"
           bind:value={formStore.data.applicant.provisions.food}
-          errorText={errors['applicant.provisions.food']}
-          onchange={() => formStore.markTouched('applicant.provisions.food')}
+          errorText={errors["applicant.provisions.food"]}
+          onchange={() => formStore.markTouched("applicant.provisions.food")}
           options={foodOptions}
           required={true}
         />
-        {#if formStore.data.applicant.provisions.food === PROVISION_TYPE.REQUIRED}
-          <div transition:slide>
-            <SelectionGrid groups={groupedPeriods}
-              required={true}
-              bind:values={formStore.data.applicant.provisions.foodPeriods}
-              errorText={errors['applicant.provisions.foodPeriods']}
-            />
-          </div>
-        {/if}
+        <ExpandableSection
+          show={formStore.data.applicant.provisions.food ===
+            PROVISION_TYPE.REQUIRED}
+        >
+          <SelectionGrid
+            groups={groupedPeriods}
+            required={true}
+            bind:values={formStore.data.applicant.provisions.foodPeriods}
+            errorText={errors["applicant.provisions.foodPeriods"]}
+          />
+        </ExpandableSection>
       </div>
       <div class="provision-item">
         <RadioGroup
           label="Потребность в алкоголе"
           bind:value={formStore.data.applicant.provisions.alcohol}
-          errorText={errors['applicant.provisions.alcohol']}
-          onchange={() => formStore.markTouched('applicant.provisions.alcohol')}
+          errorText={errors["applicant.provisions.alcohol"]}
+          onchange={() => formStore.markTouched("applicant.provisions.alcohol")}
           options={alcoholOptions}
           required={true}
         />
-        {#if formStore.data.applicant.provisions.alcohol === PROVISION_TYPE.REQUIRED}
-          <div transition:slide>
-            <SelectionGrid groups={groupedPeriods}
-              required={true}
-              bind:values={formStore.data.applicant.provisions.alcoholPeriods}
-              errorText={errors['applicant.provisions.alcoholPeriods']}
-            />
-          </div>
-        {/if}
+        <ExpandableSection
+          show={formStore.data.applicant.provisions.alcohol ===
+            PROVISION_TYPE.REQUIRED}
+        >
+          <SelectionGrid
+            groups={groupedPeriods}
+            required={true}
+            bind:values={formStore.data.applicant.provisions.alcoholPeriods}
+            errorText={errors["applicant.provisions.alcoholPeriods"]}
+          />
+        </ExpandableSection>
       </div>
     </SubBlock>
 
     {#each formStore.data.guests as guest, i}
-      <div transition:slide>
+      <ExpandableSection show={true}>
         <SubBlock
           title={`Для ${guest.firstName || `Гостя #${i + 1}`}`}
           stickyLevel={2}
@@ -141,41 +150,47 @@
               label="Потребность в питании"
               bind:value={formStore.data.guests[i].provisions.food}
               errorText={errors[`guests.${i}.provisions.food`]}
-              onchange={() => formStore.markTouched(`guests.${i}.provisions.food`)}
+              onchange={() =>
+                formStore.markTouched(`guests.${i}.provisions.food`)}
               options={foodOptions}
               required={true}
             />
-            {#if formStore.data.guests[i].provisions.food === PROVISION_TYPE.REQUIRED}
-              <div transition:slide>
-                <SelectionGrid groups={groupedPeriods}
-                  required={true}
-                  bind:values={formStore.data.guests[i].provisions.foodPeriods}
-                  errorText={errors[`guests.${i}.provisions.foodPeriods`]}
-                />
-              </div>
-            {/if}
+            <ExpandableSection
+              show={formStore.data.guests[i].provisions.food ===
+                PROVISION_TYPE.REQUIRED}
+            >
+              <SelectionGrid
+                groups={groupedPeriods}
+                required={true}
+                bind:values={formStore.data.guests[i].provisions.foodPeriods}
+                errorText={errors[`guests.${i}.provisions.foodPeriods`]}
+              />
+            </ExpandableSection>
           </div>
           <div class="provision-item">
             <RadioGroup
               label="Потребность в алкоголе"
               bind:value={formStore.data.guests[i].provisions.alcohol}
               errorText={errors[`guests.${i}.provisions.alcohol`]}
-              onchange={() => formStore.markTouched(`guests.${i}.provisions.alcohol`)}
+              onchange={() =>
+                formStore.markTouched(`guests.${i}.provisions.alcohol`)}
               options={alcoholOptions}
               required={true}
             />
-            {#if formStore.data.guests[i].provisions.alcohol === PROVISION_TYPE.REQUIRED}
-              <div transition:slide>
-                <SelectionGrid groups={groupedPeriods}
-                  required={true}
-                  bind:values={formStore.data.guests[i].provisions.alcoholPeriods}
-                  errorText={errors[`guests.${i}.provisions.alcoholPeriods`]}
-                />
-              </div>
-            {/if}
+            <ExpandableSection
+              show={formStore.data.guests[i].provisions.alcohol ===
+                PROVISION_TYPE.REQUIRED}
+            >
+              <SelectionGrid
+                groups={groupedPeriods}
+                required={true}
+                bind:values={formStore.data.guests[i].provisions.alcoholPeriods}
+                errorText={errors[`guests.${i}.provisions.alcoholPeriods`]}
+              />
+            </ExpandableSection>
           </div>
         </SubBlock>
-      </div>
+      </ExpandableSection>
     {/each}
   {/if}
 </Block>

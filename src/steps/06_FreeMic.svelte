@@ -20,6 +20,3 @@
     />
   </Section>
 </Block>
-
-<style>
-</style>

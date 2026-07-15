@@ -11,6 +11,7 @@
   import SelectInput from "../components/fields/SelectInput.svelte";
   import Block from "../components/layout/Block.svelte";
   import Section from "../components/layout/Section.svelte";
+  import ExpandableSection from "../components/layout/ExpandableSection.svelte";
 
   let { errors = {} } = $props();
 
@@ -22,7 +23,11 @@
         formStore.updateGuestsCount(targetGuests);
       }
     } else if (formStore.data.applicationType === APPLICATION_TYPE.INDIVIDUAL) {
-      if (formStore.data.totalGroupSize !== null || formStore.data.groupConditions !== null || formStore.data.guests.length > 0) {
+      if (
+        formStore.data.totalGroupSize !== null ||
+        formStore.data.groupConditions !== null ||
+        formStore.data.guests.length > 0
+      ) {
         formStore.data.totalGroupSize = null;
         formStore.data.groupConditions = null;
         formStore.updateGuestsCount(0);
@@ -33,70 +38,62 @@
 
 <Block title="Формат участия">
   <Section isFirst={true}>
-      <RadioGroup
-        label="Тип заявки"
+    <RadioGroup
+      label="Тип заявки"
+      required={true}
+      bind:value={formStore.data.applicationType}
+      errorText={errors["applicationType"]}
+      onchange={() => formStore.markTouched("applicationType")}
+      options={[
+        {
+          label: "Индивидуальная",
+          helperText: "подаётся только за самого себя (на одного человека)",
+          value: APPLICATION_TYPE.INDIVIDUAL,
+        },
+        {
+          label: "Групповая",
+          helperText:
+            "подаётся в случае если Вы планируете посетить мероприятие группой (от двух до пяти человек)",
+          value: APPLICATION_TYPE.GROUP,
+        },
+      ]}
+    />
+
+    <ExpandableSection
+      show={formStore.data.applicationType === APPLICATION_TYPE.GROUP}
+    >
+      <SelectInput
+        label="Общее количество участников Вашей группы"
+        helperText="указывается общее число людей, включая Вас как руководителя группы"
+        placeholder="Выберите размер группы..."
+        icon="group_add"
+        options={groupSizeOptions}
+        bind:value={formStore.data.totalGroupSize}
+        errorText={errors["totalGroupSize"]}
+        onchange={() => formStore.markTouched("totalGroupSize")}
         required={true}
-        bind:value={formStore.data.applicationType}
-        errorText={errors['applicationType']}
-        onchange={() => formStore.markTouched('applicationType')}
+      />
+      <RadioGroup
+        label="Условия для участников Вашей группы"
+        bind:value={formStore.data.groupConditions}
+        errorText={errors["groupConditions"]}
+        onchange={() => formStore.markTouched("groupConditions")}
+        required={true}
         options={[
           {
-            label: "Индивидуальная",
-            helperText: "подаётся только за самого себя (на одного человека)",
-            value: APPLICATION_TYPE.INDIVIDUAL,
+            label: "Единые условия",
+            helperText:
+              "условия проживания и обеспечение полностью совпадают с Вашими",
+            value: GROUP_CONDITIONS.UNIFIED,
           },
           {
-            label: "Групповая",
+            label: "Дифференцированные условия",
             helperText:
-              "подаётся в случае если Вы планируете посетить мероприятие группой (от двух до пяти человек)",
-            value: APPLICATION_TYPE.GROUP,
+              "индивидуальные предпочтения для каждого из участников Вашей группы",
+            value: GROUP_CONDITIONS.DIFFERENTIAL,
           },
         ]}
       />
-
-      {#if formStore.data.applicationType === APPLICATION_TYPE.GROUP}
-        <div transition:slide class="slide-container">
-          <SelectInput
-            label="Общее количество участников Вашей группы"
-            helperText="указывается общее число людей, включая Вас как руководителя группы"
-            placeholder="Выберите размер группы..."
-            icon="group_add"
-            options={groupSizeOptions}
-            bind:value={formStore.data.totalGroupSize}
-            errorText={errors['totalGroupSize']}
-            onchange={() => formStore.markTouched('totalGroupSize')}
-            required={true}
-          />
-          <RadioGroup
-            label="Условия для участников Вашей группы"
-            bind:value={formStore.data.groupConditions}
-            errorText={errors['groupConditions']}
-            onchange={() => formStore.markTouched('groupConditions')}
-            required={true}
-            options={[
-              {
-                label: "Единые условия",
-                helperText:
-                  "условия проживания и обеспечение полностью совпадают с Вашими",
-                value: GROUP_CONDITIONS.UNIFIED,
-              },
-              {
-                label: "Дифференцированные условия",
-                helperText:
-                  "индивидуальные предпочтения для каждого из участников Вашей группы",
-                value: GROUP_CONDITIONS.DIFFERENTIAL,
-              },
-            ]}
-          />
-        </div>
-      {/if}
+    </ExpandableSection>
   </Section>
 </Block>
-
-<style>
-  .slide-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-</style>

@@ -1,16 +1,22 @@
-import { APPLICATION_TYPE, GROUP_CONDITIONS, PROVISION_TYPE, ACCOMMODATION_TYPE, TRANSPORT_METHOD } from './constants.js';
+import {
+  APPLICATION_TYPE,
+  GROUP_CONDITIONS,
+  PROVISION_TYPE,
+  ACCOMMODATION_TYPE,
+  TRANSPORT_METHOD,
+} from "./constants.js";
 
 export const defaultProvisions = () => ({
   food: null,
   foodPeriods: [],
   alcohol: null,
-  alcoholPeriods: []
+  alcoholPeriods: [],
 });
 
 export const defaultAccommodation = () => ({
   type: null,
   nights: [],
-  comment: ''
+  comment: "",
 });
 
 const initialState = {
@@ -18,20 +24,33 @@ const initialState = {
   applicationType: null,
   totalGroupSize: null,
   groupConditions: null,
-  applicant: { nickname: '', firstName: '', lastName: '', phone: '', provisions: defaultProvisions(), accommodation: defaultAccommodation() },
+  applicant: {
+    nickname: "",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    provisions: defaultProvisions(),
+    accommodation: defaultAccommodation(),
+  },
   guests: [],
-  transportTo: { method: null, freeSeats: null, day: null, time: '', departureCity: '' },
-  transportFrom: { method: null, day: null, time: '' },
-  transportComment: '',
-  freeMic: ''
+  transportTo: {
+    method: null,
+    freeSeats: null,
+    day: null,
+    time: "",
+    departureCity: "",
+  },
+  transportFrom: { method: null, day: null, time: "" },
+  transportComment: "",
+  freeMic: "",
 };
 
-const STORAGE_KEY = 'zubr_form_draft_2026_v2';
+const STORAGE_KEY = "zubr_form_draft_2026_v2";
 
 export function createFormStore() {
   let initial = JSON.parse(JSON.stringify(initialState));
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
@@ -52,7 +71,7 @@ export function createFormStore() {
   let meta = $state({ touchedFields: new Set() });
 
   function saveToLocalStorage() {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       if (JSON.stringify(data) === JSON.stringify(initialState)) {
         localStorage.removeItem(STORAGE_KEY);
       } else {
@@ -70,9 +89,15 @@ export function createFormStore() {
   });
 
   return {
-    get data() { return data; },
-    set data(v) { data = v; },
-    get meta() { return meta; },
+    get data() {
+      return data;
+    },
+    set data(v) {
+      data = v;
+    },
+    get meta() {
+      return meta;
+    },
 
     updateGuestsCount(targetGuests) {
       if (data.applicationType === APPLICATION_TYPE.INDIVIDUAL) {
@@ -85,8 +110,12 @@ export function createFormStore() {
       if (targetGuests > data.guests.length) {
         for (let i = data.guests.length; i < targetGuests; i++) {
           data.guests.push({
-            firstName: '',
-            lastName: '', nickname: '', phone: '', provisions: defaultProvisions(), accommodation: defaultAccommodation()
+            firstName: "",
+            lastName: "",
+            nickname: "",
+            phone: "",
+            provisions: defaultProvisions(),
+            accommodation: defaultAccommodation(),
           });
         }
       } else if (targetGuests < data.guests.length) {
@@ -97,7 +126,7 @@ export function createFormStore() {
     reset() {
       data = JSON.parse(JSON.stringify(initialState));
       meta.touchedFields = new Set();
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         localStorage.removeItem(STORAGE_KEY);
       }
     },
@@ -110,7 +139,7 @@ export function createFormStore() {
 
     touchAllInStep(stepPaths) {
       const newSet = new Set(meta.touchedFields);
-      stepPaths.forEach(p => newSet.add(p));
+      stepPaths.forEach((p) => newSet.add(p));
       meta.touchedFields = newSet;
     },
   };
@@ -134,7 +163,7 @@ export function sanitizeFormData(data) {
   const sanitizeAccommodation = (acc) => {
     if (acc.type === ACCOMMODATION_TYPE.SELF) {
       acc.nights = [];
-      acc.comment = '';
+      acc.comment = "";
     }
   };
 
@@ -147,17 +176,24 @@ export function sanitizeFormData(data) {
     }
   };
 
-  if (payload.applicationType === APPLICATION_TYPE.INDIVIDUAL || payload.groupConditions === GROUP_CONDITIONS.UNIFIED) {
+  if (
+    payload.applicationType === APPLICATION_TYPE.INDIVIDUAL ||
+    payload.groupConditions === GROUP_CONDITIONS.UNIFIED
+  ) {
     sanitizeProvisions(payload.applicant.provisions);
     sanitizeAccommodation(payload.applicant.accommodation);
-    payload.guests.forEach(guest => {
-      guest.provisions = JSON.parse(JSON.stringify(payload.applicant.provisions));
-      guest.accommodation = JSON.parse(JSON.stringify(payload.applicant.accommodation));
+    payload.guests.forEach((guest) => {
+      guest.provisions = JSON.parse(
+        JSON.stringify(payload.applicant.provisions),
+      );
+      guest.accommodation = JSON.parse(
+        JSON.stringify(payload.applicant.accommodation),
+      );
     });
   } else {
     sanitizeProvisions(payload.applicant.provisions);
     sanitizeAccommodation(payload.applicant.accommodation);
-    payload.guests.forEach(guest => {
+    payload.guests.forEach((guest) => {
       sanitizeProvisions(guest.provisions);
       sanitizeAccommodation(guest.accommodation);
     });

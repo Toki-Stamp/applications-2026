@@ -1,62 +1,110 @@
 <script>
-  import { onMount } from 'svelte';
-  import { fade } from 'svelte/transition';
+  import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
 
   const darkThemes = [
-    { id: 'cyberpunk', name: 'Cyberpunk', primary: '#06b6d4', accent: '#6366f1' },
-    { id: 'original', name: 'Neon Pink', primary: '#8b5cf6', accent: '#ec4899' },
-    { id: 'mint', name: 'Mint', primary: '#10b981', accent: '#14b8a6' },
-    { id: 'sunset', name: 'Sunset', primary: '#f97316', accent: '#f59e0b' },
-    { id: 'ocean', name: 'Ocean', primary: '#3b82f6', accent: '#4f46e5' },
-    { id: 'minimal', name: 'Minimal', primary: '#94a3b8', accent: '#e4e4e7' },
-    { id: 'military', name: 'Military', primary: '#858f6b', accent: '#5c6348' },
-    { id: 'galaxy', name: 'Galaxy', primary: '#a855f7', accent: '#6366f1' },
-    { id: 'marshmallow', name: 'Marshmallow', primary: '#fda4af', accent: '#fbcfe8' },
-    { id: 'lava', name: 'Lava', primary: '#ef4444', accent: '#f97316' }
+    {
+      id: "cyberpunk",
+      name: "Cyberpunk",
+      primary: "#06b6d4",
+      accent: "#6366f1",
+    },
+    {
+      id: "original",
+      name: "Neon Pink",
+      primary: "#8b5cf6",
+      accent: "#ec4899",
+    },
+    { id: "mint", name: "Mint", primary: "#10b981", accent: "#14b8a6" },
+    { id: "sunset", name: "Sunset", primary: "#f97316", accent: "#f59e0b" },
+    { id: "ocean", name: "Ocean", primary: "#3b82f6", accent: "#4f46e5" },
+    { id: "minimal", name: "Minimal", primary: "#94a3b8", accent: "#e4e4e7" },
+    { id: "military", name: "Military", primary: "#858f6b", accent: "#5c6348" },
+    { id: "galaxy", name: "Galaxy", primary: "#a855f7", accent: "#6366f1" },
+    {
+      id: "marshmallow",
+      name: "Marshmallow",
+      primary: "#fda4af",
+      accent: "#fbcfe8",
+    },
+    { id: "lava", name: "Lava", primary: "#ef4444", accent: "#f97316" },
   ];
 
   const lightThemes = [
-    { id: 'light-daylight', name: 'Daylight', primary: '#0ea5e9', accent: '#4f46e5' },
-    { id: 'light-cotton', name: 'Cotton', primary: '#a855f7', accent: '#ec4899' },
-    { id: 'light-sunrise', name: 'Sunrise', primary: '#f97316', accent: '#f59e0b' },
-    { id: 'light-mint', name: 'Mint', primary: '#10b981', accent: '#0d9488' },
-    { id: 'light-sakura', name: 'Sakura', primary: '#f43f5e', accent: '#e11d48' },
-    { id: 'light-lemon', name: 'Lemon', primary: '#eab308', accent: '#d97706' },
-    { id: 'light-lavender', name: 'Lavender', primary: '#8b5cf6', accent: '#6d28d9' },
-    { id: 'light-sand', name: 'Sand', primary: '#b45309', accent: '#92400e' },
-    { id: 'light-military', name: 'Military', primary: '#4a5d23', accent: '#3b4a1c' },
-    { id: 'light-ocean', name: 'Ocean', primary: '#0284c7', accent: '#0369a1' }
+    {
+      id: "light-daylight",
+      name: "Daylight",
+      primary: "#0ea5e9",
+      accent: "#4f46e5",
+    },
+    {
+      id: "light-cotton",
+      name: "Cotton",
+      primary: "#a855f7",
+      accent: "#ec4899",
+    },
+    {
+      id: "light-sunrise",
+      name: "Sunrise",
+      primary: "#f97316",
+      accent: "#f59e0b",
+    },
+    { id: "light-mint", name: "Mint", primary: "#10b981", accent: "#0d9488" },
+    {
+      id: "light-sakura",
+      name: "Sakura",
+      primary: "#f43f5e",
+      accent: "#e11d48",
+    },
+    { id: "light-lemon", name: "Lemon", primary: "#eab308", accent: "#d97706" },
+    {
+      id: "light-lavender",
+      name: "Lavender",
+      primary: "#8b5cf6",
+      accent: "#6d28d9",
+    },
+    { id: "light-sand", name: "Sand", primary: "#b45309", accent: "#92400e" },
+    {
+      id: "light-military",
+      name: "Military",
+      primary: "#4a5d23",
+      accent: "#3b4a1c",
+    },
+    { id: "light-ocean", name: "Ocean", primary: "#0284c7", accent: "#0369a1" },
   ];
 
   const allThemes = [...darkThemes, ...lightThemes];
 
-  let currentTheme = $state('cyberpunk');
+  let currentTheme = $state("cyberpunk");
   let isOpen = $state(false);
   let isHovered = $state(false);
 
   onMount(() => {
-    const saved = localStorage.getItem('app-theme');
-    if (saved && allThemes.some(t => t.id === saved)) {
+    const saved = localStorage.getItem("app-theme");
+    if (saved && allThemes.some((t) => t.id === saved)) {
       setTheme(saved);
     } else {
-      setTheme('cyberpunk');
+      setTheme("cyberpunk");
     }
 
     /** @param {MouseEvent} e */
     const closeListener = (e) => {
-      if (e.target instanceof Element && !e.target.closest('.theme-switcher-wrapper')) {
+      if (
+        e.target instanceof Element &&
+        !e.target.closest(".theme-switcher-wrapper")
+      ) {
         isOpen = false;
       }
     };
-    document.addEventListener('click', closeListener);
-    return () => document.removeEventListener('click', closeListener);
+    document.addEventListener("click", closeListener);
+    return () => document.removeEventListener("click", closeListener);
   });
 
   /** @param {string} id */
   function setTheme(id) {
     currentTheme = id;
-    document.documentElement.setAttribute('data-theme', id);
-    localStorage.setItem('app-theme', id);
+    document.documentElement.setAttribute("data-theme", id);
+    localStorage.setItem("app-theme", id);
     isOpen = false;
   }
 </script>
@@ -64,13 +112,13 @@
 <div
   class="theme-switcher-wrapper"
   role="presentation"
-  onmouseenter={() => isHovered = true}
-  onmouseleave={() => isHovered = false}
+  onmouseenter={() => (isHovered = true)}
+  onmouseleave={() => (isHovered = false)}
 >
   <button
     type="button"
     class="icon-btn"
-    onclick={() => isOpen = !isOpen}
+    onclick={() => (isOpen = !isOpen)}
     aria-label="Выбрать тему оформления"
   >
     <md-icon>settings</md-icon>
@@ -157,8 +205,6 @@
     transform: rotate(90deg);
   }
 
-
-
   .theme-popover {
     position: absolute;
     top: calc(100% + 10px);
@@ -209,7 +255,8 @@
     font-weight: 700;
     color: var(--text-secondary);
     padding: 0.75rem 1rem 0.25rem 1rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--text-primary) 10%, transparent);
   }
 
   .custom-tooltip {
@@ -275,8 +322,12 @@
     height: 50%;
   }
 
-  .color-half.primary { background-color: var(--t-primary); }
-  .color-half.accent { background-color: var(--t-accent); }
+  .color-half.primary {
+    background-color: var(--t-primary);
+  }
+  .color-half.accent {
+    background-color: var(--t-accent);
+  }
 
   .theme-name {
     font-size: 0.95rem;

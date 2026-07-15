@@ -1,6 +1,6 @@
 <script>
-  import Button from '../ui/Button.svelte';
-  import Tooltip from '../ui/Tooltip.svelte';
+  import Button from "../ui/Button.svelte";
+  import Tooltip from "../ui/Tooltip.svelte";
   let {
     currentStep,
     totalSteps,
@@ -49,7 +49,10 @@
           {/if}
 
           {#if currentStep < totalSteps}
-            <Tooltip text={hasErrors ? "Заполните данные, чтобы продолжить" : "Далее"} pos="right">
+            <Tooltip
+              text={hasErrors ? "Заполните данные, чтобы продолжить" : "Далее"}
+              pos="right"
+            >
               <Button
                 type="button"
                 variant={hasErrors ? "secondary" : "primary"}
@@ -61,7 +64,14 @@
               </Button>
             </Tooltip>
           {:else}
-            <Tooltip text={hasErrors ? "Недостаточно данных для отправки" : isSubmitting ? "Подождите, идет отправка" : "Отправить заявку"} pos="right">
+            <Tooltip
+              text={hasErrors
+                ? "Недостаточно данных для отправки"
+                : isSubmitting
+                  ? "Подождите, идет отправка"
+                  : "Отправить заявку"}
+              pos="right"
+            >
               <Button
                 type="submit"
                 variant="submit"
@@ -123,7 +133,6 @@
     justify-content: flex-end;
   }
 
-
   @media (max-width: 600px) {
     .footer-content {
       padding: 0.5rem 1rem;
@@ -139,8 +148,6 @@
   :global(.start-btn) {
     flex-grow: 0 !important;
   }
-
-
 
   @keyframes flip {
     0%,

@@ -4,11 +4,11 @@
 
   let {
     values = $bindable([]),
-    label = '',
+    label = "",
     required = false,
-    errorText = '',
+    errorText = "",
     groups = [], // array of { day?: string, items: { id, label, helperText, icon }[] }
-    errorMessageFn = null // function to generate error message object {prefix, label, suffix}
+    errorMessageFn = null, // function to generate error message object {prefix, label, suffix}
   } = $props();
 
   function handleToggle(id) {
@@ -20,7 +20,9 @@
   }
 
   const hasError = $derived(!!errorText);
-  const errorMsg = $derived(hasError && errorMessageFn ? errorMessageFn(label || 'Значение') : null);
+  const errorMsg = $derived(
+    hasError && errorMessageFn ? errorMessageFn(label || "Значение") : null,
+  );
 </script>
 
 <div class="form-group">
@@ -73,7 +75,8 @@
   {#if hasError && errorMsg}
     <div class="error-wrapper">
       <HintBox type="error">
-        {errorMsg.prefix}<strong class="text-primary">{errorMsg.label}</strong>{errorMsg.suffix}
+        {errorMsg.prefix}<strong class="text-primary">{errorMsg.label}</strong
+        >{errorMsg.suffix}
       </HintBox>
     </div>
   {/if}

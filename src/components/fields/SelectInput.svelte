@@ -9,14 +9,14 @@
 
   let {
     value = $bindable(),
-    label = '',
-    helperText = '',
+    label = "",
+    helperText = "",
     options = [],
     required = false,
-    placeholder = '',
-    id = generateId('select'),
-    icon = '',
-    errorText = '',
+    placeholder = "",
+    id = generateId("select"),
+    icon = "",
+    errorText = "",
     onchange,
     ...restProps
   } = $props();
@@ -26,13 +26,13 @@
     const target = /** @type {any} */ (e.target);
     const rawVal = target.value;
     // Find the matching option to get the original typed value (e.g. number instead of string)
-    const match = options.find(opt => {
+    const match = options.find((opt) => {
       const v = opt.value !== undefined ? String(opt.value) : String(opt);
       return v === rawVal;
     });
     if (match !== undefined) {
       value = match.value !== undefined ? match.value : match;
-    } else if (rawVal === '') {
+    } else if (rawVal === "") {
       value = null;
     } else {
       value = rawVal;
@@ -53,7 +53,7 @@
   }
 
   const hasError = $derived(!!errorText);
-  const computedSupportingText = $derived(hasError ? errorText : '');
+  const computedSupportingText = $derived(hasError ? errorText : "");
 
   /**
    * Svelte action to sync value to the Web Component AFTER children are mounted
@@ -87,9 +87,9 @@
     }
 
     // Use capture phase to catch all scroll events on the page
-    window.addEventListener('scroll', handleScroll, true);
+    window.addEventListener("scroll", handleScroll, true);
     return () => {
-      window.removeEventListener('scroll', handleScroll, true);
+      window.removeEventListener("scroll", handleScroll, true);
     };
   });
 </script>
@@ -155,52 +155,52 @@
     right: 36px;
     top: 50%;
     transform: translateY(-50%);
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(
-        --bg-color-accent
-      ); /* Hide the text underneath if it overlaps */
-      border-radius: 50%;
-      transition: margin-top 0.2s;
-    }
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(
+      --bg-color-accent
+    ); /* Hide the text underneath if it overlaps */
+    border-radius: 50%;
+    transition: margin-top 0.2s;
+  }
 
-    .clear-button-wrapper.has-error {
-      margin-top: -10px;
-    }
+  .clear-button-wrapper.has-error {
+    margin-top: -10px;
+  }
 
-    .select-field {
-      width: 100%;
-      min-height: 56px;
-      --md-outlined-select-text-field-container-shape: 8px;
-    }
+  .select-field {
+    width: 100%;
+    min-height: 56px;
+    --md-outlined-select-text-field-container-shape: 8px;
+  }
 
-    .select-wrapper.is-open .select-field {
-      background-color: var(--bg-color-accent);
-      border-radius: 8px;
-    }
+  .select-wrapper.is-open .select-field {
+    background-color: var(--bg-color-accent);
+    border-radius: 8px;
+  }
 
-    .select-field.is-empty {
-      --md-outlined-select-text-field-input-text-color: var(--text-placeholder);
-      --md-outlined-select-text-field-hover-input-text-color: var(
-        --text-placeholder
-      );
-      --md-outlined-select-text-field-focus-input-text-color: var(
-        --text-placeholder
-      );
-      --md-outlined-select-text-field-error-input-text-color: var(
-        --text-placeholder
-      );
-      --md-outlined-select-text-field-error-hover-input-text-color: var(
-        --text-placeholder
-      );
-      --md-outlined-select-text-field-error-focus-input-text-color: var(
-        --text-placeholder
-      );
-    }
+  .select-field.is-empty {
+    --md-outlined-select-text-field-input-text-color: var(--text-placeholder);
+    --md-outlined-select-text-field-hover-input-text-color: var(
+      --text-placeholder
+    );
+    --md-outlined-select-text-field-focus-input-text-color: var(
+      --text-placeholder
+    );
+    --md-outlined-select-text-field-error-input-text-color: var(
+      --text-placeholder
+    );
+    --md-outlined-select-text-field-error-hover-input-text-color: var(
+      --text-placeholder
+    );
+    --md-outlined-select-text-field-error-focus-input-text-color: var(
+      --text-placeholder
+    );
+  }
 
-    md-select-option.placeholder-option {
-      display: none !important;
-    }
+  md-select-option.placeholder-option {
+    display: none !important;
+  }
 </style>

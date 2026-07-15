@@ -304,7 +304,10 @@
             {:else if currentStep === 5}
               <div transition:fade={{ duration: 300 }} class="step-layer">
                 <div class="step-content">
-                  <Provisions stepNumber={currentStep - 1} errors={stepErrors} />
+                  <Provisions
+                    stepNumber={currentStep - 1}
+                    errors={stepErrors}
+                  />
                 </div>
               </div>
             {:else if currentStep === 6}
@@ -344,9 +347,9 @@
       {/snippet}
       <p>Вы уверены, что хотите безвозвратно удалить все введенные данные?</p>
       {#snippet actions()}
-        <Button
-          variant="secondary"
-          onclick={() => (showClearModal = false)}>Отмена</Button>
+        <Button variant="secondary" onclick={() => (showClearModal = false)}
+          >Отмена</Button
+        >
         <Button variant="danger" onclick={clearForm}>Очистить</Button>
       {/snippet}
     </Modal>
@@ -366,9 +369,9 @@
         Попробуйте позже или проверьте правильность развертывания скрипта
       </p>
       {#snippet actions()}
-        <Button
-          variant="danger"
-          onclick={() => (submitErrorMessage = null)}>Понятно</Button>
+        <Button variant="danger" onclick={() => (submitErrorMessage = null)}
+          >Понятно</Button
+        >
       {/snippet}
     </Modal>
   {/if}
@@ -391,10 +394,11 @@
             showDraftModal = false;
             clearForm();
             currentStep = 1;
-          }}>Начать заново</Button>
-        <Button
-          variant="primary"
-          onclick={() => (showDraftModal = false)}>Продолжить</Button>
+          }}>Начать заново</Button
+        >
+        <Button variant="primary" onclick={() => (showDraftModal = false)}
+          >Продолжить</Button
+        >
       {/snippet}
     </Modal>
   {/if}

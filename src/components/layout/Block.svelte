@@ -38,9 +38,18 @@
     bottom: 0;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.05) 100%);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
@@ -51,12 +60,19 @@
 
   .block-card:hover {
     border-color: var(--glass-border-hover);
-    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.3), 0 0 20px rgba(139, 92, 246, 0.1);
+    box-shadow:
+      0 10px 40px -10px rgba(0, 0, 0, 0.3),
+      0 0 20px rgba(139, 92, 246, 0.1);
   }
 
   .block-card:hover::before {
     opacity: 1;
-    background: linear-gradient(135deg, var(--primary) 0%, rgba(255, 255, 255, 0) 50%, var(--accent) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--primary) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      var(--accent) 100%
+    );
   }
 
   .block-title {
@@ -64,7 +80,8 @@
     border-bottom: 1px solid var(--border-color);
     padding: 1.125rem 2rem;
     margin: -2rem -2rem 0 -2rem;
-    border-radius: calc(var(--border-radius) - 1px) calc(var(--border-radius) - 1px) 0 0;
+    border-radius: calc(var(--border-radius) - 1px)
+      calc(var(--border-radius) - 1px) 0 0;
     color: var(--text-primary);
     display: flex;
     align-items: center;
@@ -81,12 +98,19 @@
     z-index: 30;
 
     background: var(--bg-color-accent);
-    background: linear-gradient(to right, color-mix(in srgb, var(--primary) 10%, transparent), transparent),
-                linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)), 
-                color-mix(in srgb, var(--bg-color-accent) 85%, transparent);
+    background:
+      linear-gradient(
+        to right,
+        color-mix(in srgb, var(--primary) 10%, transparent),
+        transparent
+      ),
+      linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)),
+      color-mix(in srgb, var(--bg-color-accent) 85%, transparent);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+    box-shadow:
+      0 6px 16px -8px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
   /* Add a tiny accent dot to titles */

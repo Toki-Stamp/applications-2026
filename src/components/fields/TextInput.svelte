@@ -1,24 +1,24 @@
 <script>
-  import '@material/web/textfield/outlined-text-field.js';
-  import '@material/web/icon/icon.js';
-  import '@material/web/iconbutton/icon-button.js';
+  import "@material/web/textfield/outlined-text-field.js";
+  import "@material/web/icon/icon.js";
+  import "@material/web/iconbutton/icon-button.js";
   import { generateId } from "../../utils.js";
   import { ERROR_MESSAGES } from "../../constants.js";
   import FieldLabel from "./FieldLabel.svelte";
   import Button from "../ui/Button.svelte";
 
   let {
-    value = $bindable(''),
-    label = '',
-    helperText = '',
-    type = 'text',
+    value = $bindable(""),
+    label = "",
+    helperText = "",
+    type = "text",
     required = false,
     min = undefined,
     max = undefined,
-    id = generateId('textinput'),
-    icon = '',
-    placeholder = '',
-    errorText = '',
+    id = generateId("textinput"),
+    icon = "",
+    placeholder = "",
+    errorText = "",
     capitalizeFirst = false,
     ...restProps
   } = $props();
@@ -27,7 +27,8 @@
   function handleInput(e) {
     const target = /** @type {HTMLInputElement} */ (e.target);
     if (capitalizeFirst && target.value.length > 0) {
-      target.value = target.value.charAt(0).toUpperCase() + target.value.slice(1);
+      target.value =
+        target.value.charAt(0).toUpperCase() + target.value.slice(1);
     }
     value = target.value;
   }
@@ -35,11 +36,11 @@
   /** @param {Event} e */
   function clearValue(e) {
     e.preventDefault();
-    value = '';
+    value = "";
   }
 
   const hasError = $derived(!!errorText);
-  const computedSupportingText = $derived(hasError ? errorText : '');
+  const computedSupportingText = $derived(hasError ? errorText : "");
 </script>
 
 <div class="form-group">
@@ -49,7 +50,7 @@
       {id}
       {type}
       class="text-field"
-      class:is-time-empty={type === 'time' && (!value || value === '')}
+      class:is-time-empty={type === "time" && (!value || value === "")}
       supporting-text={computedSupportingText}
       error={hasError}
       {value}
@@ -75,7 +76,6 @@
 </div>
 
 <style>
-
   .input-wrapper {
     position: relative;
     width: 100%;
@@ -110,7 +110,11 @@
     --md-outlined-text-field-hover-input-text-color: var(--text-placeholder);
     --md-outlined-text-field-focus-input-text-color: var(--text-placeholder);
     --md-outlined-text-field-error-input-text-color: var(--text-placeholder);
-    --md-outlined-text-field-error-hover-input-text-color: var(--text-placeholder);
-    --md-outlined-text-field-error-focus-input-text-color: var(--text-placeholder);
+    --md-outlined-text-field-error-hover-input-text-color: var(
+      --text-placeholder
+    );
+    --md-outlined-text-field-error-focus-input-text-color: var(
+      --text-placeholder
+    );
   }
 </style>

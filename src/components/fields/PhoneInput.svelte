@@ -1,172 +1,195 @@
 <script>
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy } from "svelte";
   import { ERROR_MESSAGES } from "../../constants.js";
-  import '@material/web/select/select-option.js';
-  import '@material/web/textfield/outlined-text-field.js';
-  import '@material/web/iconbutton/icon-button.js';
-  import '@material/web/icon/icon.js';
-  import 'flag-icons/css/flag-icons.min.css';
-  import { AsYouType, isValidPhoneNumber, getCountries, getCountryCallingCode, getExampleNumber } from 'libphonenumber-js';
+  import "@material/web/select/select-option.js";
+  import "@material/web/textfield/outlined-text-field.js";
+  import "@material/web/iconbutton/icon-button.js";
+  import "@material/web/icon/icon.js";
+  import "flag-icons/css/flag-icons.min.css";
+  import {
+    AsYouType,
+    isValidPhoneNumber,
+    getCountries,
+    getCountryCallingCode,
+    getExampleNumber,
+  } from "libphonenumber-js";
   // @ts-ignore
-  import examples from 'libphonenumber-js/mobile/examples';
+  import examples from "libphonenumber-js/mobile/examples";
   import { generateId } from "../../utils.js";
   import FieldLabel from "./FieldLabel.svelte";
   import Button from "../ui/Button.svelte";
 
   let {
-    value = $bindable(''),
-    label = '',
-    helperText = '',
+    value = $bindable(""),
+    label = "",
+    helperText = "",
     required = false,
-    id = generateId('phoneinput'),
-    errorText = '',
+    id = generateId("phoneinput"),
+    errorText = "",
     ...restProps
   } = $props();
 
   const hasError = $derived(!!errorText);
 
   /** @type {import('libphonenumber-js').CountryCode} */
-  let selectedCountry = $state('BY');
-  let rawPhoneNumber = $state('');
+  let selectedCountry = $state("BY");
+  let rawPhoneNumber = $state("");
 
   // Dropdown state
   let dropdownOpen = $state(false);
   let openUpwards = $state(false);
-  let searchQuery = $state('');
-  
+  let searchQuery = $state("");
+
   /** @type {HTMLElement} */
   let dropdownRef;
-  
+
   // Generate country list dynamically
-  const regionNames = new Intl.DisplayNames(['ru'], { type: 'region' });
+  const regionNames = new Intl.DisplayNames(["ru"], { type: "region" });
 
   /** @type {Array<{code: import('libphonenumber-js').CountryCode, name: string, dialCode: string}>} */
-  const allCountries = getCountries().map(code => {
-    let name = /** @type {string} */ (code);
-    try {
-      name = regionNames.of(code) || code;
-    } catch (e) {
-      // Fallback if region is invalid
-    }
-    return {
-      code,
-      name,
-      dialCode: `+${getCountryCallingCode(code)}`
-    };
-  }).sort((a, b) => a.name.localeCompare(b.name));
+  const allCountries = getCountries()
+    .map((code) => {
+      let name = /** @type {string} */ (code);
+      try {
+        name = regionNames.of(code) || code;
+      } catch (e) {
+        // Fallback if region is invalid
+      }
+      return {
+        code,
+        name,
+        dialCode: `+${getCountryCallingCode(code)}`,
+      };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   // Default priority countries to show at the top
-  const priorityCodes = ['BY', 'RU', 'KZ', 'UA', 'PL', 'LT', 'LV'];
-  const priorityCountries = priorityCodes.map(code => allCountries.find(c => c.code === code)).filter(Boolean);
+  const priorityCodes = ["BY", "RU", "KZ", "UA", "PL", "LT", "LV"];
+  const priorityCountries = priorityCodes
+    .map((code) => allCountries.find((c) => c.code === code))
+    .filter(Boolean);
   /** @type {Array<{code: import('libphonenumber-js').CountryCode, name: string, dialCode: string}>} */
   // @ts-ignore
   const validPriorityCountries = priorityCountries;
 
-  const otherCountries = allCountries.filter(c => !priorityCodes.includes(c.code));
+  const otherCountries = allCountries.filter(
+    (c) => !priorityCodes.includes(c.code),
+  );
   let sortedCountries = [...validPriorityCountries, ...otherCountries];
 
-  const filteredCountries = $derived(sortedCountries.filter(c => {
-    const q = searchQuery.toLowerCase();
-    return c.name.toLowerCase().includes(q) || c.dialCode.includes(q) || c.code.toLowerCase().includes(q);
-  }));
+  const filteredCountries = $derived(
+    sortedCountries.filter((c) => {
+      const q = searchQuery.toLowerCase();
+      return (
+        c.name.toLowerCase().includes(q) ||
+        c.dialCode.includes(q) ||
+        c.code.toLowerCase().includes(q)
+      );
+    }),
+  );
 
   // Derived selected country object for UI
-  const selectedCountryObj = $derived(allCountries.find(c => c.code === selectedCountry) || allCountries[0]);
+  const selectedCountryObj = $derived(
+    allCountries.find((c) => c.code === selectedCountry) || allCountries[0],
+  );
 
   // Dynamic placeholder mask based on selected country
-  const dynamicPlaceholder = $derived((() => {
-    try {
-      const phoneNumber = getExampleNumber(selectedCountry, examples);
-      if (phoneNumber) {
-        const intl = phoneNumber.formatInternational();
-        const prefix = `+${phoneNumber.countryCallingCode}`;
-        return intl.replace(prefix, '').trim();
+  const dynamicPlaceholder = $derived(
+    (() => {
+      try {
+        const phoneNumber = getExampleNumber(selectedCountry, examples);
+        if (phoneNumber) {
+          const intl = phoneNumber.formatInternational();
+          const prefix = `+${phoneNumber.countryCallingCode}`;
+          return intl.replace(prefix, "").trim();
+        }
+        return "";
+      } catch (e) {
+        return "";
       }
-      return '';
-    } catch (e) {
-      return '';
-    }
-  })());
+    })(),
+  );
 
   /** @param {Event} e */
   function handleInput(e) {
     const target = /** @type {HTMLInputElement} */ (e.target);
     let rawInput = target.value;
-    
+
     const currentDialCode = selectedCountryObj.dialCode;
-    const currentDialCodeDigits = currentDialCode.replace('+', '');
-    
-    let cleanInput = rawInput.replace(/[^\d+]/g, '');
+    const currentDialCodeDigits = currentDialCode.replace("+", "");
+
+    let cleanInput = rawInput.replace(/[^\d+]/g, "");
     let fullNumberToFormat = cleanInput;
-    
-    if (!cleanInput.startsWith('+') && cleanInput !== '') {
+
+    if (!cleanInput.startsWith("+") && cleanInput !== "") {
       if (cleanInput.startsWith(currentDialCodeDigits)) {
-         fullNumberToFormat = '+' + cleanInput;
+        fullNumberToFormat = "+" + cleanInput;
       } else {
-         fullNumberToFormat = currentDialCode + cleanInput;
+        fullNumberToFormat = currentDialCode + cleanInput;
       }
-    } else if (cleanInput === '') {
+    } else if (cleanInput === "") {
       fullNumberToFormat = currentDialCode;
     }
-    
+
     const formatter = new AsYouType();
     const fullFormatted = formatter.input(fullNumberToFormat);
     const numberObj = formatter.getNumber();
-    
+
     let actualDialCode = currentDialCode;
     if (numberObj && numberObj.countryCallingCode) {
-      actualDialCode = '+' + numberObj.countryCallingCode;
+      actualDialCode = "+" + numberObj.countryCallingCode;
       if (numberObj.country && numberObj.country !== selectedCountry) {
         selectedCountry = numberObj.country;
       }
-    } else if (fullFormatted.startsWith('+')) {
-       const match = fullFormatted.match(/^\+(\d+)/);
-       if (match) actualDialCode = '+' + match[1];
+    } else if (fullFormatted.startsWith("+")) {
+      const match = fullFormatted.match(/^\+(\d+)/);
+      if (match) actualDialCode = "+" + match[1];
     }
-    
+
     let displayValue = fullFormatted;
     if (displayValue.startsWith(actualDialCode)) {
       displayValue = displayValue.slice(actualDialCode.length).trim();
     }
-    
+
     rawPhoneNumber = displayValue;
-    target.value = displayValue; 
-    
+    target.value = displayValue;
+
     if (numberObj) {
       value = numberObj.number;
     } else {
-      value = fullNumberToFormat === currentDialCode ? '' : fullNumberToFormat;
+      value = fullNumberToFormat === currentDialCode ? "" : fullNumberToFormat;
     }
   }
 
   /** @param {Event} e */
   function clearValue(e) {
     e.preventDefault();
-    value = '';
-    rawPhoneNumber = '';
+    value = "";
+    rawPhoneNumber = "";
   }
 
   /** @param {import('libphonenumber-js').CountryCode} code */
   function selectCountry(code) {
     selectedCountry = code;
     dropdownOpen = false;
-    searchQuery = '';
-    
+    searchQuery = "";
+
     if (rawPhoneNumber) {
-      const newDialCode = allCountries.find(c => c.code === code)?.dialCode || '';
-      const cleanInput = rawPhoneNumber.replace(/[^\d]/g, '');
+      const newDialCode =
+        allCountries.find((c) => c.code === code)?.dialCode || "";
+      const cleanInput = rawPhoneNumber.replace(/[^\d]/g, "");
       const fullNumber = newDialCode + cleanInput;
-      
+
       const formatter = new AsYouType();
       const fullFormatted = formatter.input(fullNumber);
-      
+
       let displayValue = fullFormatted;
       if (displayValue.startsWith(newDialCode)) {
         displayValue = displayValue.slice(newDialCode.length).trim();
       }
-      
+
       rawPhoneNumber = displayValue;
-      
+
       const numberObj = formatter.getNumber();
       if (numberObj) {
         value = numberObj.number;
@@ -175,37 +198,41 @@
       }
     }
   }
-  
+
   onMount(() => {
     if (value) {
       const formatter = new AsYouType();
       const fullFormatted = formatter.input(value);
       const num = formatter.getNumber();
-      let actualDialCode = '';
+      let actualDialCode = "";
       if (num && num.country) {
         selectedCountry = num.country;
-        actualDialCode = '+' + num.countryCallingCode;
+        actualDialCode = "+" + num.countryCallingCode;
       }
-      
+
       let displayValue = fullFormatted;
       if (actualDialCode && displayValue.startsWith(actualDialCode)) {
         displayValue = displayValue.slice(actualDialCode.length).trim();
       }
       rawPhoneNumber = displayValue;
     }
-    
-    document.addEventListener('click', handleClickOutside);
+
+    document.addEventListener("click", handleClickOutside);
   });
-  
+
   onDestroy(() => {
-    if (typeof document !== 'undefined') {
-      document.removeEventListener('click', handleClickOutside);
+    if (typeof document !== "undefined") {
+      document.removeEventListener("click", handleClickOutside);
     }
   });
 
   /** @param {MouseEvent} event */
   function handleClickOutside(event) {
-    if (dropdownOpen && dropdownRef && !dropdownRef.contains(/** @type {Node} */ (event.target))) {
+    if (
+      dropdownOpen &&
+      dropdownRef &&
+      !dropdownRef.contains(/** @type {Node} */ (event.target))
+    ) {
       dropdownOpen = false;
     }
   }
@@ -214,9 +241,9 @@
     dropdownOpen = !dropdownOpen;
     if (dropdownOpen) {
       setTimeout(() => {
-        const searchInput = dropdownRef?.querySelector('.search-input');
+        const searchInput = dropdownRef?.querySelector(".search-input");
         if (searchInput) /** @type {HTMLInputElement} */ (searchInput).focus();
-        
+
         if (dropdownRef) {
           const rect = dropdownRef.getBoundingClientRect();
           const spaceBelow = window.innerHeight - rect.bottom;
@@ -228,46 +255,52 @@
   }
 
   // supporting-text is now only used for errors or empty
-  const computedSupportingText = $derived(hasError ? errorText : '');
+  const computedSupportingText = $derived(hasError ? errorText : "");
 </script>
 
 <div class="form-group">
   <FieldLabel {label} {helperText} {required} />
-  
+
   <div class="phone-inputs-container">
     <!-- Custom Dropdown Container -->
     <div class="country-dropdown-wrapper" bind:this={dropdownRef}>
-      <button 
-        type="button" 
-        class="country-selector-btn" 
+      <button
+        type="button"
+        class="country-selector-btn"
         class:active={dropdownOpen}
         onclick={toggleDropdown}
       >
-        <span class="fi fi-{selectedCountryObj?.code?.toLowerCase()} flag-icon"></span>
+        <span class="fi fi-{selectedCountryObj?.code?.toLowerCase()} flag-icon"
+        ></span>
         <span class="dial-code">{selectedCountryObj?.dialCode}</span>
         <md-icon class="arrow-icon">arrow_drop_down</md-icon>
       </button>
 
       {#if dropdownOpen}
-        <div class="dropdown-menu" class:upwards={openUpwards} class:downwards={!openUpwards}>
+        <div
+          class="dropdown-menu"
+          class:upwards={openUpwards}
+          class:downwards={!openUpwards}
+        >
           <div class="search-box">
             <md-icon class="search-icon">search</md-icon>
-            <input 
-              type="text" 
-              class="search-input" 
-              placeholder="Поиск..." 
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Поиск..."
               bind:value={searchQuery}
             />
           </div>
           <div class="country-list">
             {#each filteredCountries as country}
-              <button 
-                type="button" 
-                class="country-item" 
+              <button
+                type="button"
+                class="country-item"
                 class:selected={selectedCountry === country.code}
                 onclick={() => selectCountry(country.code)}
               >
-                <span class="fi fi-{country.code.toLowerCase()} flag-icon"></span>
+                <span class="fi fi-{country.code.toLowerCase()} flag-icon"
+                ></span>
                 <span class="name">{country.name}</span>
                 <span class="dial-code">{country.dialCode}</span>
               </button>
@@ -279,7 +312,7 @@
         </div>
       {/if}
     </div>
-    
+
     <div class="phone-input">
       <md-outlined-text-field
         {id}
@@ -300,7 +333,6 @@
     </div>
   </div>
 </div>
-
 
 <style>
   :global(.phone-clear-btn) {
@@ -335,7 +367,9 @@
     cursor: pointer;
     font-family: inherit;
     font-size: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
   }
 
   .country-selector-btn:hover {
@@ -352,7 +386,7 @@
   .flag-icon {
     font-size: 15px; /* width 20px, height 15px */
     border-radius: 2px;
-    box-shadow: 0 0 1px rgba(0,0,0,0.3); /* Add subtle border to white flags */
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3); /* Add subtle border to white flags */
   }
 
   .country-selector-btn .dial-code {

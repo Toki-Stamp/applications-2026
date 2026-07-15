@@ -6,11 +6,11 @@
 
   let {
     value = $bindable(),
-    label = '',
+    label = "",
     options = [],
     required = false,
-    name = generateId('radiogroup'),
-    errorText = '',
+    name = generateId("radiogroup"),
+    errorText = "",
     onchange,
     ...restProps
   } = $props();
@@ -22,9 +22,11 @@
   }
 
   const hasError = $derived(!!errorText);
-  
+
   // Create formatted error message matching the old structure
-  const errorMsg = $derived(hasError ? ERROR_MESSAGES.RADIO(label || 'Значение') : null);
+  const errorMsg = $derived(
+    hasError ? ERROR_MESSAGES.RADIO(label || "Значение") : null,
+  );
 </script>
 
 <div class="form-group">
@@ -68,7 +70,8 @@
   {#if hasError && errorMsg}
     <div class="error-wrapper">
       <HintBox type="error">
-        {errorMsg.prefix}<strong class="text-primary">{errorMsg.label}</strong>{errorMsg.suffix}
+        {errorMsg.prefix}<strong class="text-primary">{errorMsg.label}</strong
+        >{errorMsg.suffix}
       </HintBox>
     </div>
   {/if}

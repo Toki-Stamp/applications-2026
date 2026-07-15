@@ -1,6 +1,6 @@
 <script>
   let {
-    title = '',
+    title = "",
     stickyLevel = 3, // 2 = stick under main block title, 3 = stick under section title
     children,
   } = $props();
@@ -46,23 +46,30 @@
     gap: 0.5rem;
 
     background: var(--bg-color-accent);
-    background: linear-gradient(to right, color-mix(in srgb, var(--accent) 5%, transparent), transparent),
-                linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)), 
-                color-mix(in srgb, var(--bg-color-accent) 85%, transparent);
+    background:
+      linear-gradient(
+        to right,
+        color-mix(in srgb, var(--accent) 5%, transparent),
+        transparent
+      ),
+      linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)),
+      color-mix(in srgb, var(--bg-color-accent) 85%, transparent);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-radius: 8px 8px 0 0;
     border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+    box-shadow:
+      0 6px 16px -8px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.02);
     position: sticky;
     z-index: 20;
   }
 
   .sub-block-card.level-2 .sub-block-title {
-    top: calc(var(--sticky-block-offset) - 1px);
+    top: calc(var(--sticky-block-offset) - 2px);
   }
   .sub-block-card.level-3 .sub-block-title {
-    top: calc(var(--sticky-section-offset) - 1px);
+    top: calc(var(--sticky-section-offset) - 2px);
   }
 
   @media (max-width: 600px) {
