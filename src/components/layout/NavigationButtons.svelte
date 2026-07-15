@@ -116,12 +116,10 @@
   }
 
   .left-buttons {
-    flex: 1;
     justify-content: flex-start;
   }
 
   .right-buttons {
-    flex: 1;
     justify-content: flex-end;
   }
 
@@ -136,6 +134,10 @@
     display: flex;
     justify-content: center;
     width: 100%;
+  }
+
+  :global(.start-btn) {
+    flex-grow: 0 !important;
   }
 
 

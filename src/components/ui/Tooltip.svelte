@@ -15,8 +15,7 @@
     position: relative;
     overflow: visible !important;
     display: inline-flex;
-    /* allow it to grow if the parent is a flex container that stretches children */
-    flex: inherit;
+    /* Removed flex: inherit to prevent layout bugs */
   }
 
   .tooltip-wrapper::after {

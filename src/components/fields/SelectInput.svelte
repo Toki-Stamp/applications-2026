@@ -72,6 +72,26 @@
       },
     };
   }
+
+  $effect(() => {
+    if (!isOpen || !selectEl) return;
+
+    /** @param {Event} e */
+    function handleScroll(e) {
+      // Don't close if the user is scrolling the menu itself
+      if (e.target && selectEl.contains(/** @type {Node} */ (e.target))) {
+        return;
+      }
+      selectEl.open = false;
+      isOpen = false;
+    }
+
+    // Use capture phase to catch all scroll events on the page
+    window.addEventListener('scroll', handleScroll, true);
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true);
+    };
+  });
 </script>
 
 <div class="form-group">
@@ -85,7 +105,7 @@
       error={hasError}
       error-text={errorText}
       supporting-text={computedSupportingText}
-      menu-positioning="absolute"
+      menu-positioning="popover"
       use:syncValue={value}
       {...restProps}
       onchange={handleChange}
@@ -128,10 +148,6 @@
   .select-wrapper {
     position: relative;
     width: 100%;
-  }
-
-  .select-wrapper.is-open {
-    z-index: 60;
   }
 
   .clear-button-wrapper {

@@ -34,7 +34,7 @@
     /* Sticky behavior: stacks under .block-title */
     position: sticky;
     top: calc(var(--sticky-block-offset) - 1px);
-    z-index: 20;
+    z-index: 25;
 
     background: var(--bg-color-accent);
     background: linear-gradient(to right, color-mix(in srgb, var(--accent) 8%, transparent), transparent),
