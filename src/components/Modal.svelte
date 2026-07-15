@@ -64,7 +64,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(9, 9, 11, 0.85);
+    background: color-mix(in srgb, var(--bg-color) 85%, transparent);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     z-index: 9999;
@@ -79,8 +79,9 @@
     max-width: 450px;
     margin: 0;
     box-shadow:
-      0 20px 50px -10px rgba(0, 0, 0, 0.5),
+      0 20px 50px -10px color-mix(in srgb, var(--text-primary) 30%, transparent),
       0 0 30px var(--primary-glow);
+    background: var(--glass-bg);
   }
 
   .variant-danger {

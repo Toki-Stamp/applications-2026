@@ -123,6 +123,7 @@
         errorText={errors["transportTo.departureCity"]}
         onblur={() => formStore.markTouched("transportTo.departureCity")}
         required={true}
+        capitalizeFirst={true}
       />
     </div>
   </div>

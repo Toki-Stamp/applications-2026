@@ -305,20 +305,26 @@
         oninput={handleInput}
         {...restProps}
       >
-        {#if rawPhoneNumber && String(rawPhoneNumber).length > 0}
-          <!-- svelte-ignore a11y_no_static_element_interactions -->
-          <!-- svelte-ignore a11y_click_events_have_key_events -->
-          <md-icon-button slot="trailing-icon" type="button" onclick={clearValue}>
-            <md-icon>close</md-icon>
-          </md-icon-button>
-        {/if}
       </md-outlined-text-field>
+      {#if rawPhoneNumber && String(rawPhoneNumber).length > 0}
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <button class="compact-clear-btn" type="button" onclick={clearValue}>
+          <md-icon>close</md-icon>
+        </button>
+      {/if}
     </div>
   </div>
 </div>
 
 
 <style>
+  .compact-clear-btn {
+    position: absolute;
+    right: 8px;
+    top: 14px;
+  }
+
   .phone-inputs-container {
     display: flex;
     gap: 8px;
@@ -335,7 +341,7 @@
     width: 100%;
     height: 56px;
     background: transparent;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--input-border-color);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -349,14 +355,14 @@
   }
 
   .country-selector-btn:hover {
-    border-color: var(--primary-hover);
+    border-color: var(--text-primary);
   }
 
   .country-selector-btn:focus-visible,
   .country-selector-btn.active {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 1px var(--primary);
+    box-shadow: 0 0 0 2px var(--primary);
   }
 
   .flag-icon {
@@ -366,9 +372,9 @@
   }
 
   .country-selector-btn .dial-code {
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-left: 8px;
-    font-weight: 500;
+    font-weight: normal;
     text-transform: uppercase;
   }
 
@@ -505,6 +511,7 @@
 
   .phone-input {
     flex: 1;
+    position: relative;
   }
 
   .phone-input md-outlined-text-field {
@@ -514,16 +521,22 @@
 
   @media (max-width: 600px) {
     .country-dropdown-wrapper {
-      flex: 0 0 95px;
+      flex: 0 0 88px;
     }
     .country-selector-btn {
-      padding: 0 8px 0 10px;
+      padding: 0 2px 0 10px;
+      justify-content: center;
     }
     .country-selector-btn .dial-code {
-      margin-left: 4px;
+      margin-left: 3px;
+    }
+    .country-selector-btn .arrow-icon {
+      display: block;
+      font-size: 16px;
+      margin-left: -2px; /* Pull it slightly closer */
     }
     .flag-icon {
-      margin-right: 8px;
+      margin-right: 0;
     }
   }
 </style>

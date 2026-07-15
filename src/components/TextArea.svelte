@@ -134,7 +134,7 @@
       color: var(--text-primary);
       caret-color: var(--primary);
       background-color: transparent;
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--input-border-color);
       border-radius: 8px;
       resize: none;
       outline: none;
@@ -151,13 +151,13 @@
     }
 
     .custom-textarea:hover {
-      border-color: var(--primary-hover);
+      border-color: var(--text-primary);
     }
 
     .custom-textarea:focus {
       border-color: var(--primary);
       /* box-shadow to mimic Material Design thicker border */
-      box-shadow: 0 0 0 1px var(--primary);
+      box-shadow: 0 0 0 2px var(--primary);
     }
 
     .custom-textarea::placeholder {

@@ -17,12 +17,16 @@
     icon = '',
     placeholder = '',
     errorText = '',
+    capitalizeFirst = false,
     ...restProps
   } = $props();
 
   /** @param {Event} e */
   function handleInput(e) {
     const target = /** @type {HTMLInputElement} */ (e.target);
+    if (capitalizeFirst && target.value.length > 0) {
+      target.value = target.value.charAt(0).toUpperCase() + target.value.slice(1);
+    }
     value = target.value;
   }
 
@@ -73,9 +77,9 @@
     {#if value && String(value).length > 0}
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <!-- svelte-ignore a11y_click_events_have_key_events -->
-      <md-icon-button slot="trailing-icon" type="button" onclick={clearValue}>
+      <button class="compact-clear-btn" slot="trailing-icon" type="button" onclick={clearValue}>
         <md-icon>close</md-icon>
-      </md-icon-button>
+      </button>
     {/if}
   </md-outlined-text-field>
 </div>

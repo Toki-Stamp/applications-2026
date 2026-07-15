@@ -12,21 +12,21 @@
 <header class="app-header" bind:clientHeight={headerHeight}>
   <div class="header-content">
     <div class="header-top-row">
+      <div class="theme-switcher-container">
+        <ThemeSwitcher />
+      </div>
       <div class="title-container">
         <h1>
           <img src="/favicon.svg" alt="Z" class="title-icon" />
           <span class="title-text">аявка 2026</span>
         </h1>
       </div>
-      <div class="theme-switcher-container">
-        <ThemeSwitcher />
-      </div>
     </div>
-
-    {#if currentStep > 1}
-      <ProgressBar {currentStep} {totalSteps} />
-    {/if}
   </div>
+
+  {#if currentStep > 1}
+    <ProgressBar {currentStep} {totalSteps} />
+  {/if}
 </header>
 
 <style>
@@ -45,7 +45,7 @@
   .header-content {
     max-width: 800px;
     margin: 0 auto;
-    padding: 1rem 1.5rem 0.5rem;
+    padding: 1rem 1.5rem;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -59,16 +59,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 0.5rem;
-    z-index: 10;
+    z-index: 20;
   }
 
   .theme-switcher-container {
     position: absolute;
-    right: 0;
+    left: 0;
     top: 50%;
     transform: translateY(-50%);
   }
+
+
 
   h1 {
     font-size: 1.6rem;

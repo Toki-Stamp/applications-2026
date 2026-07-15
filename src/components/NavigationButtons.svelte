@@ -119,10 +119,16 @@
     align-items: center;
   }
 
+  .left-buttons {
+    flex: 1;
+    justify-content: flex-start;
+  }
+
   .right-buttons {
     flex: 1;
     justify-content: flex-end;
   }
+
 
   @media (max-width: 600px) {
     .footer-content {

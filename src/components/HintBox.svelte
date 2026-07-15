@@ -35,11 +35,11 @@
   }
 
   .hint-box.error {
-    border-left-color: #ef4444;
-    background: rgba(239, 68, 68, 0.05);
+    border-left-color: var(--error-color);
+    background: color-mix(in srgb, var(--error-color) 10%, transparent);
   }
 
   .hint-box.error .hint-icon {
-    color: #ef4444;
+    color: var(--error-color);
   }
 </style>

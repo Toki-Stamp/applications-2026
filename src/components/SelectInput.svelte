@@ -39,6 +39,28 @@
     onchange?.();
   }
 
+  let isOpen = $state(false);
+  /** @type {any} */
+  let selectEl = $state();
+
+  $effect(() => {
+    if (isOpen) {
+      const scrollContainer = document.querySelector('.app-body');
+      if (!scrollContainer) return;
+      
+      const handleScroll = () => {
+        if (selectEl) {
+          selectEl.open = false;
+        }
+      };
+      
+      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+      return () => {
+        scrollContainer.removeEventListener('scroll', handleScroll);
+      };
+    }
+  });
+
   /** @param {Event} e */
   function clearValue(e) {
     e.preventDefault();
@@ -89,8 +111,9 @@
   {/if}
   <div class="select-wrapper">
     <md-outlined-select
+      bind:this={selectEl}
       class="select-field"
-      class:is-empty={!value || value === ""}
+      class:is-empty={value == null || value === ""}
       {id}
       error={hasError}
       error-text={errorText}
@@ -98,6 +121,8 @@
       use:syncValue={value}
       {...restProps}
       onchange={handleChange}
+      onopening={() => (isOpen = true)}
+      onclosed={() => (isOpen = false)}
     >
       {#if icon}
         <md-icon slot="leading-icon">{icon}</md-icon>
@@ -121,13 +146,13 @@
       {/each}
     </md-outlined-select>
 
-    {#if value && String(value).length > 0}
+    {#if value != null && value !== ""}
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <!-- svelte-ignore a11y_click_events_have_key_events -->
       <div class="clear-button-wrapper" class:has-error={hasError}>
-        <md-icon-button type="button" onclick={clearValue}>
+        <button class="compact-clear-btn" type="button" onclick={clearValue}>
           <md-icon>close</md-icon>
-        </md-icon-button>
+        </button>
       </div>
     {/if}
   </div>

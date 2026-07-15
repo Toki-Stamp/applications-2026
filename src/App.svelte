@@ -18,6 +18,7 @@
   import Modal from "./components/Modal.svelte";
   import Header from "./components/Header.svelte";
   import NavigationButtons from "./components/NavigationButtons.svelte";
+  import ThemeSwitcher from "./components/ThemeSwitcher.svelte";
 
   let isSubmitted = $state(false);
   let isSubmitting = $state(false);
@@ -476,7 +477,7 @@
 
   @media (max-width: 600px) {
     .step-container {
-      padding: 1rem 1rem 1rem calc(1rem + 10px);
+      padding: 0.5rem;
     }
   }
 </style>

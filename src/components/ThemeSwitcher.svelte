@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
 
-  const themes = [
+  const darkThemes = [
     { id: 'cyberpunk', name: 'Cyberpunk', primary: '#06b6d4', accent: '#6366f1' },
     { id: 'original', name: 'Neon Pink', primary: '#8b5cf6', accent: '#ec4899' },
     { id: 'mint', name: 'Mint', primary: '#10b981', accent: '#14b8a6' },
@@ -10,13 +10,25 @@
     { id: 'ocean', name: 'Ocean', primary: '#3b82f6', accent: '#4f46e5' },
     { id: 'minimal', name: 'Minimal', primary: '#94a3b8', accent: '#e4e4e7' },
     { id: 'military', name: 'Military', primary: '#858f6b', accent: '#5c6348' },
-    { id: 'marshmallow', name: 'Marshmallow', primary: '#fda4af', accent: '#fbcfe8' },
-    { id: 'lava', name: 'Lava', primary: '#ef4444', accent: '#f97316' },
     { id: 'galaxy', name: 'Galaxy', primary: '#a855f7', accent: '#6366f1' },
-    { id: 'light-daylight', name: 'Daylight (Light)', primary: '#0ea5e9', accent: '#4f46e5' },
-    { id: 'light-cotton', name: 'Cotton (Light)', primary: '#a855f7', accent: '#ec4899' },
-    { id: 'light-sunrise', name: 'Sunrise (Light)', primary: '#f97316', accent: '#f59e0b' }
+    { id: 'marshmallow', name: 'Marshmallow', primary: '#fda4af', accent: '#fbcfe8' },
+    { id: 'lava', name: 'Lava', primary: '#ef4444', accent: '#f97316' }
   ];
+
+  const lightThemes = [
+    { id: 'light-daylight', name: 'Daylight', primary: '#0ea5e9', accent: '#4f46e5' },
+    { id: 'light-cotton', name: 'Cotton', primary: '#a855f7', accent: '#ec4899' },
+    { id: 'light-sunrise', name: 'Sunrise', primary: '#f97316', accent: '#f59e0b' },
+    { id: 'light-mint', name: 'Mint', primary: '#10b981', accent: '#0d9488' },
+    { id: 'light-sakura', name: 'Sakura', primary: '#f43f5e', accent: '#e11d48' },
+    { id: 'light-lemon', name: 'Lemon', primary: '#eab308', accent: '#d97706' },
+    { id: 'light-lavender', name: 'Lavender', primary: '#8b5cf6', accent: '#6d28d9' },
+    { id: 'light-sand', name: 'Sand', primary: '#b45309', accent: '#92400e' },
+    { id: 'light-military', name: 'Military', primary: '#4a5d23', accent: '#3b4a1c' },
+    { id: 'light-ocean', name: 'Ocean', primary: '#0284c7', accent: '#0369a1' }
+  ];
+
+  const allThemes = [...darkThemes, ...lightThemes];
 
   let currentTheme = $state('cyberpunk');
   let isOpen = $state(false);
@@ -24,7 +36,7 @@
 
   onMount(() => {
     const saved = localStorage.getItem('app-theme');
-    if (saved && themes.some(t => t.id === saved)) {
+    if (saved && allThemes.some(t => t.id === saved)) {
       setTheme(saved);
     } else {
       setTheme('cyberpunk');
@@ -61,10 +73,7 @@
     onclick={() => isOpen = !isOpen}
     aria-label="Выбрать тему оформления"
   >
-    <div class="swatch-circle" style="--t-primary: var(--primary); --t-accent: var(--accent);">
-      <div class="color-half primary"></div>
-      <div class="color-half accent"></div>
-    </div>
+    <md-icon>settings</md-icon>
   </button>
 
   {#if isHovered && !isOpen}
@@ -75,7 +84,25 @@
 
   {#if isOpen}
     <div class="theme-popover" transition:fade={{ duration: 150 }}>
-      {#each themes as theme}
+      <div class="theme-category">Тёмные темы</div>
+      {#each darkThemes as theme}
+        <button
+          type="button"
+          class="theme-row-btn"
+          class:active={currentTheme === theme.id}
+          style="--t-primary: {theme.primary}; --t-accent: {theme.accent};"
+          onclick={() => setTheme(theme.id)}
+        >
+          <div class="swatch-circle">
+            <div class="color-half primary"></div>
+            <div class="color-half accent"></div>
+          </div>
+          <span class="theme-name">{theme.name}</span>
+        </button>
+      {/each}
+
+      <div class="theme-category">Светлые темы</div>
+      {#each lightThemes as theme}
         <button
           type="button"
           class="theme-row-btn"
@@ -101,48 +128,94 @@
   }
 
   .icon-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
     font-size: 1.5rem;
     cursor: pointer;
     border-radius: 50%;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     padding: 0;
   }
 
-  .icon-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.05);
+  .icon-btn md-icon {
+    transition: transform 0.4s ease;
   }
+
+  .icon-btn:hover,
+  .theme-switcher-wrapper:focus-within .icon-btn {
+    color: var(--primary);
+  }
+
+  .icon-btn:hover md-icon,
+  .theme-switcher-wrapper:focus-within .icon-btn md-icon {
+    transform: rotate(90deg);
+  }
+
+
 
   .theme-popover {
     position: absolute;
     top: calc(100% + 10px);
-    right: 0;
+    left: 0;
     background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 0.5rem;
+    padding: 0 0 0.5rem 0;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-    min-width: 180px;
+    width: 220px;
+    max-height: 260px;
+    overflow-y: auto;
     z-index: 100;
+  }
+
+  .theme-popover::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .theme-popover::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .theme-popover::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--text-primary) 20%, transparent);
+    border-radius: 3px;
+  }
+
+  .theme-popover::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--text-primary) 30%, transparent);
+  }
+
+  .theme-category {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: var(--text-secondary);
+    padding: 0.75rem 1rem 0.25rem 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
   }
 
   .custom-tooltip {
     position: absolute;
     top: calc(100% + 10px);
-    right: 0;
+    left: 0;
     background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
     color: var(--text-primary);
     padding: 0.4rem 0.8rem;
@@ -162,6 +235,8 @@
   }
 
   .theme-row-btn {
+    margin: 0 0.5rem;
+    width: calc(100% - 1rem);
     background: transparent;
     border: none;
     border-radius: 8px;
@@ -176,11 +251,11 @@
   }
 
   .theme-row-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: color-mix(in srgb, var(--text-primary) 5%, transparent);
   }
 
   .theme-row-btn.active {
-    background: rgba(255, 255, 255, 0.1);
+    background: color-mix(in srgb, var(--text-primary) 10%, transparent);
     font-weight: 600;
   }
 

@@ -30,6 +30,7 @@
         bind:value={formStore.data.applicant.firstName}
         errorText={errors['applicant.firstName']}
         onblur={() => formStore.markTouched('applicant.firstName')}
+        capitalizeFirst={true}
       />
       <TextInput
         label="Фамилия"
@@ -38,6 +39,7 @@
         bind:value={formStore.data.applicant.lastName}
         errorText={errors['applicant.lastName']}
         onblur={() => formStore.markTouched('applicant.lastName')}
+        capitalizeFirst={true}
       />
       <PhoneInput
         label="Номер телефона"
@@ -64,6 +66,7 @@
                 errorText={errors[`guests.${i}.firstName`]}
                 onblur={() => formStore.markTouched(`guests.${i}.firstName`)}
                 required={true}
+                capitalizeFirst={true}
               />
               <TextInput
                 label="Фамилия"
@@ -72,6 +75,7 @@
                 bind:value={formStore.data.guests[i].lastName}
                 errorText={errors[`guests.${i}.lastName`]}
                 onblur={() => formStore.markTouched(`guests.${i}.lastName`)}
+                capitalizeFirst={true}
               />
               <TextInput
                 label="Никнейм"
