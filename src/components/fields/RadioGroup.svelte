@@ -2,6 +2,7 @@
   import "@material/web/radio/radio.js";
   import { generateId } from "../../utils.js";
   import HintBox from "../ui/HintBox.svelte";
+  import FieldLabel from "./FieldLabel.svelte";
   import { ERROR_MESSAGES } from "../../constants.js";
 
   let {
@@ -30,14 +31,7 @@
 </script>
 
 <div class="form-group">
-  {#if label}
-    <div class="group-label">
-      {label}
-      <span class="optional-tag">
-        {required ? "(Обязательно для заполнения)" : ""}
-      </span>
-    </div>
-  {/if}
+  <FieldLabel {label} {required} />
   <div class="options-container">
     {#each options as opt}
       {@const optVal = opt.value !== undefined ? opt.value : opt}
