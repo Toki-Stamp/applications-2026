@@ -5,13 +5,16 @@
     APPLICATION_TYPE,
     GROUP_CONDITIONS,
     accommodationOptions,
-    ACCOMMODATION_TYPE
+    ACCOMMODATION_TYPE,
+    nightsList
   } from '../constants.js';
-  import RadioGroup from '../components/RadioGroup.svelte';
-  import NightsGrid from '../components/NightsGrid.svelte';
-  import TextArea from '../components/TextArea.svelte';
-  import SubBlockCard from '../components/SubBlockCard.svelte';
-  import HintBox from '../components/HintBox.svelte';
+  import RadioGroup from "../components/fields/RadioGroup.svelte";
+  import SelectionGrid from '../components/fields/SelectionGrid.svelte';
+  import TextArea from "../components/fields/TextArea.svelte";
+  import SubBlock from "../components/layout/SubBlock.svelte";
+  import HintBox from "../components/ui/HintBox.svelte";
+  import Block from "../components/layout/Block.svelte";
+  import Section from "../components/layout/Section.svelte";
 
   let { errors = {} } = $props();
 
@@ -30,12 +33,9 @@
   });
 </script>
 
-<div class="block-card">
-  <h2 class="block-title">Проживание</h2>
-
+<Block title="Проживание">
   {#if formStore.data.applicationType === APPLICATION_TYPE.INDIVIDUAL || formStore.data.groupConditions === GROUP_CONDITIONS.UNIFIED}
-    <div class="section-container first-section">
-      <div class="section-content">
+    <Section isFirst={true}>
         <RadioGroup
           label="Потребность в проживании"
           required={true}
@@ -47,7 +47,7 @@
 
         {#if formStore.data.applicant.accommodation.type === ACCOMMODATION_TYPE.BOOKING}
           <div transition:slide class="slide-container">
-            <NightsGrid
+            <SelectionGrid groups={nightsList}
               required={true}
               label="Укажите ночевки"
               bind:values={formStore.data.applicant.accommodation.nights}
@@ -65,12 +65,11 @@
           errorText={errors['applicant.accommodation.comment']}
           onblur={() => formStore.markTouched('applicant.accommodation.comment')}
         />
-      </div>
-    </div>
+    </Section>
   {:else}
     <HintBox>Укажите потребности для каждого участника группы отдельно</HintBox>
 
-    <SubBlockCard
+    <SubBlock
       title={`Для ${formStore.data.applicant.nickname || "Заявителя"}`}
       stickyLevel={2}
     >
@@ -105,10 +104,10 @@
           onblur={() => formStore.markTouched('applicant.accommodation.comment')}
         />
       </div>
-    </SubBlockCard>
+    </SubBlock>
 
     {#each formStore.data.guests as guest, index}
-      <SubBlockCard
+      <SubBlock
         title={`Для ${guest.firstName || `Гостя #${index + 1}`}`}
         stickyLevel={2}
       >
@@ -124,7 +123,7 @@
 
           {#if guest.accommodation.type === ACCOMMODATION_TYPE.BOOKING}
             <div transition:slide class="slide-container">
-              <NightsGrid
+              <SelectionGrid groups={nightsList}
                 required={true}
                 label="Укажите ночевки"
                 bind:values={guest.accommodation.nights}
@@ -143,10 +142,10 @@
             onblur={() => formStore.markTouched(`guests.${index}.accommodation.comment`)}
           />
         </div>
-      </SubBlockCard>
+      </SubBlock>
     {/each}
   {/if}
-</div>
+</Block>
 
 <style>
   .slide-container {

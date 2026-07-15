@@ -1,6 +1,6 @@
 <script>
-  import ThemeSwitcher from "./ThemeSwitcher.svelte";
-  import ProgressBar from "./ProgressBar.svelte";
+  import ThemeSwitcher from "../ui/ThemeSwitcher.svelte";
+  import ProgressBar from "../ui/ProgressBar.svelte";
 
   let {
     currentStep,

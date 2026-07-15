@@ -2,18 +2,17 @@
   import { slide } from "svelte/transition";
   import { formStore } from "../store.svelte.js";
   import { APPLICATION_TYPE } from "../constants.js";
-  import TextInput from "../components/TextInput.svelte";
-  import PhoneInput from "../components/PhoneInput.svelte";
-  import SubBlockCard from "../components/SubBlockCard.svelte";
+  import TextInput from "../components/fields/TextInput.svelte";
+  import PhoneInput from "../components/fields/PhoneInput.svelte";
+  import SubBlock from "../components/layout/SubBlock.svelte";
+  import Block from "../components/layout/Block.svelte";
+  import Section from "../components/layout/Section.svelte";
 
   let { errors = {} } = $props();
 </script>
 
-<div class="block-card">
-  <h2 class="block-title">Персональные данные</h2>
-  <div class="section-container first-section">
-    <h3 class="section-title">2.1. Заявитель</h3>
-    <div class="section-content">
+<Block title="Персональные данные">
+  <Section title="2.1. Заявитель" isFirst={true}>
       <TextInput
         label="Никнейм"
         placeholder="cyber_ninja"
@@ -48,16 +47,14 @@
         onblur={() => formStore.markTouched('applicant.phone')}
         required={true}
       />
-    </div>
-  </div>
+    </Section>
 
   {#if formStore.data.applicationType === APPLICATION_TYPE.GROUP && formStore.data.guests.length > 0}
-    <div class="section-container" transition:slide>
-      <h3 class="section-title">2.2. Гости</h3>
-      <div class="section-content">
+    <div transition:slide>
+      <Section title="2.2. Состав группы">
         {#each formStore.data.guests as guest, i}
           <div transition:slide>
-            <SubBlockCard title={`Гость #${i + 1}`}>
+            <SubBlock title={`Гость #${i + 1}`}>
               <TextInput
                 label="Имя"
                 placeholder="Иван"
@@ -91,13 +88,13 @@
                 errorText={errors[`guests.${i}.phone`]}
                 onblur={() => formStore.markTouched(`guests.${i}.phone`)}
               />
-            </SubBlockCard>
+            </SubBlock>
           </div>
         {/each}
-      </div>
+      </Section>
     </div>
   {/if}
-</div>
+</Block>
 
 <style>
 </style>

@@ -1,8 +1,10 @@
 <script>
   import "@material/web/iconbutton/icon-button.js";
   import "@material/web/icon/icon.js";
-  import { generateId } from "../utils.js";
+  import { generateId } from "../../utils.js";
   import { onMount } from "svelte";
+  import FieldLabel from "./FieldLabel.svelte";
+  import Button from "../ui/Button.svelte";
 
   let {
     value = $bindable(''),
@@ -48,23 +50,7 @@
 </script>
 
 <div class="form-group">
-  {#if label || helperText}
-    <div class="label-container">
-      {#if label}
-        <div class="group-label">
-          {label}
-          <span class="optional-tag">
-            {required ? "(Обязательно для заполнения)" : ""}
-          </span>
-        </div>
-      {/if}
-      {#if helperText}
-        <div class="helper-text">
-          <strong>Подсказка:</strong> {helperText}
-        </div>
-      {/if}
-    </div>
-  {/if}
+  <FieldLabel {label} {helperText} {required} />
 
   <div class="input-wrapper">
     {#if icon}
@@ -83,12 +69,12 @@
       {...restProps}
     ></textarea>
     {#if value && String(value).length > 0}
-      <div class="trailing-icon">
+      <div class="clear-button-wrapper">
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <md-icon-button type="button" onclick={clearValue}>
+        <Button variant="clear" onclick={clearValue}>
           <md-icon>close</md-icon>
-        </md-icon-button>
+        </Button>
       </div>
     {/if}
   </div>
@@ -113,15 +99,16 @@
       transition: color 0.2s;
     }
 
-    .trailing-icon {
+    .clear-button-wrapper {
       position: absolute;
-      right: 4px;
-      top: 0;
-      height: 56px; /* Match single row height for perfect centering */
+      right: 16px;
+      top: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 1;
+      background: var(--bg-color-accent);
+      border-radius: 50%;
+      z-index: 10;
     }
 
     .custom-textarea {
@@ -151,7 +138,7 @@
     }
 
     .custom-textarea:hover {
-      border-color: var(--text-primary);
+      border-color: var(--primary-hover);
     }
 
     .custom-textarea:focus {

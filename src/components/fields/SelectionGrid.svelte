@@ -1,17 +1,16 @@
 <script>
-  import { groupedPeriods, ERROR_MESSAGES } from "../constants.js";
-  import HintBox from "./HintBox.svelte";
+  import HintBox from "../ui/HintBox.svelte";
   import "@material/web/icon/icon.js";
 
   let {
     values = $bindable([]),
+    label = '',
     required = false,
     errorText = '',
+    groups = [], // array of { day?: string, items: { id, label, helperText, icon }[] }
+    errorMessageFn = null // function to generate error message object {prefix, label, suffix}
   } = $props();
 
-  export const label = 'Периоды';
-
-  /** @param {string} id */
   function handleToggle(id) {
     if (values.includes(id)) {
       values = values.filter((v) => v !== id);
@@ -20,39 +19,46 @@
     }
   }
 
-  /** @param {string} label */
-  function getIcon(label) {
-    return label === 'Утро' ? 'wb_sunny' : 'nightlight_round';
-  }
-
   const hasError = $derived(!!errorText);
-  const errorMsg = $derived(hasError ? ERROR_MESSAGES.PERIODS(label || 'Значение') : null);
+  const errorMsg = $derived(hasError && errorMessageFn ? errorMessageFn(label || 'Значение') : null);
 </script>
 
 <div class="form-group">
-  {#each groupedPeriods as group}
+  {#if label && !groups[0]?.day}
+    <div class="label-container">
+      <div class="group-label">{label}</div>
+    </div>
+  {/if}
+
+  {#each groups as group}
     <div class="form-group">
-      <div class="label-container">
-        <div class="group-label">{group.day}</div>
-      </div>
+      {#if group.day}
+        <div class="label-container">
+          <div class="group-label">{group.day}</div>
+        </div>
+      {/if}
       <div class="cards-grid">
-        {#each group.periods as period}
+        {#each group.items as item}
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <!-- svelte-ignore a11y_click_events_have_key_events -->
           <div
             class="period-card"
-            class:selected={values.includes(period.id)}
-            onclick={() => handleToggle(period.id)}
+            class:selected={values.includes(item.id)}
+            onclick={() => handleToggle(item.id)}
           >
-            <div class="card-icon">
-              <md-icon>{getIcon(period.label)}</md-icon>
-            </div>
+            {#if item.icon}
+              <div class="card-icon">
+                <md-icon>{item.icon}</md-icon>
+              </div>
+            {/if}
             <div class="card-content">
-              <span class="card-label">{period.label}</span>
-              <span class="card-helper">{period.helperText}</span>
+              <span class="card-label">{item.label}</span>
+              {#if item.helperText}
+                <span class="card-helper">{item.helperText}</span>
+              {/if}
             </div>
             <div class="card-checkbox">
-              {#if values.includes(period.id)}
+              {#if values.includes(item.id)}
                 <md-icon>check_circle</md-icon>
               {:else}
                 <md-icon>radio_button_unchecked</md-icon>
@@ -63,6 +69,7 @@
       </div>
     </div>
   {/each}
+
   {#if hasError && errorMsg}
     <div class="error-wrapper">
       <HintBox type="error">
@@ -73,11 +80,11 @@
 </div>
 
 <style>
-
   .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1rem;
+    margin-bottom: 1rem;
   }
 
   .period-card {
@@ -127,6 +134,7 @@
   .card-label {
     font-weight: 600;
     color: var(--text-primary);
+    line-height: 1.4;
   }
 
   .card-helper {

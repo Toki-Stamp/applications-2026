@@ -7,11 +7,14 @@
     PROVISION_TYPE,
     foodOptions,
     alcoholOptions,
+    groupedPeriods
   } from "../constants.js";
-  import RadioGroup from "../components/RadioGroup.svelte";
-  import PeriodsGrid from "../components/PeriodsGrid.svelte";
-  import SubBlockCard from "../components/SubBlockCard.svelte";
-  import HintBox from "../components/HintBox.svelte";
+  import RadioGroup from "../components/fields/RadioGroup.svelte";
+  import SelectionGrid from "../components/fields/SelectionGrid.svelte";
+  import SubBlock from "../components/layout/SubBlock.svelte";
+  import HintBox from "../components/ui/HintBox.svelte";
+  import Block from "../components/layout/Block.svelte";
+  import Section from "../components/layout/Section.svelte";
   import "@material/web/icon/icon.js";
 
   let { stepNumber, errors = {} } = $props();
@@ -35,13 +38,9 @@
   });
 </script>
 
-<div class="block-card">
-  <h2 class="block-title">Обеспечение</h2>
-
+<Block title="Обеспечение">
   {#if formStore.data.applicationType === APPLICATION_TYPE.INDIVIDUAL || formStore.data.groupConditions === GROUP_CONDITIONS.UNIFIED}
-    <div class="section-container first-section">
-      <h3 class="section-title">{stepNumber}.1. Продукты питания</h3>
-      <div class="section-content">
+    <Section title={`${stepNumber}.1. Продукты питания`} isFirst={true}>
         <div class="provision-item">
           <RadioGroup
             label="Потребность в питании"
@@ -53,7 +52,7 @@
           />
           {#if formStore.data.applicant.provisions.food === PROVISION_TYPE.REQUIRED}
             <div transition:slide>
-              <PeriodsGrid
+              <SelectionGrid groups={groupedPeriods}
                 required={true}
                 bind:values={formStore.data.applicant.provisions.foodPeriods}
                 errorText={errors['applicant.provisions.foodPeriods']}
@@ -61,12 +60,9 @@
             </div>
           {/if}
         </div>
-      </div>
-    </div>
+    </Section>
 
-    <div class="section-container">
-      <h3 class="section-title">{stepNumber}.2. Алкогольные напитки</h3>
-      <div class="section-content">
+    <Section title={`${stepNumber}.2. Алкогольные напитки`}>
         <div class="provision-item">
           <RadioGroup
             label="Потребность в алкоголе"
@@ -78,7 +74,7 @@
           />
           {#if formStore.data.applicant.provisions.alcohol === PROVISION_TYPE.REQUIRED}
             <div transition:slide>
-              <PeriodsGrid
+              <SelectionGrid groups={groupedPeriods}
                 required={true}
                 bind:values={formStore.data.applicant.provisions.alcoholPeriods}
                 errorText={errors['applicant.provisions.alcoholPeriods']}
@@ -86,12 +82,11 @@
             </div>
           {/if}
         </div>
-      </div>
-    </div>
+    </Section>
   {:else}
     <HintBox>Укажите потребности для каждого участника группы отдельно</HintBox>
 
-    <SubBlockCard
+    <SubBlock
       title={`Для ${formStore.data.applicant.nickname || "Заявителя"}`}
       stickyLevel={2}
     >
@@ -106,7 +101,7 @@
         />
         {#if formStore.data.applicant.provisions.food === PROVISION_TYPE.REQUIRED}
           <div transition:slide>
-            <PeriodsGrid
+            <SelectionGrid groups={groupedPeriods}
               required={true}
               bind:values={formStore.data.applicant.provisions.foodPeriods}
               errorText={errors['applicant.provisions.foodPeriods']}
@@ -125,7 +120,7 @@
         />
         {#if formStore.data.applicant.provisions.alcohol === PROVISION_TYPE.REQUIRED}
           <div transition:slide>
-            <PeriodsGrid
+            <SelectionGrid groups={groupedPeriods}
               required={true}
               bind:values={formStore.data.applicant.provisions.alcoholPeriods}
               errorText={errors['applicant.provisions.alcoholPeriods']}
@@ -133,11 +128,11 @@
           </div>
         {/if}
       </div>
-    </SubBlockCard>
+    </SubBlock>
 
     {#each formStore.data.guests as guest, i}
       <div transition:slide>
-        <SubBlockCard
+        <SubBlock
           title={`Для ${guest.firstName || `Гостя #${i + 1}`}`}
           stickyLevel={2}
         >
@@ -152,7 +147,7 @@
             />
             {#if formStore.data.guests[i].provisions.food === PROVISION_TYPE.REQUIRED}
               <div transition:slide>
-                <PeriodsGrid
+                <SelectionGrid groups={groupedPeriods}
                   required={true}
                   bind:values={formStore.data.guests[i].provisions.foodPeriods}
                   errorText={errors[`guests.${i}.provisions.foodPeriods`]}
@@ -171,7 +166,7 @@
             />
             {#if formStore.data.guests[i].provisions.alcohol === PROVISION_TYPE.REQUIRED}
               <div transition:slide>
-                <PeriodsGrid
+                <SelectionGrid groups={groupedPeriods}
                   required={true}
                   bind:values={formStore.data.guests[i].provisions.alcoholPeriods}
                   errorText={errors[`guests.${i}.provisions.alcoholPeriods`]}
@@ -179,11 +174,11 @@
               </div>
             {/if}
           </div>
-        </SubBlockCard>
+        </SubBlock>
       </div>
     {/each}
   {/if}
-</div>
+</Block>
 
 <style>
   .provision-item {

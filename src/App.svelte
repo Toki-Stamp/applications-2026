@@ -5,20 +5,22 @@
   import { formStore, sanitizeFormData } from "./store.svelte.js";
   import { GOOGLE_SCRIPT_URL } from "./constants.js";
   import { validateStepData } from "./schema.js";
+  import SuccessScreen from "./components/layout/SuccessScreen.svelte";
+  import Modal from "./components/ui/Modal.svelte";
+  import Header from "./components/layout/Header.svelte";
+  import NavigationButtons from "./components/layout/NavigationButtons.svelte";
+  import ThemeSwitcher from "./components/ui/ThemeSwitcher.svelte";
+  import Button from "./components/ui/Button.svelte";
 
-  import IntroBlock from "./blocks/IntroBlock.svelte";
-  import FormatBlock from "./blocks/FormatBlock.svelte";
-  import PersonalDataBlock from "./blocks/PersonalDataBlock.svelte";
-  import TransportBlock from "./blocks/TransportBlock.svelte";
-  import ProvisionsBlock from "./blocks/ProvisionsBlock.svelte";
-  import AccommodationBlock from "./blocks/AccommodationBlock.svelte";
-  import FreeMicBlock from "./blocks/FreeMicBlock.svelte";
-
-  import SuccessScreen from "./components/SuccessScreen.svelte";
-  import Modal from "./components/Modal.svelte";
-  import Header from "./components/Header.svelte";
-  import NavigationButtons from "./components/NavigationButtons.svelte";
-  import ThemeSwitcher from "./components/ThemeSwitcher.svelte";
+  import {
+    Intro,
+    ApplicationType,
+    PersonalData,
+    Transportation,
+    Provisions,
+    Accommodation,
+    FreeMic,
+  } from "./steps/index.js";
 
   let isSubmitted = $state(false);
   let isSubmitting = $state(false);
@@ -97,9 +99,9 @@
     }
 
     const result = validateStepData(currentStep, dataSlice);
-    
+
     if (currentStep === 6) {
-      console.log('Accommodation Validation Errors:', result.errors);
+      console.log("Accommodation Validation Errors:", result.errors);
     }
 
     if (touchAll) {
@@ -135,7 +137,7 @@
 
   // Persist step to localStorage
   $effect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && !showDraftModal) {
       localStorage.setItem(STEP_STORAGE_KEY, String(currentStep));
     }
   });
@@ -149,59 +151,22 @@
   });
 
   onMount(() => {
-    let lastWidth = 0;
-    const observer = new ResizeObserver(() => {
-      if (window.innerWidth !== lastWidth) {
-        lastWidth = window.innerWidth;
-        updateHeaderHeights();
-      }
-    });
-    observer.observe(document.body);
-
-    return () => {
-      observer.disconnect();
-    };
-  });
-
-  // Dynamically calculate sticky header heights to prevent overlap bugs
-  const updateHeaderHeights = () => {
-    const bt = /** @type {HTMLElement} */ (
-      document.querySelector(".block-title")
-    );
-    if (bt) {
-      document.documentElement.style.setProperty(
-        "--block-title-height",
-        `${bt.offsetHeight}px`,
-      );
-    }
-    const st = /** @type {HTMLElement} */ (
-      document.querySelector(".section-title")
-    );
-    if (st) {
-      document.documentElement.style.setProperty(
-        "--section-title-height",
-        `${st.offsetHeight}px`,
-      );
-    }
-  };
-
-  $effect(() => {
-    // Re-calculate heights when step changes, wait for DOM update
-    // Use currentStep as a dependency
-    let step = currentStep;
-    setTimeout(updateHeaderHeights, 50);
+    // Only window resizing tracking if needed, but not strictly necessary without updateHeaderHeights
   });
 
   function scrollToTop() {
-    const appBody = document.querySelector('.app-body');
-    if (appBody) {
-      appBody.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    const layers = document.querySelectorAll(".step-layer");
+    layers.forEach((layer) => {
+      layer.scrollTo({ top: 0, behavior: "smooth" });
+    });
   }
 
   function nextStep() {
     const isValid = validateCurrentStep(true);
-    if (!isValid) return;
+    if (!isValid) {
+      console.log("Validation failed!", stepErrors);
+      return;
+    }
 
     if (currentStep < totalSteps) {
       currentStep++;
@@ -290,7 +255,10 @@
 
 <main id="app">
   <div class="app-transition-wrapper">
-    {#if !isSubmitted}
+    {#if isSubmitted}
+      <!-- Success Screen -->
+      <SuccessScreen onreset={handleReset} />
+    {:else}
       <form
         class="app-form"
         novalidate
@@ -308,37 +276,48 @@
           <div class="step-container">
             {#if currentStep === 1}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <IntroBlock />
+                <div class="step-content">
+                  <Intro />
+                </div>
               </div>
             {:else if currentStep === 2}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <FormatBlock errors={stepErrors} />
+                <div class="step-content">
+                  <ApplicationType errors={stepErrors} />
+                </div>
               </div>
             {:else if currentStep === 3}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <PersonalDataBlock errors={stepErrors} />
+                <div class="step-content">
+                  <PersonalData errors={stepErrors} />
+                </div>
               </div>
             {:else if currentStep === 4}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <TransportBlock
-                  stepNumber={currentStep - 1}
-                  errors={stepErrors}
-                />
+                <div class="step-content">
+                  <Transportation
+                    stepNumber={currentStep - 1}
+                    errors={stepErrors}
+                  />
+                </div>
               </div>
             {:else if currentStep === 5}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <ProvisionsBlock
-                  stepNumber={currentStep - 1}
-                  errors={stepErrors}
-                />
+                <div class="step-content">
+                  <Provisions stepNumber={currentStep - 1} errors={stepErrors} />
+                </div>
               </div>
             {:else if currentStep === 6}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <AccommodationBlock errors={stepErrors} />
+                <div class="step-content">
+                  <Accommodation errors={stepErrors} />
+                </div>
               </div>
             {:else if currentStep === 7}
               <div transition:fade={{ duration: 300 }} class="step-layer">
-                <FreeMicBlock errors={stepErrors} />
+                <div class="step-content">
+                  <FreeMic errors={stepErrors} />
+                </div>
               </div>
             {/if}
           </div>
@@ -355,9 +334,6 @@
           onclear={() => (showClearModal = true)}
         />
       </form>
-    {:else}
-      <!-- Success Screen -->
-      <SuccessScreen onreset={handleReset} />
     {/if}
   </div>
 
@@ -368,14 +344,10 @@
       {/snippet}
       <p>Вы уверены, что хотите безвозвратно удалить все введенные данные?</p>
       {#snippet actions()}
-        <button
-          type="button"
-          class="btn-secondary"
-          onclick={() => (showClearModal = false)}>Отмена</button
-        >
-        <button type="button" class="btn-danger" onclick={clearForm}
-          >Очистить</button
-        >
+        <Button
+          variant="secondary"
+          onclick={() => (showClearModal = false)}>Отмена</Button>
+        <Button variant="danger" onclick={clearForm}>Очистить</Button>
       {/snippet}
     </Modal>
   {/if}
@@ -388,17 +360,15 @@
         </h2>
       {/snippet}
       <p>
-        Причина: <strong style="color: #fca5a5;">{submitErrorMessage}</strong>
+        Причина: <strong class="error-text">{submitErrorMessage}</strong>
       </p>
-      <p style="margin-top: 1rem;">
+      <p class="mt-1">
         Попробуйте позже или проверьте правильность развертывания скрипта
       </p>
       {#snippet actions()}
-        <button
-          type="button"
-          class="btn-danger"
-          onclick={() => (submitErrorMessage = null)}>Понятно</button
-        >
+        <Button
+          variant="danger"
+          onclick={() => (submitErrorMessage = null)}>Понятно</Button>
       {/snippet}
     </Modal>
   {/if}
@@ -415,20 +385,16 @@
       <p>У Вас осталась неотправленная заявка.</p>
       <p>Хотите продолжить её заполнение или начать всё заново?</p>
       {#snippet actions()}
-        <button
-          type="button"
-          class="btn-secondary"
+        <Button
+          variant="secondary"
           onclick={() => {
             showDraftModal = false;
             clearForm();
             currentStep = 1;
-          }}>Начать заново</button
-        >
-        <button
-          type="button"
-          class="btn-primary"
-          onclick={() => (showDraftModal = false)}>Продолжить</button
-        >
+          }}>Начать заново</Button>
+        <Button
+          variant="primary"
+          onclick={() => (showDraftModal = false)}>Продолжить</Button>
       {/snippet}
     </Modal>
   {/if}
@@ -446,24 +412,53 @@
     min-height: 0;
     width: 100%;
     padding: 0;
-    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
   }
 
   .step-container {
-    display: grid;
+    flex: 1;
     min-height: 400px;
+    width: 100%;
+    position: relative;
+  }
+
+  .app-body::-webkit-scrollbar-thumb {
+    background-color: var(--glass-border);
+    border-radius: 4px;
+  }
+
+  .app-body::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary);
+  }
+
+  .error-text {
+    color: #fca5a5;
+  }
+
+  .mt-1 {
+    margin-top: 1rem;
+  }
+
+  .step-layer {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .step-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     max-width: 800px;
     margin: 0 auto;
     padding: 1.5rem 1.5rem 1.5rem calc(1.5rem + 10px);
   }
 
-  .step-layer {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
   .app-transition-wrapper {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     flex: 1;
     min-height: 0;
@@ -476,7 +471,7 @@
   }
 
   @media (max-width: 600px) {
-    .step-container {
+    .step-content {
       padding: 0.5rem;
     }
   }

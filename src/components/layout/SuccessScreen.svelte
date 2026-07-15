@@ -1,5 +1,6 @@
 <script>
   import { fade } from "svelte/transition";
+  import Button from "../ui/Button.svelte";
 
   let { onreset } = $props();
 </script>
@@ -12,13 +13,13 @@
       Да прибудет с Вами сила зубра!<br />
       А теперь степенно ожидайте дня сходки...
     </p>
-    <button
-      type="button"
-      class="btn-primary mt-1"
+    <Button
+      variant="primary"
+      class="mt-1"
       onclick={onreset}
     >
       Заполнить новую заявку
-    </button>
+    </Button>
   </div>
 </div>
 
@@ -43,10 +44,24 @@
   }
 
   .success-icon {
-    font-size: 4.5rem;
+    font-size: 5rem;
     line-height: 1;
     margin-bottom: 1.5rem;
     filter: drop-shadow(0 0 20px rgba(0, 191, 255, 0.4));
+    display: inline-block;
+    animation: float 3s ease-in-out infinite, glow 2s ease-in-out infinite alternate;
+    text-shadow: 0 0 20px var(--primary-glow);
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+  }
+
+  @keyframes glow {
+    0% { filter: drop-shadow(0 0 10px var(--primary)); }
+    100% { filter: drop-shadow(0 0 25px var(--accent)); }
   }
 
   .success-title {
@@ -65,9 +80,7 @@
     font-size: 1.15rem;
   }
 
-  .mt-1 {
-    margin-top: 1rem;
-  }
+
 
   @media (max-width: 600px) {
     .success-container {

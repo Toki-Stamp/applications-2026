@@ -1,25 +1,26 @@
 <script>
-  import SubBlockCard from "../components/SubBlockCard.svelte";
-  import HintBox from "../components/HintBox.svelte";
+  import SubBlock from "../components/layout/SubBlock.svelte";
+  import HintBox from "../components/ui/HintBox.svelte";
+  import Block from "../components/layout/Block.svelte";
 </script>
 
-<div class="block-card">
-  <h2 class="block-title">Вводная информация</h2>
-  <div class="badge-container">
-    <div class="anniversary-badge">🎉 Юбилейная сходка — 15 лет! 🎉</div>
-  </div>
-
+<Block title="Вводная информация">
   <div class="intro-content">
-    <SubBlockCard title="Даты проведения" stickyLevel={2}>
+    <HintBox>
+      Дорогие друзья, нас ждёт <strong class="text-primary">ЮБИЛЕЙНАЯ</strong>
+      сходка! Нам исполняется <strong class="text-primary">15</strong> лет!
+    </HintBox>
+
+    <SubBlock title="Даты проведения" stickyLevel={2}>
       <p><strong>с 7 по 9 августа 2026 года</strong> (3 дня)</p>
       <ul>
         <li><strong>Пятница:</strong> шоу начинается</li>
         <li><strong>Суббота:</strong> без забот</li>
         <li><strong>Воскресенье:</strong> ну вот, опять домой</li>
       </ul>
-    </SubBlockCard>
+    </SubBlock>
 
-    <SubBlockCard title="Контакты организаторов" stickyLevel={2}>
+    <SubBlock title="Контакты организаторов" stickyLevel={2}>
       <p><strong>Для решения организационных вопросов:</strong></p>
       <ul>
         <li>
@@ -33,7 +34,7 @@
           (<strong class="highlight-name">krez_by</strong>)
         </li>
       </ul>
-    </SubBlockCard>
+    </SubBlock>
 
     <HintBox>
       Нажмите кнопку
@@ -41,7 +42,7 @@
       форме заявки
     </HintBox>
   </div>
-</div>
+</Block>
 
 <style>
   .intro-content {
@@ -51,34 +52,6 @@
     color: var(--text-secondary);
     line-height: 1.6;
     font-size: 1.1rem;
-  }
-
-  .badge-container {
-    text-align: center;
-
-    .anniversary-badge {
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: var(--text-primary);
-      padding: 0.5rem 1.5rem;
-      border-radius: 20px;
-      display: inline-block;
-      font-weight: bold;
-      font-size: 1.1rem;
-      box-shadow: 0 0 15px var(--primary-glow);
-      animation: pulse 2s infinite;
-    }
-  }
-
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.05);
-    }
-    100% {
-      transform: scale(1);
-    }
   }
 
   .intro-content ul {

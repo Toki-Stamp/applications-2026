@@ -8,12 +8,15 @@
     transportMethodsTo,
     freeSeatsOptions,
   } from "../constants.js";
-  import SelectInput from "../components/SelectInput.svelte";
-  import TextInput from "../components/TextInput.svelte";
-  import TextArea from "../components/TextArea.svelte";
-  import HintBox from "../components/HintBox.svelte";
+  import SelectInput from "../components/fields/SelectInput.svelte";
+  import TextInput from "../components/fields/TextInput.svelte";
+  import TextArea from "../components/fields/TextArea.svelte";
+  import HintBox from "../components/ui/HintBox.svelte";
+  import Block from "../components/layout/Block.svelte";
+  import Section from "../components/layout/Section.svelte";
 
   let { stepNumber, errors = {} } = $props();
+  let detailsOverflowVisible = $state(formStore.data.transportTo.method === TRANSPORT_METHOD.DRIVER);
 
   const availableTransportMethodsFrom = $derived(
     formStore.data.transportTo.method === TRANSPORT_METHOD.DRIVER
@@ -44,9 +47,7 @@
   });
 </script>
 
-<div class="block-card">
-  <h2 class="block-title">Транспорт</h2>
-
+<Block title="Транспорт">
   {#if formStore.data.guests.length > 0}
     <div class="transport-hint">
       {#if formStore.data.applicationType === APPLICATION_TYPE.GROUP}
@@ -64,13 +65,7 @@
     </div>
   {/if}
 
-  <div
-    class="section-container {formStore.data.guests.length === 0
-      ? 'first-section'
-      : ''}"
-  >
-    <h3 class="section-title">{stepNumber}.1. Дорога туда</h3>
-    <div class="section-content">
+  <Section title="{stepNumber}.1. Дорога туда" isFirst={formStore.data.guests.length === 0}>
       <SelectInput
         label="Способ прибытия"
         placeholder="Выберите способ..."
@@ -82,12 +77,13 @@
         options={transportMethodsTo}
       />
       {#if formStore.data.transportTo.method === TRANSPORT_METHOD.DRIVER}
-        <div transition:gridExpand>
-          <div class="details-wrapper">
+        <div transition:gridExpand onintroend={() => detailsOverflowVisible = true} onoutrostart={() => detailsOverflowVisible = false}>
+          <div class="details-wrapper" style="overflow: {detailsOverflowVisible ? 'visible' : 'hidden'}">
             <SelectInput
               label="Свободных мест для попутчиков"
               placeholder="Укажите кол-во..."
               icon="airline_seat_recline_normal"
+              required={true}
               bind:value={formStore.data.transportTo.freeSeats}
               errorText={errors["transportTo.freeSeats"]}
               onchange={() => formStore.markTouched("transportTo.freeSeats")}
@@ -125,12 +121,9 @@
         required={true}
         capitalizeFirst={true}
       />
-    </div>
-  </div>
+    </Section>
 
-  <div class="section-container">
-    <h3 class="section-title">{stepNumber}.2. Дорога обратно</h3>
-    <div class="section-content">
+  <Section title="{stepNumber}.2. Дорога обратно">
       <SelectInput
         label="Способ отъезда"
         placeholder="Выберите способ..."
@@ -161,12 +154,9 @@
         onblur={() => formStore.markTouched("transportFrom.time")}
         required={true}
       />
-    </div>
-  </div>
+    </Section>
 
-  <div class="section-container">
-    <h3 class="section-title">{stepNumber}.3. Дополнительно по транспорту</h3>
-    <div class="section-content">
+  <Section title="{stepNumber}.3. Дополнительно по транспорту">
       <TextArea
         label="Комментарий к дороге"
         icon="edit_note"
@@ -176,9 +166,8 @@
         errorText={errors["transportComment"]}
         onblur={() => formStore.markTouched("transportComment")}
       />
-    </div>
-  </div>
-</div>
+    </Section>
+</Block>
 
 <style>
   .details-wrapper {

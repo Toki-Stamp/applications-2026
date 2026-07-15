@@ -1,6 +1,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { ERROR_MESSAGES } from '../constants.js';
+  import { ERROR_MESSAGES } from "../../constants.js";
   import '@material/web/select/select-option.js';
   import '@material/web/textfield/outlined-text-field.js';
   import '@material/web/iconbutton/icon-button.js';
@@ -9,7 +9,9 @@
   import { AsYouType, isValidPhoneNumber, getCountries, getCountryCallingCode, getExampleNumber } from 'libphonenumber-js';
   // @ts-ignore
   import examples from 'libphonenumber-js/mobile/examples';
-  import { generateId } from '../utils.js';
+  import { generateId } from "../../utils.js";
+  import FieldLabel from "./FieldLabel.svelte";
+  import Button from "../ui/Button.svelte";
 
   let {
     value = $bindable(''),
@@ -230,23 +232,7 @@
 </script>
 
 <div class="form-group">
-  {#if label || helperText}
-    <div class="label-container">
-      {#if label}
-        <div class="group-label">
-          {label}
-          <span class="optional-tag">
-            {required ? '(Обязательно для заполнения)' : ''}
-          </span>
-        </div>
-      {/if}
-      {#if helperText}
-        <div class="helper-text">
-          <strong>Подсказка:</strong> {helperText}
-        </div>
-      {/if}
-    </div>
-  {/if}
+  <FieldLabel {label} {helperText} {required} />
   
   <div class="phone-inputs-container">
     <!-- Custom Dropdown Container -->
@@ -307,11 +293,9 @@
       >
       </md-outlined-text-field>
       {#if rawPhoneNumber && String(rawPhoneNumber).length > 0}
-        <!-- svelte-ignore a11y_no_static_element_interactions -->
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <button class="compact-clear-btn" type="button" onclick={clearValue}>
+        <Button variant="clear" class="phone-clear-btn" onclick={clearValue}>
           <md-icon>close</md-icon>
-        </button>
+        </Button>
       {/if}
     </div>
   </div>
@@ -319,8 +303,8 @@
 
 
 <style>
-  .compact-clear-btn {
-    position: absolute;
+  :global(.phone-clear-btn) {
+    position: absolute !important;
     right: 8px;
     top: 14px;
   }

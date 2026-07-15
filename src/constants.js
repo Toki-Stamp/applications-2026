@@ -41,22 +41,22 @@ export const transportMethodsTo = [
 export const groupedPeriods = [
   {
     day: 'В пятницу',
-    periods: [
-      { id: 'fri-morn', label: 'Утро', helperText: 'до обеда' },
-      { id: 'fri-eve', label: 'Вечер', helperText: 'после обеда' }
+    items: [
+      { id: 'fri-morn', label: 'Утро', helperText: 'до обеда', icon: 'wb_sunny' },
+      { id: 'fri-eve', label: 'Вечер', helperText: 'после обеда', icon: 'nightlight_round' }
     ]
   },
   {
     day: 'В субботу',
-    periods: [
-      { id: 'sat-morn', label: 'Утро', helperText: 'до обеда' },
-      { id: 'sat-eve', label: 'Вечер', helperText: 'после обеда' }
+    items: [
+      { id: 'sat-morn', label: 'Утро', helperText: 'до обеда', icon: 'wb_sunny' },
+      { id: 'sat-eve', label: 'Вечер', helperText: 'после обеда', icon: 'nightlight_round' }
     ]
   },
   {
     day: 'В воскресенье',
-    periods: [
-      { id: 'sun-morn', label: 'Утро', helperText: 'до обеда' }
+    items: [
+      { id: 'sun-morn', label: 'Утро', helperText: 'до обеда', icon: 'wb_sunny' }
     ]
   }
 ];
@@ -79,8 +79,12 @@ export const alcoholOptions = [
 ];
 
 export const nightsList = [
-  { id: 'fri-sat', label: 'С пятницы на субботу' },
-  { id: 'sat-sun', label: 'С субботы на воскресенье' }
+  {
+    items: [
+      { id: 'fri-sat', label: 'С пятницы на субботу', icon: 'bedtime' },
+      { id: 'sat-sun', label: 'С субботы на воскресенье', icon: 'bedtime' }
+    ]
+  }
 ];
 
 export const accommodationOptions = [

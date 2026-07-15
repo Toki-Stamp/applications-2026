@@ -55,19 +55,14 @@
     border-bottom: 1px solid var(--border-color);
     box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.02);
     position: sticky;
-    z-index: 38;
+    z-index: 20;
   }
 
   .sub-block-card.level-2 .sub-block-title {
-    top: calc(
-      var(--block-title-height, 69px) - 2px
-    );
+    top: calc(var(--sticky-block-offset) - 1px);
   }
   .sub-block-card.level-3 .sub-block-title {
-    top: calc(
-      var(--block-title-height, 69px) +
-        var(--section-title-height, 52px) - 3px
-    );
+    top: calc(var(--sticky-section-offset) - 1px);
   }
 
   @media (max-width: 600px) {

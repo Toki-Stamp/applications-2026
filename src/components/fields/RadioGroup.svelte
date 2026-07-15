@@ -1,8 +1,8 @@
 <script>
   import "@material/web/radio/radio.js";
-  import { generateId } from "../utils.js";
-  import HintBox from "./HintBox.svelte";
-  import { ERROR_MESSAGES } from "../constants.js";
+  import { generateId } from "../../utils.js";
+  import HintBox from "../ui/HintBox.svelte";
+  import { ERROR_MESSAGES } from "../../constants.js";
 
   let {
     value = $bindable(),

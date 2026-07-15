@@ -2,8 +2,10 @@
   import '@material/web/textfield/outlined-text-field.js';
   import '@material/web/icon/icon.js';
   import '@material/web/iconbutton/icon-button.js';
-  import { generateId } from '../utils.js';
-  import { ERROR_MESSAGES } from '../constants.js';
+  import { generateId } from "../../utils.js";
+  import { ERROR_MESSAGES } from "../../constants.js";
+  import FieldLabel from "./FieldLabel.svelte";
+  import Button from "../ui/Button.svelte";
 
   let {
     value = $bindable(''),
@@ -41,59 +43,69 @@
 </script>
 
 <div class="form-group">
-  {#if label || helperText}
-    <div class="label-container">
-      {#if label}
-        <div class="group-label">
-          {label}
-          <span class="optional-tag">
-            {required ? "(Обязательно для заполнения)" : ""}
-          </span>
-        </div>
+  <FieldLabel {label} {helperText} {required} />
+  <div class="input-wrapper">
+    <md-outlined-text-field
+      {id}
+      {type}
+      class="text-field"
+      class:is-time-empty={type === 'time' && (!value || value === '')}
+      supporting-text={computedSupportingText}
+      error={hasError}
+      {value}
+      {min}
+      {max}
+      {placeholder}
+      oninput={handleInput}
+      {...restProps}
+    >
+      {#if icon}
+        <md-icon slot="leading-icon">{icon}</md-icon>
       {/if}
-      {#if helperText}
-        <div class="helper-text">
-          <strong>Подсказка:</strong> {helperText}
-        </div>
-      {/if}
-    </div>
-  {/if}
-  <md-outlined-text-field
-    {id}
-    {type}
-    class:is-time-empty={type === 'time' && (!value || value === '')}
-    supporting-text={computedSupportingText}
-    error={hasError}
-    {value}
-    {min}
-    {max}
-    {placeholder}
-    oninput={handleInput}
-    {...restProps}
-  >
-    {#if icon}
-      <md-icon slot="leading-icon">{icon}</md-icon>
-    {/if}
+    </md-outlined-text-field>
+
     {#if value && String(value).length > 0}
-      <!-- svelte-ignore a11y_no_static_element_interactions -->
-      <!-- svelte-ignore a11y_click_events_have_key_events -->
-      <button class="compact-clear-btn" slot="trailing-icon" type="button" onclick={clearValue}>
-        <md-icon>close</md-icon>
-      </button>
+      <div class="clear-button-wrapper" class:has-error={hasError}>
+        <Button variant="clear" onclick={clearValue}>
+          <md-icon>close</md-icon>
+        </Button>
+      </div>
     {/if}
-  </md-outlined-text-field>
+  </div>
 </div>
 
 <style>
 
+  .input-wrapper {
+    position: relative;
+    width: 100%;
+  }
 
-  md-outlined-text-field {
+  .text-field {
     width: 100%;
     min-height: 56px;
     --md-outlined-text-field-container-shape: 8px;
   }
 
-  md-outlined-text-field.is-time-empty {
+  .clear-button-wrapper {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-color-accent);
+    border-radius: 50%;
+    transition: margin-top 0.2s;
+  }
+
+  .clear-button-wrapper.has-error {
+    margin-top: -10px;
+  }
+
+  .text-field.is-time-empty {
     --md-outlined-text-field-input-text-color: var(--text-placeholder);
     --md-outlined-text-field-hover-input-text-color: var(--text-placeholder);
     --md-outlined-text-field-focus-input-text-color: var(--text-placeholder);

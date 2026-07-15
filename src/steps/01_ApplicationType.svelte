@@ -7,8 +7,10 @@
     GROUP_CONDITIONS,
     groupSizeOptions,
   } from "../constants.js";
-  import RadioGroup from "../components/RadioGroup.svelte";
-  import SelectInput from "../components/SelectInput.svelte";
+  import RadioGroup from "../components/fields/RadioGroup.svelte";
+  import SelectInput from "../components/fields/SelectInput.svelte";
+  import Block from "../components/layout/Block.svelte";
+  import Section from "../components/layout/Section.svelte";
 
   let { errors = {} } = $props();
 
@@ -29,10 +31,8 @@
   });
 </script>
 
-<div class="block-card">
-  <h2 class="block-title">Формат участия</h2>
-  <div class="section-container first-section">
-    <div class="section-content">
+<Block title="Формат участия">
+  <Section isFirst={true}>
       <RadioGroup
         label="Тип заявки"
         required={true}
@@ -90,9 +90,8 @@
           />
         </div>
       {/if}
-    </div>
-  </div>
-</div>
+  </Section>
+</Block>
 
 <style>
   .slide-container {
