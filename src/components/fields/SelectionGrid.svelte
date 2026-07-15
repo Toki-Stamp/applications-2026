@@ -43,7 +43,7 @@
         {#each group.items as item}
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <!-- svelte-ignore a11y_click_events_have_key_events -->
-          <div
+          <label
             class="period-card"
             class:selected={values.includes(item.id)}
             onclick={() => handleToggle(item.id)}
@@ -66,7 +66,7 @@
                 <md-icon>radio_button_unchecked</md-icon>
               {/if}
             </div>
-          </div>
+          </label>
         {/each}
       </div>
     </div>
@@ -74,7 +74,7 @@
 
   {#if hasError && errorMsg}
     <div class="error-wrapper">
-      <HintBox type="error">
+      <HintBox variant="error">
         {errorMsg.prefix}<strong class="text-primary">{errorMsg.label}</strong
         >{errorMsg.suffix}
       </HintBox>

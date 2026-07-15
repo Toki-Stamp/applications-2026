@@ -23,10 +23,7 @@ async function selectRadio(page, labelText, valueText) {
     .locator(".form-group")
     .filter({ hasText: labelText })
     .first();
-  const option = group
-    .locator(".radio-label")
-    .filter({ hasText: valueText })
-    .first();
+  const option = group.locator(".radio-label").filter({ hasText: valueText }).first();
   await option.click();
 }
 
@@ -37,10 +34,8 @@ async function selectDropdown(page, labelText, valueText) {
     .first();
   const select = group.locator("md-outlined-select");
   await select.click();
-  const option = select
-    .locator("md-select-option")
-    .filter({ hasText: valueText })
-    .first();
+  const option = select.locator("md-select-option").filter({ hasText: valueText }).first();
+  await page.waitForTimeout(500); // Wait for popup animation on mobile
   await option.click();
   await page.waitForTimeout(300);
 }
@@ -60,6 +55,7 @@ async function selectGuestRadio(page, guestName, labelText, valueText) {
     .first();
   await option.scrollIntoViewIfNeeded();
   await page.evaluate(() => window.scrollBy(0, 150));
+  await page.waitForTimeout(300);
   await option.click();
 }
 
@@ -84,7 +80,7 @@ async function fillGuestText(page, guestName, labelText, value) {
 }
 
 async function clickNext(page) {
-  await page.locator('button[data-tooltip="Далее"]').click();
+  await page.locator('.tooltip-wrapper[data-tooltip="Далее"] button').click();
 }
 
 async function checkPeriod(page, provisionLabel, dayLabel, periodLabel) {
@@ -108,7 +104,7 @@ async function checkPeriod(page, provisionLabel, dayLabel, periodLabel) {
 
 async function checkNight(page, nightLabel) {
   const card = page
-    .locator(".night-card")
+    .locator(".period-card")
     .filter({ hasText: nightLabel })
     .first();
   await card.click();
@@ -119,10 +115,7 @@ async function checkGuestNight(page, guestName, nightLabel) {
     .locator(".sub-block-card")
     .filter({ hasText: guestName })
     .first();
-  const card = guestGroup
-    .locator(".night-card")
-    .filter({ hasText: nightLabel })
-    .first();
+  const card = guestGroup.locator(".period-card").filter({ hasText: nightLabel }).first();
   await card.click();
 }
 
@@ -220,7 +213,7 @@ async function verifyPeriodChecked(
 
 async function verifyNightChecked(page, nightLabel) {
   const card = page
-    .locator(".night-card")
+    .locator(".period-card")
     .filter({ hasText: nightLabel })
     .first();
   await expect(card).toHaveClass(/selected/);
@@ -232,7 +225,7 @@ async function verifyGuestNightChecked(page, guestName, nightLabel) {
     .filter({ hasText: guestName })
     .first();
   const card = guestGroup
-    .locator(".night-card")
+    .locator(".period-card")
     .filter({ hasText: nightLabel })
     .first();
   await expect(card).toHaveClass(/selected/);

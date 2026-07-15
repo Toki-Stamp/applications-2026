@@ -17,26 +17,12 @@ export const ERROR_MESSAGES = {
 
 const provisionsSchema = z
   .object({
-    food: z.string().nullable(),
+    food: z.string().nullable().refine(val => val !== null, ERROR_MESSAGES.REQUIRED),
     foodPeriods: z.array(z.string()),
-    alcohol: z.string().nullable(),
+    alcohol: z.string().nullable().refine(val => val !== null, ERROR_MESSAGES.REQUIRED),
     alcoholPeriods: z.array(z.string()),
   })
   .superRefine((data, ctx) => {
-    if (!data.food) {
-      ctx.addIssue({
-        path: ["food"],
-        code: z.ZodIssueCode.custom,
-        message: ERROR_MESSAGES.REQUIRED,
-      });
-    }
-    if (!data.alcohol) {
-      ctx.addIssue({
-        path: ["alcohol"],
-        code: z.ZodIssueCode.custom,
-        message: ERROR_MESSAGES.REQUIRED,
-      });
-    }
     if (
       data.food === PROVISION_TYPE.REQUIRED &&
       data.foodPeriods.length === 0
@@ -248,42 +234,14 @@ export const provisionsStepSchema = z
       data.applicationType === "group" &&
       data.groupConditions === "differential"
     ) {
-      data.guests.forEach((guest, i) => {
-        if (!guest.provisions.food) {
-          ctx.addIssue({
-            path: ["guests", i, "provisions", "food"],
-            code: z.ZodIssueCode.custom,
-            message: ERROR_MESSAGES.REQUIRED,
-          });
-        }
-        if (!guest.provisions.alcohol) {
-          ctx.addIssue({
-            path: ["guests", i, "provisions", "alcohol"],
-            code: z.ZodIssueCode.custom,
-            message: ERROR_MESSAGES.REQUIRED,
-          });
-        }
-        if (
-          guest.provisions.food === PROVISION_TYPE.REQUIRED &&
-          guest.provisions.foodPeriods.length === 0
-        ) {
-          ctx.addIssue({
-            path: ["guests", i, "provisions", "foodPeriods"],
-            code: z.ZodIssueCode.custom,
-            message: ERROR_MESSAGES.SELECT_PERIODS,
-          });
-        }
-        if (
-          guest.provisions.alcohol === PROVISION_TYPE.REQUIRED &&
-          guest.provisions.alcoholPeriods.length === 0
-        ) {
-          ctx.addIssue({
-            path: ["guests", i, "provisions", "alcoholPeriods"],
-            code: z.ZodIssueCode.custom,
-            message: ERROR_MESSAGES.SELECT_PERIODS,
-          });
-        }
-      });
+      const guestsResult = z
+        .array(z.object({ provisions: provisionsSchema }))
+        .safeParse(data.guests);
+      if (!guestsResult.success) {
+        guestsResult.error.issues.forEach((issue) => {
+          ctx.addIssue({ ...issue, path: ["guests", ...issue.path] });
+        });
+      }
     }
   });
 
@@ -296,18 +254,11 @@ const looseAccommodationShape = z.object({
 
 const baseAccommodationSchema = z
   .object({
-    type: z.string().nullable(),
+    type: z.string().nullable().refine(val => val !== null, ERROR_MESSAGES.REQUIRED),
     nights: z.array(z.string()),
     comment: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    if (!data.type) {
-      ctx.addIssue({
-        path: ["type"],
-        code: z.ZodIssueCode.custom,
-        message: ERROR_MESSAGES.REQUIRED,
-      });
-    }
     if (data.type === ACCOMMODATION_TYPE.BOOKING && data.nights.length === 0) {
       ctx.addIssue({
         path: ["nights"],
@@ -329,25 +280,14 @@ export const accommodationStepSchema = z
       data.applicationType === "group" &&
       data.groupConditions === "differential"
     ) {
-      data.guests.forEach((guest, i) => {
-        if (!guest.accommodation.type) {
-          ctx.addIssue({
-            path: ["guests", i, "accommodation", "type"],
-            code: z.ZodIssueCode.custom,
-            message: ERROR_MESSAGES.REQUIRED,
-          });
-        }
-        if (
-          guest.accommodation.type === ACCOMMODATION_TYPE.BOOKING &&
-          guest.accommodation.nights.length === 0
-        ) {
-          ctx.addIssue({
-            path: ["guests", i, "accommodation", "nights"],
-            code: z.ZodIssueCode.custom,
-            message: ERROR_MESSAGES.SELECT_NIGHTS,
-          });
-        }
-      });
+      const guestsResult = z
+        .array(z.object({ accommodation: baseAccommodationSchema }))
+        .safeParse(data.guests);
+      if (!guestsResult.success) {
+        guestsResult.error.issues.forEach((issue) => {
+          ctx.addIssue({ ...issue, path: ["guests", ...issue.path] });
+        });
+      }
     }
   });
 
@@ -399,4 +339,59 @@ export function validateStepData(step, data) {
   } else {
     return { success: false, errors: formatZodErrors(result.error) };
   }
+}
+
+export function sanitizeFormData(data) {
+  const payload = JSON.parse(JSON.stringify(data));
+
+  if (payload.applicationType === APPLICATION_TYPE.INDIVIDUAL) {
+    payload.additionalGuestsCount = 0;
+    payload.guests = [];
+    payload.groupConditions = null;
+  }
+
+  if (payload.transportTo.method !== TRANSPORT_METHOD.DRIVER) {
+    delete payload.transportTo.freeSeats;
+  }
+
+  const sanitizeAccommodation = (acc) => {
+    if (acc.type === ACCOMMODATION_TYPE.SELF) {
+      acc.nights = [];
+      acc.comment = "";
+    }
+  };
+
+  const sanitizeProvisions = (prov) => {
+    if (prov.food === PROVISION_TYPE.NONE) {
+      prov.foodPeriods = [];
+    }
+    if (prov.alcohol === PROVISION_TYPE.NONE) {
+      prov.alcoholPeriods = [];
+    }
+  };
+
+  if (
+    payload.applicationType === APPLICATION_TYPE.INDIVIDUAL ||
+    payload.groupConditions === GROUP_CONDITIONS.UNIFIED
+  ) {
+    sanitizeProvisions(payload.applicant.provisions);
+    sanitizeAccommodation(payload.applicant.accommodation);
+    payload.guests.forEach((guest) => {
+      guest.provisions = JSON.parse(
+        JSON.stringify(payload.applicant.provisions),
+      );
+      guest.accommodation = JSON.parse(
+        JSON.stringify(payload.applicant.accommodation),
+      );
+    });
+  } else {
+    sanitizeProvisions(payload.applicant.provisions);
+    sanitizeAccommodation(payload.applicant.accommodation);
+    payload.guests.forEach((guest) => {
+      sanitizeProvisions(guest.provisions);
+      sanitizeAccommodation(guest.accommodation);
+    });
+  }
+
+  return payload;
 }

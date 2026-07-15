@@ -51,6 +51,7 @@ async function selectDropdown(page, labelText, valueText) {
     .locator("md-select-option")
     .filter({ hasText: valueText })
     .first();
+  await page.waitForTimeout(300);
   await option.click();
 }
 
@@ -87,9 +88,10 @@ async function getSubmitBtn(page) {
 // --- Tests ---
 test.describe("Validation UX Tests", () => {
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => { localStorage.clear(); });
     await page.goto("/");
     // Start form
-    await page.locator('button:has-text("Начать заполнение")').click();
+    
   });
 
   test("Test 1: Core Validation (Force Touch)", async ({ page }) => {
@@ -107,7 +109,7 @@ test.describe("Validation UX Tests", () => {
 
     // Click next without selecting
     // Note: since the button becomes disabled, Playwright might complain if we try to click it twice, but we click once.
-    await nextBtn.click({ force: true });
+    await nextBtn.click();
 
     // Now error should be visible and button disabled
     await expect(radioGroup.locator(".error-wrapper")).toBeVisible();
@@ -118,7 +120,7 @@ test.describe("Validation UX Tests", () => {
     const nextBtn = await getNextBtn(page);
 
     // Force touch to get locked
-    await nextBtn.click({ force: true });
+    await nextBtn.click();
     await expect(nextBtn).toBeDisabled();
 
     // Select Group -> unlocks
@@ -138,7 +140,7 @@ test.describe("Validation UX Tests", () => {
     await expect(nextBtn).not.toBeDisabled();
 
     // Click next -> locks again
-    await nextBtn.click({ force: true });
+    await nextBtn.click();
     await expect(nextBtn).toBeDisabled();
   });
 
@@ -225,7 +227,7 @@ test.describe("Validation UX Tests", () => {
     await selectDropdown(page, "Способ прибытия", "Как водитель");
 
     // It has no error yet. Force touch to get error on free seats
-    await nextBtn.click({ force: true });
+    await nextBtn.click();
     await expect(nextBtn).toBeDisabled();
 
     // Switch to Passenger
@@ -304,7 +306,7 @@ test.describe("Validation UX Tests", () => {
 
     // Quick fill to get to step 5 (Accommodation)
     await page.goto("/");
-    await page.locator('button:has-text("Начать заполнение")').click();
+    
     await selectRadio(page, "Тип заявки", "Индивидуальная");
     await nextBtn.click();
     await fillText(page, "Никнейм", "tester");
@@ -347,7 +349,7 @@ test.describe("Validation UX Tests", () => {
 
     // 3. Select a night, verify unlock
     await page
-      .locator(".night-card", { hasText: "С пятницы на субботу" })
+      .locator(".period-card", { hasText: "С пятницы на субботу" })
       .first()
       .click();
     await expect(nextBtn).not.toBeDisabled();
@@ -372,7 +374,7 @@ test.describe("Validation UX Tests", () => {
       "Требуется забронировать номер на базе",
     );
     await expect(
-      page.locator(".night-card", { hasText: "С пятницы на субботу" }).first(),
+      page.locator(".period-card", { hasText: "С пятницы на субботу" }).first(),
     ).not.toHaveClass(/selected/);
   });
 
@@ -381,7 +383,7 @@ test.describe("Validation UX Tests", () => {
 
     // Quick fill to get to step 5 (Accommodation)
     await page.goto("/");
-    await page.locator('button:has-text("Начать заполнение")').click();
+    
     await selectRadio(page, "Тип заявки", "Групповая");
     await page.waitForTimeout(500);
     await selectDropdown(
@@ -509,7 +511,7 @@ test.describe("Validation UX Tests", () => {
     // Check night for Petr
     await petrAcc
       .first()
-      .locator(".night-card", { hasText: "С пятницы на субботу" })
+      .locator(".period-card", { hasText: "С пятницы на субботу" })
       .first()
       .click();
     await expect(nextBtn).not.toBeDisabled();

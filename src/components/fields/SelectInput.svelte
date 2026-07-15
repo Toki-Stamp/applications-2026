@@ -25,6 +25,7 @@
   function handleChange(e) {
     const target = /** @type {any} */ (e.target);
     const rawVal = target.value;
+    console.log('handleChange fired! rawVal:', rawVal);
     // Find the matching option to get the original typed value (e.g. number instead of string)
     const match = options.find((opt) => {
       const v = opt.value !== undefined ? String(opt.value) : String(opt);
@@ -87,9 +88,9 @@
     }
 
     // Use capture phase to catch all scroll events on the page
-    window.addEventListener("scroll", handleScroll, true);
+    // window.addEventListener("scroll", handleScroll, true);
     return () => {
-      window.removeEventListener("scroll", handleScroll, true);
+      // window.removeEventListener("scroll", handleScroll, true);
     };
   });
 </script>

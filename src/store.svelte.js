@@ -80,15 +80,8 @@ export function createFormStore() {
     }
   }
 
-  // Auto-save any change to data into localStorage
-  $effect.root(() => {
-    $effect(() => {
-      // Accessing data triggers reactivity tracking; JSON.stringify walks all fields
-      saveToLocalStorage();
-    });
-  });
-
   return {
+    save: saveToLocalStorage,
     get data() {
       return data;
     },
@@ -146,58 +139,3 @@ export function createFormStore() {
 }
 
 export const formStore = createFormStore();
-
-export function sanitizeFormData(data) {
-  const payload = JSON.parse(JSON.stringify(data));
-
-  if (payload.applicationType === APPLICATION_TYPE.INDIVIDUAL) {
-    payload.additionalGuestsCount = 0;
-    payload.guests = [];
-    payload.groupConditions = null;
-  }
-
-  if (payload.transportTo.method !== TRANSPORT_METHOD.DRIVER) {
-    delete payload.transportTo.freeSeats;
-  }
-
-  const sanitizeAccommodation = (acc) => {
-    if (acc.type === ACCOMMODATION_TYPE.SELF) {
-      acc.nights = [];
-      acc.comment = "";
-    }
-  };
-
-  const sanitizeProvisions = (prov) => {
-    if (prov.food === PROVISION_TYPE.NONE) {
-      prov.foodPeriods = [];
-    }
-    if (prov.alcohol === PROVISION_TYPE.NONE) {
-      prov.alcoholPeriods = [];
-    }
-  };
-
-  if (
-    payload.applicationType === APPLICATION_TYPE.INDIVIDUAL ||
-    payload.groupConditions === GROUP_CONDITIONS.UNIFIED
-  ) {
-    sanitizeProvisions(payload.applicant.provisions);
-    sanitizeAccommodation(payload.applicant.accommodation);
-    payload.guests.forEach((guest) => {
-      guest.provisions = JSON.parse(
-        JSON.stringify(payload.applicant.provisions),
-      );
-      guest.accommodation = JSON.parse(
-        JSON.stringify(payload.applicant.accommodation),
-      );
-    });
-  } else {
-    sanitizeProvisions(payload.applicant.provisions);
-    sanitizeAccommodation(payload.applicant.accommodation);
-    payload.guests.forEach((guest) => {
-      sanitizeProvisions(guest.provisions);
-      sanitizeAccommodation(guest.accommodation);
-    });
-  }
-
-  return payload;
-}

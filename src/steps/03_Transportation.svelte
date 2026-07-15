@@ -79,29 +79,18 @@
       onchange={() => formStore.markTouched("transportTo.method")}
       options={transportMethodsTo}
     />
-    {#if formStore.data.transportTo.method === TRANSPORT_METHOD.DRIVER}
-      <div
-        transition:gridExpand
-        onintroend={() => (detailsOverflowVisible = true)}
-        onoutrostart={() => (detailsOverflowVisible = false)}
-      >
-        <div
-          class="details-wrapper"
-          style="overflow: {detailsOverflowVisible ? 'visible' : 'hidden'}"
-        >
-          <SelectInput
-            label="Свободных мест для попутчиков"
-            placeholder="Укажите кол-во..."
-            icon="airline_seat_recline_normal"
-            required={true}
-            bind:value={formStore.data.transportTo.freeSeats}
-            errorText={errors["transportTo.freeSeats"]}
-            onchange={() => formStore.markTouched("transportTo.freeSeats")}
-            options={freeSeatsOptions}
-          />
-        </div>
-      </div>
-    {/if}
+    <ExpandableSection show={formStore.data.transportTo.method === TRANSPORT_METHOD.DRIVER}>
+      <SelectInput
+        label="Свободных мест для попутчиков"
+        placeholder="Укажите кол-во..."
+        icon="airline_seat_recline_normal"
+        required={true}
+        bind:value={formStore.data.transportTo.freeSeats}
+        errorText={errors["transportTo.freeSeats"]}
+        onchange={() => formStore.markTouched("transportTo.freeSeats")}
+        options={freeSeatsOptions}
+      />
+    </ExpandableSection>
     <SelectInput
       label="День отправления на базу"
       placeholder="Выберите день..."

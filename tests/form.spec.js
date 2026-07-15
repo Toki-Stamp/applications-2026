@@ -39,6 +39,7 @@ async function selectDropdown(page, labelText, valueText) {
     .locator("md-select-option")
     .filter({ hasText: valueText })
     .first();
+  await page.waitForTimeout(300);
   await option.click();
 }
 
@@ -92,7 +93,7 @@ async function checkGuestPeriod(
 
 async function checkNight(page, nightLabel) {
   const card = page
-    .locator(".night-card")
+    .locator(".period-card")
     .filter({ hasText: nightLabel })
     .first();
   await card.click();
@@ -103,10 +104,7 @@ async function checkGuestNight(page, guestName, nightLabel) {
     .locator(".sub-block-card")
     .filter({ hasText: guestName })
     .first();
-  const card = guestGroup
-    .locator(".night-card")
-    .filter({ hasText: nightLabel })
-    .first();
+  const card = guestGroup.locator(".period-card").filter({ hasText: nightLabel }).first();
   await card.click();
 }
 
@@ -147,15 +145,16 @@ async function fillGuestText(page, guestName, labelText, value) {
 }
 
 async function clickNext(page) {
-  await page.locator('button[data-tooltip="Далее"]').click();
+  await page.locator(".right-buttons button").last().click();
 }
 
 async function clickSubmit(page) {
-  await page.locator('button[data-tooltip="Отправить заявку"]').click();
+  await page.locator(".right-buttons button").last().click();
 }
 
 test.describe("Form E2E Tests", () => {
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => { localStorage.clear(); });
     // Intercept Google Apps Script requests and return a mock success response
     await page.route("**/*script.google.com*/**", async (route) => {
       await route.fulfill({
@@ -542,7 +541,7 @@ test.describe("Form E2E Tests", () => {
     await fillText(page, "Номер телефона", "+375 29 111 22 33");
     await clickNext(page);
 
-    await page.locator('button[data-tooltip="Очистить форму"]').click();
+    await page.locator('.tooltip-wrapper[data-tooltip="Очистить форму"] button').click();
     await page.locator('.modal-card button:has-text("Очистить")').click();
 
     await page.waitForTimeout(300);
@@ -782,7 +781,7 @@ test.describe("Form E2E Tests", () => {
     // Do NOT fill Guest Name
 
     // Go Back to Step 1
-    await page.locator('button[data-tooltip="Назад"]').click();
+    await page.locator('.tooltip-wrapper[data-tooltip="Назад"] button').click();
 
     // Switch to Individual
     await selectRadio(page, "Тип заявки", "Индивидуальная");

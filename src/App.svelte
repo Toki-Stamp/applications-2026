@@ -2,9 +2,9 @@
   import { onMount } from "svelte";
   import "./app.css";
   import { fade } from "svelte/transition";
-  import { formStore, sanitizeFormData } from "./store.svelte.js";
+  import { formStore } from "./store.svelte.js";
   import { GOOGLE_SCRIPT_URL } from "./constants.js";
-  import { validateStepData } from "./schema.js";
+  import { validateStepData, sanitizeFormData } from "./schema.js";
   import SuccessScreen from "./components/layout/SuccessScreen.svelte";
   import Modal from "./components/ui/Modal.svelte";
   import Header from "./components/layout/Header.svelte";
