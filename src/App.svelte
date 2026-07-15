@@ -447,7 +447,7 @@
   .step-layer {
     position: absolute;
     inset: 0;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
   }
 
@@ -457,7 +457,7 @@
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    padding: 1.5rem 1.5rem 1.5rem calc(1.5rem + 10px);
+    padding: 1.5rem calc(1.5rem - 10px) 1.5rem 1.5rem;
   }
 
   .app-transition-wrapper {
