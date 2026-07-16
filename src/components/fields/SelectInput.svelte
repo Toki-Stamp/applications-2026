@@ -44,22 +44,25 @@
   /** @type {any} */
   let selectEl = $state();
 
-  let menuStyleInjected = false;
   function handleOpening() {
     isOpen = true;
-    if (!menuStyleInjected && selectEl && selectEl.shadowRoot) {
+    if (selectEl && selectEl.shadowRoot) {
       const menuEl = selectEl.shadowRoot.querySelector("md-menu");
       if (menuEl && menuEl.shadowRoot) {
-        const style = document.createElement("style");
+        let style = menuEl.shadowRoot.querySelector("#custom-menu-style");
+        if (!style) {
+          style = document.createElement("style");
+          style.id = "custom-menu-style";
+          menuEl.shadowRoot.appendChild(style);
+        }
+        const outlineColor = hasError ? "var(--error, #ba1a1a)" : "var(--primary)";
         style.textContent = `
           .menu {
-            outline: 1px solid var(--primary) !important;
+            outline: 1px solid ${outlineColor} !important;
             outline-offset: -1px !important;
             border-radius: 8px !important;
           }
         `;
-        menuEl.shadowRoot.appendChild(style);
-        menuStyleInjected = true;
       }
     }
   }
@@ -202,10 +205,7 @@
     --md-outlined-select-text-field-container-shape: 8px;
   }
 
-  .select-wrapper.is-open .select-field {
-    background-color: var(--bg-color-accent);
-    border-radius: 8px;
-  }
+
 
   .select-field.is-empty {
     --md-outlined-select-text-field-input-text-color: var(--text-placeholder);

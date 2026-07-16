@@ -60,12 +60,32 @@
 
 md-outlined-text-field {
   --md-outlined-text-field-outline-color: var(--input-border-color);
+  --md-outlined-text-field-hover-outline-color: var(--primary-hover);
   --md-outlined-text-field-focus-outline-color: var(--primary);
+  
+  --md-outlined-text-field-error-outline-color: var(--error-color);
+  --md-outlined-text-field-error-hover-outline-color: color-mix(in srgb, var(--error-color) 70%, var(--text-primary));
+  --md-outlined-text-field-error-focus-outline-color: var(--error-color);
 }
 
 md-outlined-select {
   --md-outlined-select-text-field-outline-color: var(--input-border-color);
+  --md-outlined-select-text-field-hover-outline-color: var(--primary-hover);
   --md-outlined-select-text-field-focus-outline-color: var(--primary);
+
+  --md-outlined-select-text-field-error-outline-color: var(--error-color);
+  --md-outlined-select-text-field-error-hover-outline-color: color-mix(in srgb, var(--error-color) 70%, var(--text-primary));
+  --md-outlined-select-text-field-error-focus-outline-color: var(--error-color);
+
+  --md-outlined-select-text-field-error-trailing-icon-color: var(--error-color);
+  --md-outlined-select-text-field-error-hover-trailing-icon-color: color-mix(in srgb, var(--error-color) 70%, var(--text-primary));
+  --md-outlined-select-text-field-error-focus-trailing-icon-color: var(--error-color);
+}
+
+md-outlined-text-field[error],
+md-outlined-select[error] {
+  --md-outlined-text-field-hover-outline-width: 2px;
+  --md-outlined-select-text-field-hover-outline-width: 2px;
 }
 
 * {
