@@ -10,7 +10,7 @@
 
 <Block title={dict.steps.intro.title}>
   <div class="intro-content">
-    <HintBox type="info">
+    <HintBox>
       <RichText content={dict.steps.intro.hint1} />
     </HintBox>
 
@@ -24,7 +24,7 @@
     </SubBlock>
 
     <SubBlock title={dict.steps.intro.contactsTitle} stickyLevel={2}>
-      <p><strong>{dict.steps.intro.contactsSubtitle}</strong></p>
+      <p><RichText content={dict.steps.intro.contactsSubtitle} /></p>
       <ul class="intro-list">
         {#each CONTACTS as contact}
           <li>
@@ -36,7 +36,7 @@
       </ul>
     </SubBlock>
 
-    <HintBox type="neutral">
+    <HintBox>
       {dict.steps.intro.hint2Prefix}<md-icon class="inline-icon">settings</md-icon>{dict.steps.intro.hint2Suffix}
     </HintBox>
   </div>

@@ -112,12 +112,12 @@ export const dict = {
         { text: "15", highlight: true },
         { text: " лет!" }
       ],
-      datesTitle: "Даты проведения",
-      datesSubtitle: "Мероприятие будет проходить в два этапа:",
+      datesTitle: "Дата проведения",
+      datesSubtitle: [{ text: "С 7 по 9 августа 2026:", bold: true }],
       datesList: [
-        [{ text: "Пятница:", bold: true }, { text: " шоу начинается" }],
-        [{ text: "Суббота:", bold: true }, { text: " без забот" }],
-        [{ text: "Воскресенье:", bold: true }, { text: " ну вот, опять домой" }]
+        [{ text: "Пятница:", bold: true, highlight: true, upper: true }, { text: " шоу начинается!" }],
+        [{ text: "Суббота:", bold: true, highlight: true, upper: true }, { text: " без забот =)" }],
+        [{ text: "Воскресенье:", bold: true,  highlight: true, upper: true }, { text: " ну вот, опять домой..." }]
       ],
       contactsTitle: "Контакты организаторов",
       contactsSubtitle: "Для решения организационных вопросов:",

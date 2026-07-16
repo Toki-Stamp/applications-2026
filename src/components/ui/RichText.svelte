@@ -2,27 +2,28 @@
   let { content = [] } = $props();
 
   const parts = $derived(
-    Array.isArray(content) ? content : typeof content === "string" ? [{ text: content }] : [content]
+    Array.isArray(content)
+      ? content
+      : typeof content === "string"
+        ? [{ text: content }]
+        : [content],
   );
 </script>
 
 {#each parts as part}
-  {#if part.highlight}
-    <strong class="text-primary" class:uppercase={part.upper}>{part.text}</strong>
-  {:else if part.bold}
-    <strong class:uppercase={part.upper}>{part.text}</strong>
-  {:else if part.upper}
-    <span class="uppercase">{part.text}</span>
-  {:else}
-    {part.text}
-  {/if}
+  <span
+    class:highlight={part.highlight}
+    class:bold={part.bold}
+    class:uppercase={part.upper}>{part.text}</span
+  >
 {/each}
 
 <style>
-  strong {
+  .bold {
+    font-weight: bold;
     color: var(--text-primary);
   }
-  .text-primary {
+  .highlight {
     color: var(--primary);
   }
   .uppercase {
