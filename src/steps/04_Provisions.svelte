@@ -94,11 +94,10 @@
   {:else}
     <HintBox>{dict.steps.provisions.diffHint}</HintBox>
 
-    <SubBlock
+    <Section
       title={dict.steps.provisions.forApplicant(
         formStore.data.applicant.nickname || "Заявителя",
       )}
-      stickyLevel={2}
     >
       <div class="provision-item">
         <RadioGroup
@@ -144,65 +143,70 @@
           />
         </ExpandableSection>
       </div>
-    </SubBlock>
+    </Section>
 
-    {#each formStore.data.guests as guest, i}
+    {#if formStore.data.guests.length > 0}
       <ExpandableSection show={true}>
-        <SubBlock
-          title={dict.steps.provisions.forGuest(
-            guest.firstName || `Гостя #${i + 1}`,
-          )}
-          stickyLevel={2}
-        >
-          <div class="provision-item">
-            <RadioGroup
-              label={dict.steps.provisions.foodLabel}
-              bind:value={formStore.data.guests[i].provisions.food}
-              errorText={errors[`guests.${i}.provisions.food`]}
-              onchange={() =>
-                formStore.markTouched(`guests.${i}.provisions.food`)}
-              options={foodOptions}
-              required={true}
-            />
-            <ExpandableSection
-              show={formStore.data.guests[i].provisions.food ===
-                PROVISION_TYPE.REQUIRED}
-            >
-              <SelectionGrid
-                groups={groupedPeriods}
-                required={true}
-                errorMessageFn={() => dict.errors.periods}
-                bind:values={formStore.data.guests[i].provisions.foodPeriods}
-                errorText={errors[`guests.${i}.provisions.foodPeriods`]}
-              />
+        <Section title={dict.steps.personalData.groupTitle}>
+          {#each formStore.data.guests as guest, i}
+            <ExpandableSection show={true}>
+              <SubBlock
+                title={dict.steps.provisions.forGuest(
+                  guest.firstName || `Гостя #${i + 1}`,
+                )}
+              >
+                <div class="provision-item">
+                  <RadioGroup
+                    label={dict.steps.provisions.foodLabel}
+                    bind:value={formStore.data.guests[i].provisions.food}
+                    errorText={errors[`guests.${i}.provisions.food`]}
+                    onchange={() =>
+                      formStore.markTouched(`guests.${i}.provisions.food`)}
+                    options={foodOptions}
+                    required={true}
+                  />
+                  <ExpandableSection
+                    show={formStore.data.guests[i].provisions.food ===
+                      PROVISION_TYPE.REQUIRED}
+                  >
+                    <SelectionGrid
+                      groups={groupedPeriods}
+                      required={true}
+                      errorMessageFn={() => dict.errors.periods}
+                      bind:values={formStore.data.guests[i].provisions.foodPeriods}
+                      errorText={errors[`guests.${i}.provisions.foodPeriods`]}
+                    />
+                  </ExpandableSection>
+                </div>
+                <div class="provision-item">
+                  <RadioGroup
+                    label={dict.steps.provisions.alcoholLabel}
+                    bind:value={formStore.data.guests[i].provisions.alcohol}
+                    errorText={errors[`guests.${i}.provisions.alcohol`]}
+                    onchange={() =>
+                      formStore.markTouched(`guests.${i}.provisions.alcohol`)}
+                    options={alcoholOptions}
+                    required={true}
+                  />
+                  <ExpandableSection
+                    show={formStore.data.guests[i].provisions.alcohol ===
+                      PROVISION_TYPE.REQUIRED}
+                  >
+                    <SelectionGrid
+                      groups={groupedPeriods}
+                      required={true}
+                      errorMessageFn={() => dict.errors.periods}
+                      bind:values={formStore.data.guests[i].provisions.alcoholPeriods}
+                      errorText={errors[`guests.${i}.provisions.alcoholPeriods`]}
+                    />
+                  </ExpandableSection>
+                </div>
+              </SubBlock>
             </ExpandableSection>
-          </div>
-          <div class="provision-item">
-            <RadioGroup
-              label={dict.steps.provisions.alcoholLabel}
-              bind:value={formStore.data.guests[i].provisions.alcohol}
-              errorText={errors[`guests.${i}.provisions.alcohol`]}
-              onchange={() =>
-                formStore.markTouched(`guests.${i}.provisions.alcohol`)}
-              options={alcoholOptions}
-              required={true}
-            />
-            <ExpandableSection
-              show={formStore.data.guests[i].provisions.alcohol ===
-                PROVISION_TYPE.REQUIRED}
-            >
-              <SelectionGrid
-                groups={groupedPeriods}
-                required={true}
-                errorMessageFn={() => dict.errors.periods}
-                bind:values={formStore.data.guests[i].provisions.alcoholPeriods}
-                errorText={errors[`guests.${i}.provisions.alcoholPeriods`]}
-              />
-            </ExpandableSection>
-          </div>
-        </SubBlock>
+          {/each}
+        </Section>
       </ExpandableSection>
-    {/each}
+    {/if}
   {/if}
 </Block>
 
