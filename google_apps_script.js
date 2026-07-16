@@ -19,6 +19,7 @@ function doPost(e) {
         "Фамилия",
         "Телефон",
         "Транспорт ТУДА",
+        "Город выезда",
         "Свободные места",
         "День выезда",
         "Время выезда",
@@ -38,7 +39,7 @@ function doPost(e) {
       sheet.setFrozenRows(1); // Закрепляем шапку
       // Можно также задать стиль шапки (жирный шрифт, фон), если нужно
       sheet
-        .getRange(1, 1, 1, 25)
+        .getRange(1, 1, 1, 26)
         .setFontWeight("bold")
         .setBackground("#f3f4f6");
     }
@@ -68,29 +69,30 @@ function doPost(e) {
 
         // Транспорт туда (дублируется для всей группы)
         data.transportTo.method || "", // 10. Транспорт ТУДА
-        data.transportTo.freeSeats || "", // 11. Свободные места
-        data.transportTo.day || "", // 12. День выезда
-        data.transportTo.time || "", // 13. Время выезда
+        data.transportTo.departureCity || "", // 11. Город выезда
+        data.transportTo.freeSeats || "", // 12. Свободные места
+        data.transportTo.day || "", // 13. День выезда
+        data.transportTo.time || "", // 14. Время выезда
 
         // Транспорт обратно (дублируется для всей группы)
-        data.transportFrom.method || "", // 14. Транспорт ОБРАТНО
-        data.transportFrom.day || "", // 15. День возвращения
-        data.transportFrom.time || "", // 16. Время возвращения
-        data.transportComment || "", // 17. Комментарий к транспорту
+        data.transportFrom.method || "", // 15. Транспорт ОБРАТНО
+        data.transportFrom.day || "", // 16. День возвращения
+        data.transportFrom.time || "", // 17. Время возвращения
+        data.transportComment || "", // 18. Комментарий к транспорту
 
         // Питание (индивидуальное для каждого человека)
-        person.provisions.food || "", // 18. Еда (provided/none)
-        (person.provisions.foodPeriods || []).join(", "), // 19. Приемы пищи
-        person.provisions.alcohol || "", // 20. Алкоголь (provided/none)
-        (person.provisions.alcoholPeriods || []).join(", "), // 21. Приемы алкоголя
+        person.provisions.food || "", // 19. Еда (provided/none)
+        (person.provisions.foodPeriods || []).join(", "), // 20. Приемы пищи
+        person.provisions.alcohol || "", // 21. Алкоголь (provided/none)
+        (person.provisions.alcoholPeriods || []).join(", "), // 22. Приемы алкоголя
 
-        // Проживание (дублируется для всей группы)
-        data.accommodation || "", // 22. Проживание (tent/house/self)
-        (data.nights || []).join(", "), // 23. Ночевки
-        data.accommodationComment || "", // 24. Комментарий к проживанию
+        // Проживание (индивидуальное для каждого человека в v2)
+        person.accommodation.type || "", // 23. Проживание (tent/booking/self)
+        (person.accommodation.nights || []).join(", "), // 24. Ночевки
+        person.accommodation.comment || "", // 25. Комментарий к проживанию
 
         // Свободный микрофон (дублируется для всей группы)
-        data.freeMic || "", // 25. Свободный микрофон
+        data.freeMic || "", // 26. Свободный микрофон
       ];
     }
 
