@@ -1,6 +1,6 @@
 <script>
   import { fade } from "svelte/transition";
-  import Button from "../ui/Button.svelte";
+  import Button from "../components/ui/Button.svelte";
 
   let { onreset } = $props();
 </script>

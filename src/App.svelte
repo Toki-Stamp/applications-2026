@@ -5,10 +5,10 @@
   import { formStore } from "./store.svelte.js";
   import { GOOGLE_SCRIPT_URL } from "./constants.js";
   import { validateStepData, sanitizeFormData } from "./schema.js";
-  import SuccessScreen from "./components/layout/SuccessScreen.svelte";
+
   import Modal from "./components/ui/Modal.svelte";
   import Header from "./components/layout/Header.svelte";
-  import NavigationButtons from "./components/layout/NavigationButtons.svelte";
+  import Footer from "./components/layout/Footer.svelte";
   import ThemeSwitcher from "./components/ui/ThemeSwitcher.svelte";
   import Button from "./components/ui/Button.svelte";
 
@@ -20,6 +20,7 @@
     Provisions,
     Accommodation,
     FreeMic,
+    Outro,
   } from "./steps/index.js";
 
   let isSubmitted = $state(false);
@@ -261,7 +262,7 @@
   <div class="app-transition-wrapper">
     {#if isSubmitted}
       <!-- Success Screen -->
-      <SuccessScreen onreset={handleReset} />
+      <Outro onreset={handleReset} />
     {:else}
       <form
         class="app-form"
@@ -331,7 +332,7 @@
         </div>
 
         <!-- Navigation Buttons -->
-        <NavigationButtons
+        <Footer
           {currentStep}
           {totalSteps}
           {hasErrors}
