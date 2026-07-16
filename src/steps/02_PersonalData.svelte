@@ -14,7 +14,12 @@
 </script>
 
 <Block title={dict.steps.personalData.title}>
-  <Section title={formStore.data.applicationType === APPLICATION_TYPE.GROUP ? dict.steps.personalData.applicantTitleGroup : ""} isFirst={true}>
+  <Section
+    title={formStore.data.applicationType === APPLICATION_TYPE.GROUP
+      ? dict.steps.personalData.applicantTitleGroup
+      : ""}
+    isFirst={true}
+  >
     <TextInput
       label={dict.steps.personalData.nicknameLabel}
       placeholder={dict.steps.personalData.nicknamePlaceholder}

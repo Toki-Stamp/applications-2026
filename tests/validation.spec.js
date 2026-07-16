@@ -60,9 +60,7 @@ async function clearDropdown(page, labelText) {
     .locator(".form-group")
     .filter({ hasText: labelText })
     .first();
-  const clearBtn = group
-    .locator(".clear-button-wrapper button")
-    .first();
+  const clearBtn = group.locator(".clear-button-wrapper button").first();
   await clearBtn.click();
 }
 
@@ -71,9 +69,7 @@ async function clearText(page, labelText) {
     .locator(".form-group")
     .filter({ hasText: labelText })
     .first();
-  const clearBtn = group
-    .locator(".clear-button-wrapper button")
-    .first();
+  const clearBtn = group.locator(".clear-button-wrapper button").first();
   await clearBtn.click();
 }
 
@@ -88,7 +84,9 @@ async function getSubmitBtn(page) {
 // --- Tests ---
 test.describe("Validation UX Tests", () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => { localStorage.clear(); });
+    await page.addInitScript(() => {
+      localStorage.clear();
+    });
     await page.goto("/");
     // Start form
     await page.locator('button:has-text("Начать заполнение")').click();

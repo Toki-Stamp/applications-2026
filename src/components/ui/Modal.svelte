@@ -82,7 +82,11 @@
       0 20px 50px -10px rgba(0, 0, 0, 0.6),
       0 0 40px rgba(220, 38, 38, 0.25);
     border-color: rgba(220, 38, 38, 0.4);
-    background: color-mix(in srgb, var(--glass-bg) 80%, rgba(220, 38, 38, 0.15)) !important;
+    background: color-mix(
+      in srgb,
+      var(--glass-bg) 80%,
+      rgba(220, 38, 38, 0.15)
+    ) !important;
   }
 
   .variant-danger :global(.block-card::before) {
@@ -97,11 +101,8 @@
   .variant-danger :global(.block-title) {
     color: var(--error-color);
     border-bottom-color: rgba(220, 38, 38, 0.3);
-    background: linear-gradient(
-        to right,
-        rgba(220, 38, 38, 0.25),
-        transparent
-      ),
+    background:
+      linear-gradient(to right, rgba(220, 38, 38, 0.25), transparent),
       color-mix(in srgb, var(--bg-color-accent) 90%, transparent) !important;
   }
 

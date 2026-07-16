@@ -51,7 +51,9 @@
 
           {#if currentStep < totalSteps}
             <Tooltip
-              text={hasErrors ? dict.common.fillDataToContinue : dict.common.next}
+              text={hasErrors
+                ? dict.common.fillDataToContinue
+                : dict.common.next}
               pos="right"
             >
               <Button

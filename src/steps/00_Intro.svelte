@@ -28,8 +28,9 @@
       <ul class="intro-list">
         {#each CONTACTS as contact}
           <li>
-            <a href={contact.phoneLink} class="contact-link">{contact.phone}</a> — 
-            <strong>{contact.name}</strong> 
+            <a href={contact.phoneLink} class="contact-link">{contact.phone}</a>
+            —
+            <strong>{contact.name}</strong>
             (<strong class="text-primary">{contact.nick}</strong>)
           </li>
         {/each}
@@ -37,7 +38,9 @@
     </SubBlock>
 
     <HintBox>
-      {dict.steps.intro.hint2Prefix}<md-icon class="inline-icon">settings</md-icon>{dict.steps.intro.hint2Suffix}
+      {dict.steps.intro.hint2Prefix}<md-icon class="inline-icon"
+        >settings</md-icon
+      >{dict.steps.intro.hint2Suffix}
     </HintBox>
   </div>
 </Block>

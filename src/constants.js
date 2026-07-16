@@ -30,8 +30,14 @@ export const TRANSPORT_METHOD = {
 export const days = dict.options.days;
 
 export const transportMethodsTo = [
-  { label: dict.options.transportMethodsTo.driver, value: TRANSPORT_METHOD.DRIVER },
-  { label: dict.options.transportMethodsTo.passenger, value: TRANSPORT_METHOD.PASSENGER },
+  {
+    label: dict.options.transportMethodsTo.driver,
+    value: TRANSPORT_METHOD.DRIVER,
+  },
+  {
+    label: dict.options.transportMethodsTo.passenger,
+    value: TRANSPORT_METHOD.PASSENGER,
+  },
   { label: dict.options.transportMethodsTo.bus, value: TRANSPORT_METHOD.BUS },
   { label: dict.options.transportMethodsTo.self, value: TRANSPORT_METHOD.SELF },
 ];
@@ -129,8 +135,6 @@ export const freeSeatsOptions = [
   { label: dict.options.freeSeats[5], value: 5 },
 ];
 
-
-
 // URL веб-приложения Google Apps Script (замените на свой после деплоя скрипта)
 export const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec";
@@ -138,9 +142,20 @@ export const GOOGLE_SCRIPT_URL =
 export const FORM_STORAGE_KEY = "zubr_form_draft_2026_v2";
 export const STEP_STORAGE_KEY = "zubr_step_draft_v2";
 
-const getContactName = (nick) => dict.steps.intro.contacts.find(c => c.nick === nick)?.name || nick;
+const getContactName = (nick) =>
+  dict.steps.intro.contacts.find((c) => c.nick === nick)?.name || nick;
 
 export const CONTACTS = [
-  { phone: "+375 (29) 858-7070", phoneLink: "tel:+375298587070", name: getContactName("Booze"), nick: "Booze" },
-  { phone: "+375 (33) 660-4048", phoneLink: "tel:+375336604048", name: getContactName("krez_by"), nick: "krez_by" }
+  {
+    phone: "+375 (29) 858-7070",
+    phoneLink: "tel:+375298587070",
+    name: getContactName("Booze"),
+    nick: "Booze",
+  },
+  {
+    phone: "+375 (33) 660-4048",
+    phoneLink: "tel:+375336604048",
+    name: getContactName("krez_by"),
+    nick: "krez_by",
+  },
 ];

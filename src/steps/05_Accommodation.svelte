@@ -78,30 +78,72 @@
     <HintBox>{dict.steps.accommodation.diffHint}</HintBox>
 
     <SubBlock
-      title={dict.steps.accommodation.forApplicant(formStore.data.applicant.nickname || "Заявителя")}
+      title={dict.steps.accommodation.forApplicant(
+        formStore.data.applicant.nickname || "Заявителя",
+      )}
       stickyLevel={2}
     >
-      <div class="section-content">
+      <RadioGroup
+        label={dict.steps.accommodation.typeLabel}
+        required={true}
+        bind:value={formStore.data.applicant.accommodation.type}
+        errorText={errors["applicant.accommodation.type"]}
+        onchange={() => formStore.markTouched("applicant.accommodation.type")}
+        options={accommodationOptions}
+      />
+
+      <ExpandableSection
+        show={formStore.data.applicant.accommodation.type ===
+          ACCOMMODATION_TYPE.BOOKING}
+      >
+        <SelectionGrid
+          groups={nightsList}
+          required={true}
+          label={dict.steps.accommodation.nightsLabel}
+          errorMessageFn={dict.errors.nights}
+          bind:values={formStore.data.applicant.accommodation.nights}
+          errorText={errors["applicant.accommodation.nights"]}
+        />
+      </ExpandableSection>
+
+      <TextArea
+        label={dict.steps.accommodation.commentLabel}
+        icon="edit_note"
+        placeholder={dict.steps.accommodation.commentPlaceholder}
+        helperText={accHint}
+        bind:value={formStore.data.applicant.accommodation.comment}
+        errorText={errors["applicant.accommodation.comment"]}
+        onblur={() => formStore.markTouched("applicant.accommodation.comment")}
+      />
+    </SubBlock>
+
+    {#each formStore.data.guests as guest, index}
+      <SubBlock
+        title={dict.steps.accommodation.forGuest(
+          guest.firstName || `Гостя #${index + 1}`,
+        )}
+        stickyLevel={2}
+      >
         <RadioGroup
           label={dict.steps.accommodation.typeLabel}
           required={true}
-          bind:value={formStore.data.applicant.accommodation.type}
-          errorText={errors["applicant.accommodation.type"]}
-          onchange={() => formStore.markTouched("applicant.accommodation.type")}
+          bind:value={guest.accommodation.type}
+          errorText={errors[`guests.${index}.accommodation.type`]}
+          onchange={() =>
+            formStore.markTouched(`guests.${index}.accommodation.type`)}
           options={accommodationOptions}
         />
 
         <ExpandableSection
-          show={formStore.data.applicant.accommodation.type ===
-            ACCOMMODATION_TYPE.BOOKING}
+          show={guest.accommodation.type === ACCOMMODATION_TYPE.BOOKING}
         >
           <SelectionGrid
             groups={nightsList}
             required={true}
             label={dict.steps.accommodation.nightsLabel}
             errorMessageFn={dict.errors.nights}
-            bind:values={formStore.data.applicant.accommodation.nights}
-            errorText={errors["applicant.accommodation.nights"]}
+            bind:values={guest.accommodation.nights}
+            errorText={errors[`guests.${index}.accommodation.nights`]}
           />
         </ExpandableSection>
 
@@ -110,54 +152,11 @@
           icon="edit_note"
           placeholder={dict.steps.accommodation.commentPlaceholder}
           helperText={accHint}
-          bind:value={formStore.data.applicant.accommodation.comment}
-          errorText={errors["applicant.accommodation.comment"]}
+          bind:value={guest.accommodation.comment}
+          errorText={errors[`guests.${index}.accommodation.comment`]}
           onblur={() =>
-            formStore.markTouched("applicant.accommodation.comment")}
+            formStore.markTouched(`guests.${index}.accommodation.comment`)}
         />
-      </div>
-    </SubBlock>
-
-    {#each formStore.data.guests as guest, index}
-      <SubBlock
-        title={dict.steps.accommodation.forGuest(guest.firstName || `Гостя #${index + 1}`)}
-        stickyLevel={2}
-      >
-        <div class="section-content">
-          <RadioGroup
-            label={dict.steps.accommodation.typeLabel}
-            required={true}
-            bind:value={guest.accommodation.type}
-            errorText={errors[`guests.${index}.accommodation.type`]}
-            onchange={() =>
-              formStore.markTouched(`guests.${index}.accommodation.type`)}
-            options={accommodationOptions}
-          />
-
-          <ExpandableSection
-            show={guest.accommodation.type === ACCOMMODATION_TYPE.BOOKING}
-          >
-            <SelectionGrid
-              groups={nightsList}
-              required={true}
-              label={dict.steps.accommodation.nightsLabel}
-              errorMessageFn={dict.errors.nights}
-              bind:values={guest.accommodation.nights}
-              errorText={errors[`guests.${index}.accommodation.nights`]}
-            />
-          </ExpandableSection>
-
-          <TextArea
-            label={dict.steps.accommodation.commentLabel}
-            icon="edit_note"
-            placeholder={dict.steps.accommodation.commentPlaceholder}
-            helperText={accHint}
-            bind:value={guest.accommodation.comment}
-            errorText={errors[`guests.${index}.accommodation.comment`]}
-            onblur={() =>
-              formStore.markTouched(`guests.${index}.accommodation.comment`)}
-          />
-        </div>
       </SubBlock>
     {/each}
   {/if}

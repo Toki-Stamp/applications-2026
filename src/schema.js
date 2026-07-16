@@ -18,9 +18,15 @@ export const ERROR_MESSAGES = {
 
 const provisionsSchema = z
   .object({
-    food: z.string().nullable().refine(val => val !== null, ERROR_MESSAGES.REQUIRED),
+    food: z
+      .string()
+      .nullable()
+      .refine((val) => val !== null, ERROR_MESSAGES.REQUIRED),
     foodPeriods: z.array(z.string()),
-    alcohol: z.string().nullable().refine(val => val !== null, ERROR_MESSAGES.REQUIRED),
+    alcohol: z
+      .string()
+      .nullable()
+      .refine((val) => val !== null, ERROR_MESSAGES.REQUIRED),
     alcoholPeriods: z.array(z.string()),
   })
   .superRefine((data, ctx) => {
@@ -255,7 +261,10 @@ const looseAccommodationShape = z.object({
 
 const baseAccommodationSchema = z
   .object({
-    type: z.string().nullable().refine(val => val !== null, ERROR_MESSAGES.REQUIRED),
+    type: z
+      .string()
+      .nullable()
+      .refine((val) => val !== null, ERROR_MESSAGES.REQUIRED),
     nights: z.array(z.string()),
     comment: z.string().optional(),
   })

@@ -78,7 +78,7 @@
   let currentTheme = $state("cyberpunk");
   let isOpen = $state(false);
   let isHovered = $state(false);
-  
+
   // Store computed colors to dynamically match themes.css
   /** @type {Record<string, {primary: string, accent: string}>} */
   let computedColors = $state({});
@@ -106,7 +106,7 @@
     } else {
       root.removeAttribute("data-theme");
     }
-    
+
     computedColors = colors;
 
     const saved = localStorage.getItem("app-theme");
@@ -154,7 +154,11 @@
   </button>
 
   {#if isHovered && !isOpen}
-    <div class="custom-tooltip" in:fade={{ duration: 150 }} out:fade={{ duration: isOpen ? 0 : 150 }}>
+    <div
+      class="custom-tooltip"
+      in:fade={{ duration: 150 }}
+      out:fade={{ duration: isOpen ? 0 : 150 }}
+    >
       Настроить тему
     </div>
   {/if}
@@ -167,7 +171,9 @@
           type="button"
           class="theme-row-btn"
           class:active={currentTheme === theme.id}
-          style="--t-primary: {computedColors[theme.id]?.primary || theme.primary}; --t-accent: {computedColors[theme.id]?.accent || theme.accent};"
+          style="--t-primary: {computedColors[theme.id]?.primary ||
+            theme.primary}; --t-accent: {computedColors[theme.id]?.accent ||
+            theme.accent};"
           onclick={() => setTheme(theme.id)}
         >
           <div class="swatch-circle">
@@ -184,7 +190,9 @@
           type="button"
           class="theme-row-btn"
           class:active={currentTheme === theme.id}
-          style="--t-primary: {computedColors[theme.id]?.primary || theme.primary}; --t-accent: {computedColors[theme.id]?.accent || theme.accent};"
+          style="--t-primary: {computedColors[theme.id]?.primary ||
+            theme.primary}; --t-accent: {computedColors[theme.id]?.accent ||
+            theme.accent};"
           onclick={() => setTheme(theme.id)}
         >
           <div class="swatch-circle">

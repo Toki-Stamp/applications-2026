@@ -95,7 +95,9 @@
     <HintBox>{dict.steps.provisions.diffHint}</HintBox>
 
     <SubBlock
-      title={dict.steps.provisions.forApplicant(formStore.data.applicant.nickname || "Заявителя")}
+      title={dict.steps.provisions.forApplicant(
+        formStore.data.applicant.nickname || "Заявителя",
+      )}
       stickyLevel={2}
     >
       <div class="provision-item">
@@ -147,7 +149,9 @@
     {#each formStore.data.guests as guest, i}
       <ExpandableSection show={true}>
         <SubBlock
-          title={dict.steps.provisions.forGuest(guest.firstName || `Гостя #${i + 1}`)}
+          title={dict.steps.provisions.forGuest(
+            guest.firstName || `Гостя #${i + 1}`,
+          )}
           stickyLevel={2}
         >
           <div class="provision-item">

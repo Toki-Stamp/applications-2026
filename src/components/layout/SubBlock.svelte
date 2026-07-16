@@ -8,7 +8,9 @@
 
 <div class="sub-block-card level-{stickyLevel}">
   {#if title}
-    <h3 class="sub-block-title glass-header glass-header-accent">{@html title}</h3>
+    <h3 class="sub-block-title glass-header glass-header-accent">
+      {@html title}
+    </h3>
   {/if}
 
   <div class="sub-block-content">
@@ -19,7 +21,7 @@
 <style>
   .sub-block-card {
     background-color: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
     border-left: 4px solid var(--accent);
     border-radius: 8px;
     padding: 1.5rem;

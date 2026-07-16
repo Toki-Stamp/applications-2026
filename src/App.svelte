@@ -3,7 +3,11 @@
   import "./app.css";
   import { fade } from "svelte/transition";
   import { formStore } from "./store.svelte.js";
-  import { GOOGLE_SCRIPT_URL, FORM_STORAGE_KEY, STEP_STORAGE_KEY } from "./constants.js";
+  import {
+    GOOGLE_SCRIPT_URL,
+    FORM_STORAGE_KEY,
+    STEP_STORAGE_KEY,
+  } from "./constants.js";
   import { dict } from "./locales/ru.js";
   import { validateStepData, sanitizeFormData } from "./schema.js";
 
@@ -26,7 +30,6 @@
   let isSubmitted = $state(false);
   let isSubmitting = $state(false);
 
-
   let showDraftModal = $state(
     typeof window !== "undefined"
       ? !!localStorage.getItem(FORM_STORAGE_KEY)
@@ -35,8 +38,7 @@
 
   // Compute initial step directly from localStorage to avoid capturing $state reference
   let currentStep = $state(
-    typeof window !== "undefined" &&
-      !!localStorage.getItem(FORM_STORAGE_KEY)
+    typeof window !== "undefined" && !!localStorage.getItem(FORM_STORAGE_KEY)
       ? Number(localStorage.getItem(STEP_STORAGE_KEY)) || 1
       : 1,
   );
@@ -163,8 +165,6 @@
         showClearModal || submitErrorMessage || showDraftModal ? "hidden" : "";
     }
   });
-
-
 
   function scrollToTop() {
     const layers = document.querySelectorAll(".step-layer");
@@ -354,13 +354,17 @@
   </div>
 
   {#if showClearModal}
-    <Modal title={dict.modals.clear.title} onclose={() => (showClearModal = false)}>
+    <Modal
+      title={dict.modals.clear.title}
+      onclose={() => (showClearModal = false)}
+    >
       <p>{dict.modals.clear.body}</p>
       {#snippet actions()}
         <Button variant="secondary" onclick={() => (showClearModal = false)}
           >{dict.common.cancel}</Button
         >
-        <Button variant="danger" onclick={clearForm}>{dict.common.clear}</Button>
+        <Button variant="danger" onclick={clearForm}>{dict.common.clear}</Button
+        >
       {/snippet}
     </Modal>
   {/if}
@@ -372,7 +376,8 @@
       onclose={() => (submitErrorMessage = null)}
     >
       <p>
-        {dict.modals.submitError.reasonPrefix} <strong class="error-text">{submitErrorMessage}</strong>
+        {dict.modals.submitError.reasonPrefix}
+        <strong class="error-text">{submitErrorMessage}</strong>
       </p>
       <p class="mt-1">
         {dict.modals.submitError.hint}

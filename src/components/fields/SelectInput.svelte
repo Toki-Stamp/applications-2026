@@ -24,7 +24,7 @@
   function handleChange(e) {
     const target = /** @type {any} */ (e.target);
     const rawVal = target.value;
-    console.log('handleChange fired! rawVal:', rawVal);
+    console.log("handleChange fired! rawVal:", rawVal);
     // Find the matching option to get the original typed value (e.g. number instead of string)
     const match = options.find((opt) => {
       const v = opt.value !== undefined ? String(opt.value) : String(opt);
@@ -44,6 +44,26 @@
   /** @type {any} */
   let selectEl = $state();
 
+  let menuStyleInjected = false;
+  function handleOpening() {
+    isOpen = true;
+    if (!menuStyleInjected && selectEl && selectEl.shadowRoot) {
+      const menuEl = selectEl.shadowRoot.querySelector("md-menu");
+      if (menuEl && menuEl.shadowRoot) {
+        const style = document.createElement("style");
+        style.textContent = `
+          .menu {
+            outline: 1px solid var(--primary) !important;
+            outline-offset: -1px !important;
+            border-radius: 8px !important;
+          }
+        `;
+        menuEl.shadowRoot.appendChild(style);
+        menuStyleInjected = true;
+      }
+    }
+  }
+
   /** @param {Event} e */
   function clearValue(e) {
     e.preventDefault();
@@ -54,6 +74,29 @@
 
   const hasError = $derived(!!errorText);
   const computedSupportingText = $derived(hasError ? errorText : "");
+
+  $effect(() => {
+    if (!isOpen || !selectEl) return;
+
+    /** @param {Event} e */
+    function handleScroll(e) {
+      // Disable auto-collapse in E2E tests to prevent Playwright's scrollIntoView from closing the menu
+      if (navigator.webdriver) return;
+
+      // Don't close if the user is scrolling the menu itself
+      if (e.target && selectEl.contains(/** @type {Node} */ (e.target))) {
+        return;
+      }
+      selectEl.open = false;
+      isOpen = false;
+    }
+
+    // Use capture phase to catch all scroll events on the page
+    window.addEventListener("scroll", handleScroll, true);
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  });
 
   /**
    * Svelte action to sync value to the Web Component AFTER children are mounted
@@ -92,7 +135,7 @@
       use:syncValue={value}
       {...restProps}
       onchange={handleChange}
-      onopening={() => (isOpen = true)}
+      onopening={handleOpening}
       onclosed={() => (isOpen = false)}
     >
       {#if icon}

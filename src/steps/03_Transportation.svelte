@@ -50,16 +50,14 @@
 </script>
 
 <Block title={dict.steps.transportation.title}>
-  {#if formStore.data.guests.length > 0}
+  {#if formStore.data.guests.length > 0 && formStore.data.applicationType === APPLICATION_TYPE.GROUP}
     <div class="transport-hint">
-      {#if formStore.isGroup}
-        <HintBox type="info" class="mb-1">
-          <RichText content={dict.steps.transportation.groupHint1} />
-        </HintBox>
-        <HintBox type="info" class="mb-1">
-          <RichText content={dict.steps.transportation.groupHint2} />
-        </HintBox>
-      {/if}
+      <HintBox>
+        <RichText content={dict.steps.transportation.groupHint1} />
+      </HintBox>
+      <HintBox>
+        <RichText content={dict.steps.transportation.groupHint2} />
+      </HintBox>
     </div>
   {/if}
 
@@ -169,10 +167,6 @@
 </Block>
 
 <style>
-  .text-primary {
-    color: var(--primary);
-  }
-
   .transport-hint {
     display: flex;
     flex-direction: column;

@@ -104,7 +104,10 @@ async function checkGuestNight(page, guestName, nightLabel) {
     .locator(".sub-block-card")
     .filter({ hasText: guestName })
     .first();
-  const card = guestGroup.locator(".period-card").filter({ hasText: nightLabel }).first();
+  const card = guestGroup
+    .locator(".period-card")
+    .filter({ hasText: nightLabel })
+    .first();
   await card.click();
 }
 
@@ -154,7 +157,9 @@ async function clickSubmit(page) {
 
 test.describe("Form E2E Tests", () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => { localStorage.clear(); });
+    await page.addInitScript(() => {
+      localStorage.clear();
+    });
     // Intercept Google Apps Script requests and return a mock success response
     await page.route("**/*script.google.com*/**", async (route) => {
       await route.fulfill({
@@ -541,7 +546,9 @@ test.describe("Form E2E Tests", () => {
     await fillText(page, "Номер телефона", "+375 29 111 22 33");
     await clickNext(page);
 
-    await page.locator('.tooltip-wrapper[data-tooltip="Очистить форму"] button').click();
+    await page
+      .locator('.tooltip-wrapper[data-tooltip="Очистить форму"] button')
+      .click();
     await page.locator('.modal-wrapper button:has-text("Очистить")').click();
 
     await page.waitForTimeout(300);

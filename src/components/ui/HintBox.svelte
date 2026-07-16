@@ -28,8 +28,8 @@
     padding: 0.75rem 1rem;
     gap: 0.75rem;
     color: var(--text-primary);
-    font-size: 0.95rem;
-    line-height: 1.4;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   }
 
   .hint-icon {
