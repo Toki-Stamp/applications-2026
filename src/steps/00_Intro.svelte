@@ -8,7 +8,7 @@
   import { CONTACTS } from "../constants.js";
 </script>
 
-<Block title={dict.steps.intro.title}>
+<Block title={dict.steps.intro.title} icon="waving_hand">
   <div class="intro-content">
     <HintBox>
       <RichText content={dict.steps.intro.hint1} />

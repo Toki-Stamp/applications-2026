@@ -49,7 +49,7 @@
   });
 </script>
 
-<Block title={dict.steps.transportation.title}>
+<Block title={dict.steps.transportation.title} icon="directions_car">
   {#if formStore.data.guests.length > 0 && formStore.data.applicationType === APPLICATION_TYPE.GROUP}
     <div class="transport-hint">
       <HintBox>
@@ -62,7 +62,7 @@
   {/if}
 
   <Section
-    title={dict.steps.transportation.toTitle(stepNumber)}
+    title={dict.steps.transportation.toTitle}
     isFirst={formStore.data.guests.length === 0}
   >
     <SelectInput
@@ -120,7 +120,7 @@
     />
   </Section>
 
-  <Section title={dict.steps.transportation.fromTitle(stepNumber)}>
+  <Section title={dict.steps.transportation.fromTitle}>
     <SelectInput
       label={dict.steps.transportation.fromMethodLabel}
       placeholder={dict.steps.transportation.fromMethodPlaceholder}
@@ -153,7 +153,7 @@
     />
   </Section>
 
-  <Section title={dict.steps.transportation.commentTitle(stepNumber)}>
+  <Section title={dict.steps.transportation.commentTitle}>
     <TextArea
       label={dict.steps.transportation.commentLabel}
       icon="edit_note"

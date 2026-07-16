@@ -37,7 +37,7 @@
   });
 </script>
 
-<Block title={dict.steps.applicationType.title}>
+<Block title={dict.steps.applicationType.title} icon="group">
   <Section isFirst={true}>
     <RadioGroup
       label={dict.steps.applicationType.typeLabel}

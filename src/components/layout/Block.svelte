@@ -1,10 +1,15 @@
 <script>
-  let { title = "", children } = $props();
+  let { title = "", icon = "", align = "left", children } = $props();
 </script>
 
 <div class="block-card glass-panel">
   {#if title}
-    <h2 class="block-title glass-header glass-header-primary">{title}</h2>
+    <h2 class="block-title glass-header glass-header-primary align-{align}">
+      {#if icon}
+        <md-icon class="title-icon">{icon}</md-icon>
+      {/if}
+      {title}
+    </h2>
   {/if}
   {@render children?.()}
 </div>
@@ -38,8 +43,6 @@
     color: var(--text-primary);
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
     line-height: 1.4;
     gap: 0.75rem;
     text-transform: uppercase;
@@ -51,16 +54,19 @@
     z-index: 30;
   }
 
-  /* Add a tiny accent dot to titles */
-  .block-title::before,
-  .block-title::after {
-    content: "";
-    display: block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    box-shadow: 0 0 8px var(--primary);
+  .block-title.align-left {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .block-title.align-center {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .title-icon {
+    font-size: 1.3em; /* Slightly larger than text */
+    color: inherit;
   }
 
   @media (max-width: 600px) {

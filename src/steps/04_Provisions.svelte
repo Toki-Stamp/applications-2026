@@ -40,9 +40,9 @@
   });
 </script>
 
-<Block title={dict.steps.provisions.title}>
+<Block title={dict.steps.provisions.title} icon="restaurant">
   {#if formStore.data.applicationType === APPLICATION_TYPE.INDIVIDUAL || formStore.data.groupConditions === GROUP_CONDITIONS.UNIFIED}
-    <Section title={dict.steps.provisions.foodTitle(stepNumber)} isFirst={true}>
+    <Section title={dict.steps.provisions.foodTitle} isFirst={true}>
       <div class="provision-item">
         <RadioGroup
           label={dict.steps.provisions.foodLabel}
@@ -67,7 +67,7 @@
       </div>
     </Section>
 
-    <Section title={dict.steps.provisions.alcoholTitle(stepNumber)}>
+    <Section title={dict.steps.provisions.alcoholTitle}>
       <div class="provision-item">
         <RadioGroup
           label={dict.steps.provisions.alcoholLabel}

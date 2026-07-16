@@ -8,7 +8,7 @@
   let { errors = {} } = $props();
 </script>
 
-<Block title={dict.steps.freeMic.title}>
+<Block title={dict.steps.freeMic.title} icon="campaign">
   <Section isFirst={true}>
     <TextArea
       label={dict.steps.freeMic.commentLabel}

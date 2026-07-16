@@ -39,7 +39,7 @@
   });
 </script>
 
-<Block title={dict.steps.accommodation.title}>
+<Block title={dict.steps.accommodation.title} icon="hotel">
   {#if formStore.data.applicationType === APPLICATION_TYPE.INDIVIDUAL || formStore.data.groupConditions === GROUP_CONDITIONS.UNIFIED}
     <Section isFirst={true}>
       <RadioGroup

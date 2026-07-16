@@ -13,7 +13,7 @@
   let { errors = {} } = $props();
 </script>
 
-<Block title={dict.steps.personalData.title}>
+<Block title={dict.steps.personalData.title} icon="badge">
   <Section
     title={formStore.data.applicationType === APPLICATION_TYPE.GROUP
       ? dict.steps.personalData.applicantTitleGroup

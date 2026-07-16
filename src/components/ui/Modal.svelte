@@ -38,7 +38,7 @@
     aria-modal="true"
     tabindex="-1"
   >
-    <Block {title}>
+    <Block {title} align="center">
       <div class="modal-content">
         {#if children}
           {@render children()}
