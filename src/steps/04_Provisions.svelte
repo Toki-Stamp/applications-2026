@@ -11,6 +11,7 @@
   } from "../constants.js";
   import RadioGroup from "../components/fields/RadioGroup.svelte";
   import SelectionGrid from "../components/fields/SelectionGrid.svelte";
+  import TextArea from "../components/fields/TextArea.svelte";
   import SubBlock from "../components/layout/SubBlock.svelte";
   import HintBox from "../components/ui/HintBox.svelte";
   import Block from "../components/layout/Block.svelte";
@@ -91,6 +92,18 @@
         </ExpandableSection>
       </div>
     </Section>
+
+    <Section title={dict.steps.provisions.commentTitle}>
+      <TextArea
+        label={dict.steps.provisions.commentLabel}
+        icon="edit_note"
+        placeholder={dict.steps.provisions.commentPlaceholder}
+        helperText={dict.steps.provisions.commentHint}
+        bind:value={formStore.data.applicant.provisions.comment}
+        errorText={errors["applicant.provisions.comment"]}
+        onblur={() => formStore.markTouched("applicant.provisions.comment")}
+      />
+    </Section>
   {:else}
     <HintBox>{dict.steps.provisions.diffHint}</HintBox>
 
@@ -143,6 +156,16 @@
           />
         </ExpandableSection>
       </div>
+
+      <TextArea
+        label={dict.steps.provisions.commentLabel}
+        icon="edit_note"
+        placeholder={dict.steps.provisions.commentPlaceholder}
+        helperText={dict.steps.provisions.commentHint}
+        bind:value={formStore.data.applicant.provisions.comment}
+        errorText={errors["applicant.provisions.comment"]}
+        onblur={() => formStore.markTouched("applicant.provisions.comment")}
+      />
     </Section>
 
     {#if formStore.data.guests.length > 0}
@@ -201,6 +224,17 @@
                     />
                   </ExpandableSection>
                 </div>
+
+                <TextArea
+                  label={dict.steps.provisions.commentLabel}
+                  icon="edit_note"
+                  placeholder={dict.steps.provisions.commentPlaceholder}
+                  helperText={dict.steps.provisions.commentHint}
+                  bind:value={formStore.data.guests[i].provisions.comment}
+                  errorText={errors[`guests.${i}.provisions.comment`]}
+                  onblur={() =>
+                    formStore.markTouched(`guests.${i}.provisions.comment`)}
+                />
               </SubBlock>
             </ExpandableSection>
           {/each}

@@ -11,6 +11,7 @@ export const defaultProvisions = () => ({
   foodPeriods: [],
   alcohol: null,
   alcoholPeriods: [],
+  comment: "",
 });
 
 export const defaultAccommodation = () => ({

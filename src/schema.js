@@ -28,6 +28,7 @@ const provisionsSchema = z
       .nullable()
       .refine((val) => val !== null, ERROR_MESSAGES.REQUIRED),
     alcoholPeriods: z.array(z.string()),
+    comment: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (
@@ -224,6 +225,7 @@ const looseProvisionShape = z.object({
   foodPeriods: z.array(z.string()),
   alcohol: z.string().nullable(),
   alcoholPeriods: z.array(z.string()),
+  comment: z.string().optional(),
 });
 
 // Step 5: Provisions
@@ -378,6 +380,7 @@ export function sanitizeFormData(data) {
     if (prov.alcohol === PROVISION_TYPE.NONE) {
       prov.alcoholPeriods = [];
     }
+    if (!prov.comment) prov.comment = "";
   };
 
   if (

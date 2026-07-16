@@ -63,7 +63,9 @@
           errorText={errors["applicant.accommodation.nights"]}
         />
       </ExpandableSection>
+    </Section>
 
+    <Section title={dict.steps.accommodation.commentTitle}>
       <TextArea
         label={dict.steps.accommodation.commentLabel}
         icon="edit_note"
