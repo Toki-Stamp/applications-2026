@@ -1,5 +1,6 @@
 <script>
   import HintBox from "../ui/HintBox.svelte";
+  import RichText from "../ui/RichText.svelte";
   import "@material/web/icon/icon.js";
 
   import FieldLabel from "./FieldLabel.svelte";
@@ -10,7 +11,7 @@
     required = false,
     errorText = "",
     groups = [],
-    errorMessageFn = null, // function to generate error message object {prefix, label, suffix}
+    errorMessageFn = null, // function to generate error message html string
   } = $props();
 
   /** @param {string | number} id */
@@ -79,8 +80,7 @@
     <div class="error-wrapper">
       <HintBox type="error">
         {#if errorMsg}
-          {errorMsg.prefix}<strong class="text-primary">{errorMsg.label}</strong
-          >{errorMsg.suffix}
+          <RichText content={errorMsg} />
         {:else}
           {errorText}
         {/if}

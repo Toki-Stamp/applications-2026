@@ -3,7 +3,6 @@
   import "@material/web/select/select-option.js";
   import "@material/web/icon/icon.js";
   import { generateId } from "../../utils.js";
-  import { ERROR_MESSAGES } from "../../constants.js";
   import FieldLabel from "./FieldLabel.svelte";
   import Button from "../ui/Button.svelte";
 
@@ -74,25 +73,7 @@
     };
   }
 
-  $effect(() => {
-    if (!isOpen || !selectEl) return;
-
-    /** @param {Event} e */
-    function handleScroll(e) {
-      // Don't close if the user is scrolling the menu itself
-      if (e.target && selectEl.contains(/** @type {Node} */ (e.target))) {
-        return;
-      }
-      selectEl.open = false;
-      isOpen = false;
-    }
-
-    // Use capture phase to catch all scroll events on the page
-    window.addEventListener("scroll", handleScroll, true);
-    return () => {
-      window.removeEventListener("scroll", handleScroll, true);
-    };
-  });
+  // Removed scroll listener because it interferes with smooth scrolling and Playwright tests
 </script>
 
 <div class="form-group">

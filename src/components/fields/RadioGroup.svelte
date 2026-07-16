@@ -2,8 +2,9 @@
   import "@material/web/radio/radio.js";
   import { generateId } from "../../utils.js";
   import HintBox from "../ui/HintBox.svelte";
+  import RichText from "../ui/RichText.svelte";
   import FieldLabel from "./FieldLabel.svelte";
-  import { ERROR_MESSAGES } from "../../constants.js";
+  import { dict } from "../../locales/ru.js";
 
   let {
     value = $bindable(),
@@ -24,9 +25,9 @@
 
   const hasError = $derived(!!errorText);
 
-  // Create formatted error message matching the old structure
+  // Create formatted error message
   const errorMsg = $derived(
-    hasError ? ERROR_MESSAGES.RADIO(label || "Значение") : null,
+    hasError ? dict.errors.radio(label || "Значение") : null,
   );
 </script>
 
@@ -64,8 +65,7 @@
   {#if hasError && errorMsg}
     <div class="error-wrapper">
       <HintBox type="error">
-        {errorMsg.prefix}<strong class="text-primary">{errorMsg.label}</strong
-        >{errorMsg.suffix}
+        <RichText content={errorMsg} />
       </HintBox>
     </div>
   {/if}

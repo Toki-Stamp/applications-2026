@@ -12,6 +12,7 @@
   import Block from "../components/layout/Block.svelte";
   import Section from "../components/layout/Section.svelte";
   import ExpandableSection from "../components/layout/ExpandableSection.svelte";
+  import { dict } from "../locales/ru.js";
 
   let { errors = {} } = $props();
 
@@ -36,24 +37,23 @@
   });
 </script>
 
-<Block title="Формат участия">
+<Block title={dict.steps.applicationType.title}>
   <Section isFirst={true}>
     <RadioGroup
-      label="Тип заявки"
+      label={dict.steps.applicationType.typeLabel}
       required={true}
       bind:value={formStore.data.applicationType}
       errorText={errors["applicationType"]}
       onchange={() => formStore.markTouched("applicationType")}
       options={[
         {
-          label: "Индивидуальная",
-          helperText: "подаётся только за самого себя (на одного человека)",
+          label: dict.steps.applicationType.individualLabel,
+          helperText: dict.steps.applicationType.individualHelper,
           value: APPLICATION_TYPE.INDIVIDUAL,
         },
         {
-          label: "Групповая",
-          helperText:
-            "подаётся в случае если Вы планируете посетить мероприятие группой (от двух до пяти человек)",
+          label: dict.steps.applicationType.groupLabel,
+          helperText: dict.steps.applicationType.groupHelper,
           value: APPLICATION_TYPE.GROUP,
         },
       ]}
@@ -63,9 +63,9 @@
       show={formStore.data.applicationType === APPLICATION_TYPE.GROUP}
     >
       <SelectInput
-        label="Общее количество участников Вашей группы"
-        helperText="указывается общее число людей, включая Вас как руководителя группы"
-        placeholder="Выберите размер группы..."
+        label={dict.steps.applicationType.totalSizeLabel}
+        helperText={dict.steps.applicationType.totalSizeHelper}
+        placeholder={dict.steps.applicationType.totalSizePlaceholder}
         icon="group_add"
         options={groupSizeOptions}
         bind:value={formStore.data.totalGroupSize}
@@ -74,22 +74,20 @@
         required={true}
       />
       <RadioGroup
-        label="Условия для участников Вашей группы"
+        label={dict.steps.applicationType.conditionsLabel}
         bind:value={formStore.data.groupConditions}
         errorText={errors["groupConditions"]}
         onchange={() => formStore.markTouched("groupConditions")}
         required={true}
         options={[
           {
-            label: "Единые условия",
-            helperText:
-              "условия проживания и обеспечение полностью совпадают с Вашими",
+            label: dict.steps.applicationType.unifiedLabel,
+            helperText: dict.steps.applicationType.unifiedHelper,
             value: GROUP_CONDITIONS.UNIFIED,
           },
           {
-            label: "Дифференцированные условия",
-            helperText:
-              "индивидуальные предпочтения для каждого из участников Вашей группы",
+            label: dict.steps.applicationType.differentialLabel,
+            helperText: dict.steps.applicationType.differentialHelper,
             value: GROUP_CONDITIONS.DIFFERENTIAL,
           },
         ]}

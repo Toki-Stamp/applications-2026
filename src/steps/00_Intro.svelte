@@ -1,45 +1,43 @@
 <script>
+  import Block from "../components/layout/Block.svelte";
   import SubBlock from "../components/layout/SubBlock.svelte";
   import HintBox from "../components/ui/HintBox.svelte";
-  import Block from "../components/layout/Block.svelte";
+  import RichText from "../components/ui/RichText.svelte";
+  import "@material/web/icon/icon.js";
+  import { dict } from "../locales/ru.js";
+  import { CONTACTS } from "../constants.js";
 </script>
 
-<Block title="Вводная информация">
+<Block title={dict.steps.intro.title}>
   <div class="intro-content">
-    <HintBox>
-      Дорогие друзья, нас ждёт <strong class="text-primary">ЮБИЛЕЙНАЯ</strong>
-      сходка! Нам исполняется <strong class="text-primary">15</strong> лет!
+    <HintBox type="info">
+      <RichText content={dict.steps.intro.hint1} />
     </HintBox>
 
-    <SubBlock title="Даты проведения" stickyLevel={2}>
-      <p><strong>с 7 по 9 августа 2026 года</strong> (3 дня)</p>
-      <ul>
-        <li><strong>Пятница:</strong> шоу начинается</li>
-        <li><strong>Суббота:</strong> без забот</li>
-        <li><strong>Воскресенье:</strong> ну вот, опять домой</li>
+    <SubBlock title={dict.steps.intro.datesTitle} stickyLevel={2}>
+      <p><RichText content={dict.steps.intro.datesSubtitle} /></p>
+      <ul class="intro-list">
+        {#each dict.steps.intro.datesList as item}
+          <li><RichText content={item} /></li>
+        {/each}
       </ul>
     </SubBlock>
 
-    <SubBlock title="Контакты организаторов" stickyLevel={2}>
-      <p><strong>Для решения организационных вопросов:</strong></p>
-      <ul>
-        <li>
-          <a href="tel:+375298587070">+375 (29) 858-7070</a> —
-          <strong>Юрий Фомичёв</strong>
-          (<strong class="highlight-name">Booze</strong>)
-        </li>
-        <li>
-          <a href="tel:+375336604048">+375 (33) 660-4048</a> —
-          <strong>Алексей Лужинский</strong>
-          (<strong class="highlight-name">krez_by</strong>)
-        </li>
+    <SubBlock title={dict.steps.intro.contactsTitle} stickyLevel={2}>
+      <p><strong>{dict.steps.intro.contactsSubtitle}</strong></p>
+      <ul class="intro-list">
+        {#each CONTACTS as contact}
+          <li>
+            <a href={contact.phoneLink} class="contact-link">{contact.phone}</a> — 
+            <strong>{contact.name}</strong> 
+            (<strong class="text-primary">{contact.nick}</strong>)
+          </li>
+        {/each}
       </ul>
     </SubBlock>
 
-    <HintBox>
-      Кстати, вы можете настроить внешний вид приложения под себя! Нажмите на
-      <md-icon class="inline-icon">settings</md-icon>
-      в левом верхнем углу, чтобы выбрать любимую цветовую тему
+    <HintBox type="neutral">
+      {dict.steps.intro.hint2Prefix}<md-icon class="inline-icon">settings</md-icon>{dict.steps.intro.hint2Suffix}
     </HintBox>
   </div>
 </Block>
@@ -49,12 +47,15 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    font-size: 1.1rem;
   }
 
-  .intro-content ul {
+  .block-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .intro-list {
     margin: 0;
     padding-left: 1.5rem;
     display: flex;
@@ -62,30 +63,18 @@
     gap: 0.5rem;
   }
 
-  .intro-content p {
-    margin: 0 0 0.5rem 0;
+  p {
+    margin: 0;
   }
 
-  strong {
-    color: var(--text-primary);
-  }
-
-  .highlight-name {
-    color: var(--primary);
-  }
-
-  .text-primary {
-    color: var(--primary);
-  }
-
-  a {
+  .contact-link {
     color: var(--primary);
     text-decoration: none;
     font-weight: 600;
+  }
 
-    &:hover {
-      text-decoration: underline;
-    }
+  .contact-link:hover {
+    text-decoration: underline;
   }
 
   .inline-icon {

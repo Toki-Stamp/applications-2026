@@ -542,7 +542,7 @@ test.describe("Form E2E Tests", () => {
     await clickNext(page);
 
     await page.locator('.tooltip-wrapper[data-tooltip="Очистить форму"] button').click();
-    await page.locator('.modal-card button:has-text("Очистить")').click();
+    await page.locator('.modal-wrapper button:has-text("Очистить")').click();
 
     await page.waitForTimeout(300);
     await expect(

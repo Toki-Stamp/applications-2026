@@ -1,6 +1,7 @@
 <script>
   import Button from "../ui/Button.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
+  import { dict } from "../../locales/ru.js";
   let {
     currentStep,
     totalSteps,
@@ -17,13 +18,13 @@
     {#if currentStep === 1}
       <div class="center-buttons intro-nav-wrapper">
         <Button variant="primary" class="start-btn" onclick={onnext}>
-          Начать заполнение
+          {dict.common.start}
         </Button>
       </div>
     {:else}
       <div class="navigation-buttons">
         <div class="left-buttons">
-          <Tooltip text="Очистить форму" pos="left">
+          <Tooltip text={dict.common.clearForm} pos="left">
             <Button
               type="button"
               variant="danger"
@@ -36,7 +37,7 @@
         </div>
         <div class="right-buttons">
           {#if currentStep > 2}
-            <Tooltip text="Назад" pos="right">
+            <Tooltip text={dict.common.back} pos="right">
               <Button
                 type="button"
                 variant="secondary"
@@ -50,7 +51,7 @@
 
           {#if currentStep < totalSteps}
             <Tooltip
-              text={hasErrors ? "Заполните данные, чтобы продолжить" : "Далее"}
+              text={hasErrors ? dict.common.fillDataToContinue : dict.common.next}
               pos="right"
             >
               <Button
@@ -66,10 +67,10 @@
           {:else}
             <Tooltip
               text={hasErrors
-                ? "Недостаточно данных для отправки"
+                ? dict.common.notEnoughData
                 : isSubmitting
-                  ? "Подождите, идет отправка"
-                  : "Отправить заявку"}
+                  ? dict.common.submitting
+                  : dict.common.submit}
               pos="right"
             >
               <Button

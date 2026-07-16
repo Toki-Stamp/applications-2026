@@ -3,7 +3,6 @@
   import "@material/web/icon/icon.js";
   import "@material/web/iconbutton/icon-button.js";
   import { generateId } from "../../utils.js";
-  import { ERROR_MESSAGES } from "../../constants.js";
   import FieldLabel from "./FieldLabel.svelte";
   import Button from "../ui/Button.svelte";
 

@@ -3,13 +3,13 @@
   import "./app.css";
   import { fade } from "svelte/transition";
   import { formStore } from "./store.svelte.js";
-  import { GOOGLE_SCRIPT_URL } from "./constants.js";
+  import { GOOGLE_SCRIPT_URL, FORM_STORAGE_KEY, STEP_STORAGE_KEY } from "./constants.js";
+  import { dict } from "./locales/ru.js";
   import { validateStepData, sanitizeFormData } from "./schema.js";
 
   import Modal from "./components/ui/Modal.svelte";
   import Header from "./components/layout/Header.svelte";
   import Footer from "./components/layout/Footer.svelte";
-  import ThemeSwitcher from "./components/ui/ThemeSwitcher.svelte";
   import Button from "./components/ui/Button.svelte";
 
   import {
@@ -25,21 +25,18 @@
 
   let isSubmitted = $state(false);
   let isSubmitting = $state(false);
-  /** @type {HTMLFormElement | undefined} */
-  let formElement = $state();
 
-  const STEP_STORAGE_KEY = "zubr_step_draft_v2";
 
   let showDraftModal = $state(
     typeof window !== "undefined"
-      ? !!localStorage.getItem("zubr_form_draft_2026_v2")
+      ? !!localStorage.getItem(FORM_STORAGE_KEY)
       : false,
   );
 
   // Compute initial step directly from localStorage to avoid capturing $state reference
   let currentStep = $state(
     typeof window !== "undefined" &&
-      !!localStorage.getItem("zubr_form_draft_2026_v2")
+      !!localStorage.getItem(FORM_STORAGE_KEY)
       ? Number(localStorage.getItem(STEP_STORAGE_KEY)) || 1
       : 1,
   );
@@ -132,7 +129,7 @@
     // This ensures text field inputs (oninput) also trigger re-validation
     JSON.stringify(formStore.data);
     const _t = formStore.meta.touchedFields;
-    
+
     // Save draft to localStorage
     formStore.save();
 
@@ -142,8 +139,20 @@
 
   // Persist step to localStorage
   $effect(() => {
-    if (typeof window !== "undefined" && !showDraftModal) {
-      localStorage.setItem(STEP_STORAGE_KEY, String(currentStep));
+    // This effect runs whenever `formStore.data` or `currentStep` changes deeply.
+    formStore.save();
+    if (typeof window !== "undefined") {
+      localStorage.setItem(STEP_STORAGE_KEY, currentStep.toString());
+    }
+  });
+
+  onMount(() => {
+    if (localStorage.getItem(FORM_STORAGE_KEY)) {
+      const savedStep = localStorage.getItem(STEP_STORAGE_KEY);
+      if (savedStep) {
+        currentStep = parseInt(savedStep, 10) || 1;
+      }
+      showDraftModal = true;
     }
   });
 
@@ -155,9 +164,7 @@
     }
   });
 
-  onMount(() => {
-    // Only window resizing tracking if needed, but not strictly necessary without updateHeaderHeights
-  });
+
 
   function scrollToTop() {
     const layers = document.querySelectorAll(".step-layer");
@@ -193,9 +200,11 @@
   function clearForm() {
     formStore.reset();
     currentStep = 1;
-    showDraftModal = false;
-    stepErrors = {};
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(STEP_STORAGE_KEY);
+    }
     showClearModal = false;
+    stepErrors = {};
     scrollToTop();
   }
 
@@ -267,7 +276,6 @@
       <form
         class="app-form"
         novalidate
-        bind:this={formElement}
         onsubmit={(e) => {
           e.preventDefault();
           submitForm();
@@ -346,28 +354,32 @@
   </div>
 
   {#if showClearModal}
-    <Modal title="Очистить форму?" onclose={() => (showClearModal = false)}>
-      <p>Вы уверены, что хотите безвозвратно удалить все введенные данные?</p>
+    <Modal title={dict.modals.clear.title} onclose={() => (showClearModal = false)}>
+      <p>{dict.modals.clear.body}</p>
       {#snippet actions()}
         <Button variant="secondary" onclick={() => (showClearModal = false)}
-          >Отмена</Button
+          >{dict.common.cancel}</Button
         >
-        <Button variant="danger" onclick={clearForm}>Очистить</Button>
+        <Button variant="danger" onclick={clearForm}>{dict.common.clear}</Button>
       {/snippet}
     </Modal>
   {/if}
 
   {#if submitErrorMessage}
-    <Modal title="Сбой при отправке!" variant="danger" onclose={() => (submitErrorMessage = null)}>
+    <Modal
+      title={dict.modals.submitError.title}
+      variant="danger"
+      onclose={() => (submitErrorMessage = null)}
+    >
       <p>
-        Причина: <strong class="error-text">{submitErrorMessage}</strong>
+        {dict.modals.submitError.reasonPrefix} <strong class="error-text">{submitErrorMessage}</strong>
       </p>
       <p class="mt-1">
-        Попробуйте позже или проверьте правильность развертывания скрипта
+        {dict.modals.submitError.hint}
       </p>
       {#snippet actions()}
         <Button variant="danger" onclick={() => (submitErrorMessage = null)}
-          >Понятно</Button
+          >{dict.modals.submitError.gotIt}</Button
         >
       {/snippet}
     </Modal>
@@ -375,24 +387,23 @@
 
   {#if showDraftModal}
     <Modal
-      title="С возвращением!"
+      title={dict.modals.draft.title}
       variant="info"
       dismissible={false}
       onclose={() => (showDraftModal = false)}
     >
-      <p>У Вас осталась неотправленная заявка.</p>
-      <p>Хотите продолжить её заполнение или начать всё заново?</p>
+      <p>{dict.modals.draft.body1}</p>
+      <p>{dict.modals.draft.body2}</p>
       {#snippet actions()}
         <Button
           variant="secondary"
           onclick={() => {
             showDraftModal = false;
             clearForm();
-            currentStep = 1;
-          }}>Начать заново</Button
+          }}>{dict.modals.draft.restart}</Button
         >
         <Button variant="primary" onclick={() => (showDraftModal = false)}
-          >Продолжить</Button
+          >{dict.modals.draft.continue}</Button
         >
       {/snippet}
     </Modal>

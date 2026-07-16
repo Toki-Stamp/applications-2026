@@ -1,6 +1,5 @@
 <script>
   let { title = "", isFirst = false, children } = $props();
-  let titleHeight = $state(0);
 </script>
 
 <div class="section-container" class:first-section={isFirst}>

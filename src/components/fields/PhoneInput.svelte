@@ -1,6 +1,5 @@
 <script>
   import { onMount, onDestroy } from "svelte";
-  import { ERROR_MESSAGES } from "../../constants.js";
   import "@material/web/select/select-option.js";
   import "@material/web/textfield/outlined-text-field.js";
   import "@material/web/iconbutton/icon-button.js";

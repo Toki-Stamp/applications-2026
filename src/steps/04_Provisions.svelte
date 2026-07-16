@@ -8,7 +8,6 @@
     foodOptions,
     alcoholOptions,
     groupedPeriods,
-    ERROR_MESSAGES,
   } from "../constants.js";
   import RadioGroup from "../components/fields/RadioGroup.svelte";
   import SelectionGrid from "../components/fields/SelectionGrid.svelte";
@@ -18,6 +17,7 @@
   import Section from "../components/layout/Section.svelte";
   import ExpandableSection from "../components/layout/ExpandableSection.svelte";
   import "@material/web/icon/icon.js";
+  import { dict } from "../locales/ru.js";
 
   let { stepNumber, errors = {} } = $props();
 
@@ -40,12 +40,12 @@
   });
 </script>
 
-<Block title="Обеспечение">
+<Block title={dict.steps.provisions.title}>
   {#if formStore.data.applicationType === APPLICATION_TYPE.INDIVIDUAL || formStore.data.groupConditions === GROUP_CONDITIONS.UNIFIED}
-    <Section title={`${stepNumber}.1. Продукты питания`} isFirst={true}>
+    <Section title={dict.steps.provisions.foodTitle(stepNumber)} isFirst={true}>
       <div class="provision-item">
         <RadioGroup
-          label="Потребность в питании"
+          label={dict.steps.provisions.foodLabel}
           bind:value={formStore.data.applicant.provisions.food}
           errorText={errors["applicant.provisions.food"]}
           onchange={() => formStore.markTouched("applicant.provisions.food")}
@@ -59,7 +59,7 @@
           <SelectionGrid
             groups={groupedPeriods}
             required={true}
-            errorMessageFn={ERROR_MESSAGES.PERIODS}
+            errorMessageFn={() => dict.errors.periods}
             bind:values={formStore.data.applicant.provisions.foodPeriods}
             errorText={errors["applicant.provisions.foodPeriods"]}
           />
@@ -67,10 +67,10 @@
       </div>
     </Section>
 
-    <Section title={`${stepNumber}.2. Алкогольные напитки`}>
+    <Section title={dict.steps.provisions.alcoholTitle(stepNumber)}>
       <div class="provision-item">
         <RadioGroup
-          label="Потребность в алкоголе"
+          label={dict.steps.provisions.alcoholLabel}
           bind:value={formStore.data.applicant.provisions.alcohol}
           errorText={errors["applicant.provisions.alcohol"]}
           onchange={() => formStore.markTouched("applicant.provisions.alcohol")}
@@ -84,7 +84,7 @@
           <SelectionGrid
             groups={groupedPeriods}
             required={true}
-            errorMessageFn={ERROR_MESSAGES.PERIODS}
+            errorMessageFn={() => dict.errors.periods}
             bind:values={formStore.data.applicant.provisions.alcoholPeriods}
             errorText={errors["applicant.provisions.alcoholPeriods"]}
           />
@@ -92,15 +92,15 @@
       </div>
     </Section>
   {:else}
-    <HintBox>Укажите потребности для каждого участника группы отдельно</HintBox>
+    <HintBox>{dict.steps.provisions.diffHint}</HintBox>
 
     <SubBlock
-      title={`Для ${formStore.data.applicant.nickname || "Заявителя"}`}
+      title={dict.steps.provisions.forApplicant(formStore.data.applicant.nickname || "Заявителя")}
       stickyLevel={2}
     >
       <div class="provision-item">
         <RadioGroup
-          label="Потребность в питании"
+          label={dict.steps.provisions.foodLabel}
           bind:value={formStore.data.applicant.provisions.food}
           errorText={errors["applicant.provisions.food"]}
           onchange={() => formStore.markTouched("applicant.provisions.food")}
@@ -114,7 +114,7 @@
           <SelectionGrid
             groups={groupedPeriods}
             required={true}
-            errorMessageFn={ERROR_MESSAGES.PERIODS}
+            errorMessageFn={() => dict.errors.periods}
             bind:values={formStore.data.applicant.provisions.foodPeriods}
             errorText={errors["applicant.provisions.foodPeriods"]}
           />
@@ -122,7 +122,7 @@
       </div>
       <div class="provision-item">
         <RadioGroup
-          label="Потребность в алкоголе"
+          label={dict.steps.provisions.alcoholLabel}
           bind:value={formStore.data.applicant.provisions.alcohol}
           errorText={errors["applicant.provisions.alcohol"]}
           onchange={() => formStore.markTouched("applicant.provisions.alcohol")}
@@ -136,7 +136,7 @@
           <SelectionGrid
             groups={groupedPeriods}
             required={true}
-            errorMessageFn={ERROR_MESSAGES.PERIODS}
+            errorMessageFn={() => dict.errors.periods}
             bind:values={formStore.data.applicant.provisions.alcoholPeriods}
             errorText={errors["applicant.provisions.alcoholPeriods"]}
           />
@@ -147,12 +147,12 @@
     {#each formStore.data.guests as guest, i}
       <ExpandableSection show={true}>
         <SubBlock
-          title={`Для ${guest.firstName || `Гостя #${i + 1}`}`}
+          title={dict.steps.provisions.forGuest(guest.firstName || `Гостя #${i + 1}`)}
           stickyLevel={2}
         >
           <div class="provision-item">
             <RadioGroup
-              label="Потребность в питании"
+              label={dict.steps.provisions.foodLabel}
               bind:value={formStore.data.guests[i].provisions.food}
               errorText={errors[`guests.${i}.provisions.food`]}
               onchange={() =>
@@ -167,7 +167,7 @@
               <SelectionGrid
                 groups={groupedPeriods}
                 required={true}
-                errorMessageFn={ERROR_MESSAGES.PERIODS}
+                errorMessageFn={() => dict.errors.periods}
                 bind:values={formStore.data.guests[i].provisions.foodPeriods}
                 errorText={errors[`guests.${i}.provisions.foodPeriods`]}
               />
@@ -175,7 +175,7 @@
           </div>
           <div class="provision-item">
             <RadioGroup
-              label="Потребность в алкоголе"
+              label={dict.steps.provisions.alcoholLabel}
               bind:value={formStore.data.guests[i].provisions.alcohol}
               errorText={errors[`guests.${i}.provisions.alcohol`]}
               onchange={() =>
@@ -190,7 +190,7 @@
               <SelectionGrid
                 groups={groupedPeriods}
                 required={true}
-                errorMessageFn={ERROR_MESSAGES.PERIODS}
+                errorMessageFn={() => dict.errors.periods}
                 bind:values={formStore.data.guests[i].provisions.alcoholPeriods}
                 errorText={errors[`guests.${i}.provisions.alcoholPeriods`]}
               />

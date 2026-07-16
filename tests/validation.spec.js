@@ -61,7 +61,7 @@ async function clearDropdown(page, labelText) {
     .filter({ hasText: labelText })
     .first();
   const clearBtn = group
-    .locator(".clear-button-wrapper md-icon-button")
+    .locator(".clear-button-wrapper button")
     .first();
   await clearBtn.click();
 }
@@ -72,7 +72,7 @@ async function clearText(page, labelText) {
     .filter({ hasText: labelText })
     .first();
   const clearBtn = group
-    .locator("md-outlined-text-field md-icon-button")
+    .locator(".clear-button-wrapper button")
     .first();
   await clearBtn.click();
 }
@@ -91,7 +91,7 @@ test.describe("Validation UX Tests", () => {
     await page.addInitScript(() => { localStorage.clear(); });
     await page.goto("/");
     // Start form
-    
+    await page.locator('button:has-text("Начать заполнение")').click();
   });
 
   test("Test 1: Core Validation (Force Touch)", async ({ page }) => {
@@ -305,8 +305,6 @@ test.describe("Validation UX Tests", () => {
     const nextBtn = await getNextBtn(page);
 
     // Quick fill to get to step 5 (Accommodation)
-    await page.goto("/");
-    
     await selectRadio(page, "Тип заявки", "Индивидуальная");
     await nextBtn.click();
     await fillText(page, "Никнейм", "tester");
@@ -343,7 +341,7 @@ test.describe("Validation UX Tests", () => {
     // 2. Error should show for nights
     await expect(
       page
-        .locator(".form-group", { hasText: "Укажите ночевки" })
+        .locator(".selection-grid-root", { hasText: "Укажите ночевки" })
         .locator(".hint-box.error"),
     ).toBeVisible();
 
@@ -382,10 +380,8 @@ test.describe("Validation UX Tests", () => {
     const nextBtn = await getNextBtn(page);
 
     // Quick fill to get to step 5 (Accommodation)
-    await page.goto("/");
-    
     await selectRadio(page, "Тип заявки", "Групповая");
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(300);
     await selectDropdown(
       page,
       "Общее количество участников Вашей группы",
@@ -504,7 +500,7 @@ test.describe("Validation UX Tests", () => {
     await expect(
       petrAcc
         .first()
-        .locator(".form-group", { hasText: "Укажите ночевки" })
+        .locator(".selection-grid-root", { hasText: "Укажите ночевки" })
         .locator(".hint-box.error"),
     ).toBeVisible();
 

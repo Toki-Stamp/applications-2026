@@ -259,6 +259,10 @@ test.describe("Draft Restoration E2E Tests", () => {
     await page.reload();
     await page.locator('button:has-text("Продолжить")').click();
 
+    await expect(
+      page.locator("h2.block-title", { hasText: "Формат" }),
+    ).toBeVisible();
+
     await verifyRadioChecked(page, "Тип заявки", "Групповая");
     await verifyDropdownSelected(
       page,
@@ -274,11 +278,11 @@ test.describe("Draft Restoration E2E Tests", () => {
 
     // --- STEP 2 ---
     await fillText(page, "Никнейм", "leader_nick");
-    await fillText(page, "Имя", "leader_name");
-    await fillText(page, "Фамилия", "leader_surname");
+    await fillText(page, "Имя", "Leader_name");
+    await fillText(page, "Фамилия", "Leader_surname");
     await fillText(page, "Номер телефона", "+375 29 111 22 33");
 
-    await fillGuestText(page, "Гость #1", "Имя", "guest_name");
+    await fillGuestText(page, "Гость #1", "Имя", "Guest_name");
     await fillGuestText(page, "Гость #1", "Никнейм", "guest_nick");
     await fillGuestText(
       page,
@@ -291,14 +295,14 @@ test.describe("Draft Restoration E2E Tests", () => {
     await page.locator('button:has-text("Продолжить")').click();
 
     await expect(
-      page.locator(".step-indicator").filter({ hasText: "Шаг 2" }),
+      page.locator("h2.block-title", { hasText: "Персональные данные" }),
     ).toBeVisible();
 
     await verifyText(page, "Никнейм", "leader_nick");
-    await verifyText(page, "Имя", "leader_name");
-    await verifyText(page, "Фамилия", "leader_surname");
+    await verifyText(page, "Имя", "Leader_name");
+    await verifyText(page, "Фамилия", "Leader_surname");
 
-    await verifyGuestText(page, "Гость #1", "Имя", "guest_name");
+    await verifyGuestText(page, "Гость #1", "Имя", "Guest_name");
     await verifyGuestText(page, "Гость #1", "Никнейм", "guest_nick");
 
     await clickNext(page);
@@ -317,7 +321,7 @@ test.describe("Draft Restoration E2E Tests", () => {
     await page.reload();
     await page.locator('button:has-text("Продолжить")').click();
     await expect(
-      page.locator(".step-indicator").filter({ hasText: "Шаг 3" }),
+      page.locator("h2.block-title", { hasText: "Транспорт" }),
     ).toBeVisible();
 
     await verifyDropdownSelected(page, "Способ прибытия");
@@ -362,7 +366,7 @@ test.describe("Draft Restoration E2E Tests", () => {
     await page.reload();
     await page.locator('button:has-text("Продолжить")').click();
     await expect(
-      page.locator(".step-indicator").filter({ hasText: "Шаг 4" }),
+      page.locator("h2.block-title", { hasText: "Обеспечение" }),
     ).toBeVisible();
 
     await verifyGuestRadioChecked(
@@ -429,7 +433,7 @@ test.describe("Draft Restoration E2E Tests", () => {
     await page.reload();
     await page.locator('button:has-text("Продолжить")').click();
     await expect(
-      page.locator(".step-indicator").filter({ hasText: "Шаг 5" }),
+      page.locator("h2.block-title", { hasText: "Проживание" }),
     ).toBeVisible();
 
     await verifyGuestRadioChecked(
@@ -471,7 +475,7 @@ test.describe("Draft Restoration E2E Tests", () => {
     await page.reload();
     await page.locator('button:has-text("Продолжить")').click();
     await expect(
-      page.locator(".step-indicator").filter({ hasText: "Шаг 6" }),
+      page.locator("h2.block-title", { hasText: "Свободный микрофон" }),
     ).toBeVisible();
 
     await verifyText(page, "Комментарий или пожелания", "My draft comment");

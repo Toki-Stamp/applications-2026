@@ -45,7 +45,7 @@ const initialState = {
   freeMic: "",
 };
 
-const STORAGE_KEY = "zubr_form_draft_2026_v2";
+import { FORM_STORAGE_KEY as STORAGE_KEY } from "./constants.js";
 
 export function createFormStore() {
   let initial = JSON.parse(JSON.stringify(initialState));

@@ -1,6 +1,7 @@
 <script>
   import ThemeSwitcher from "../ui/ThemeSwitcher.svelte";
   import ProgressBar from "../ui/ProgressBar.svelte";
+  import { dict } from "../../locales/ru.js";
 
   let { currentStep, totalSteps, headerHeight = $bindable(0) } = $props();
 </script>
@@ -14,7 +15,7 @@
       <div class="title-container">
         <h1>
           <img src="/favicon.svg" alt="Z" class="title-icon" />
-          <span class="title-text">аявка 2026</span>
+          <span class="title-text">{dict.layout.header.titleText}</span>
         </h1>
       </div>
     </div>

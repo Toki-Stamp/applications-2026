@@ -11,10 +11,12 @@
   import SelectInput from "../components/fields/SelectInput.svelte";
   import TextInput from "../components/fields/TextInput.svelte";
   import TextArea from "../components/fields/TextArea.svelte";
+  import RichText from "../components/ui/RichText.svelte";
   import HintBox from "../components/ui/HintBox.svelte";
   import Block from "../components/layout/Block.svelte";
   import Section from "../components/layout/Section.svelte";
   import ExpandableSection from "../components/layout/ExpandableSection.svelte";
+  import { dict } from "../locales/ru.js";
 
   let { stepNumber, errors = {} } = $props();
 
@@ -41,37 +43,33 @@
       formStore.data.transportTo.method === TRANSPORT_METHOD.DRIVER ||
       formStore.data.transportFrom.method === TRANSPORT_METHOD.DRIVER;
     if (isDriver) {
-      return '"есть багажник для общих вещей", "готов забрать груз до 1 тонны" или "еду на мотоцикле без мест"';
+      return dict.steps.transportation.driverHint;
     }
-    return '"укачивает на заднем сиденье", "беру с собой большую гитару" или "готов помочь с погрузкой"';
+    return dict.steps.transportation.passengerHint;
   });
 </script>
 
-<Block title="Транспорт">
+<Block title={dict.steps.transportation.title}>
   {#if formStore.data.guests.length > 0}
     <div class="transport-hint">
-      {#if formStore.data.applicationType === APPLICATION_TYPE.GROUP}
-        <HintBox>
-          Для <strong class="text-primary">ГРУППОВЫХ ЗАЯВОК</strong> условия транспортировки
-          распространяются на всех участников группы единым образом
+      {#if formStore.isGroup}
+        <HintBox type="info" class="mb-1">
+          <RichText content={dict.steps.transportation.groupHint1} />
         </HintBox>
-        <HintBox>
-          Если кому-то из участников требуется другой вид транспорта или иное
-          время выезда, пожалуйста, оформите на них отдельные <strong
-            class="text-primary">ИНДИВИДУАЛЬНЫЕ ЗАЯВКИ</strong
-          >
+        <HintBox type="info" class="mb-1">
+          <RichText content={dict.steps.transportation.groupHint2} />
         </HintBox>
       {/if}
     </div>
   {/if}
 
   <Section
-    title="{stepNumber}.1. Дорога туда"
+    title={dict.steps.transportation.toTitle(stepNumber)}
     isFirst={formStore.data.guests.length === 0}
   >
     <SelectInput
-      label="Способ прибытия"
-      placeholder="Выберите способ..."
+      label={dict.steps.transportation.toMethodLabel}
+      placeholder={dict.steps.transportation.toMethodPlaceholder}
       icon="directions_car"
       required={true}
       bind:value={formStore.data.transportTo.method}
@@ -83,8 +81,8 @@
       show={formStore.data.transportTo.method === TRANSPORT_METHOD.DRIVER}
     >
       <SelectInput
-        label="Свободных мест для попутчиков"
-        placeholder="Укажите кол-во..."
+        label={dict.steps.transportation.freeSeatsLabel}
+        placeholder={dict.steps.transportation.freeSeatsPlaceholder}
         icon="airline_seat_recline_normal"
         required={true}
         bind:value={formStore.data.transportTo.freeSeats}
@@ -94,8 +92,8 @@
       />
     </ExpandableSection>
     <SelectInput
-      label="День отправления на базу"
-      placeholder="Выберите день..."
+      label={dict.steps.transportation.toDayLabel}
+      placeholder={dict.steps.transportation.toDayPlaceholder}
       icon="calendar_month"
       required={true}
       bind:value={formStore.data.transportTo.day}
@@ -104,7 +102,7 @@
       options={days}
     />
     <TextInput
-      label="Ориентировочное время отправления"
+      label={dict.steps.transportation.toTimeLabel}
       icon="schedule"
       type="time"
       bind:value={formStore.data.transportTo.time}
@@ -113,9 +111,9 @@
       required={true}
     />
     <TextInput
-      label="Город отправления"
+      label={dict.steps.transportation.toCityLabel}
       icon="location_city"
-      placeholder="Введите город..."
+      placeholder={dict.steps.transportation.toCityPlaceholder}
       bind:value={formStore.data.transportTo.departureCity}
       errorText={errors["transportTo.departureCity"]}
       onblur={() => formStore.markTouched("transportTo.departureCity")}
@@ -124,10 +122,10 @@
     />
   </Section>
 
-  <Section title="{stepNumber}.2. Дорога обратно">
+  <Section title={dict.steps.transportation.fromTitle(stepNumber)}>
     <SelectInput
-      label="Способ отъезда"
-      placeholder="Выберите способ..."
+      label={dict.steps.transportation.fromMethodLabel}
+      placeholder={dict.steps.transportation.fromMethodPlaceholder}
       icon="directions_car"
       required={true}
       bind:value={formStore.data.transportFrom.method}
@@ -137,8 +135,8 @@
     />
 
     <SelectInput
-      label="День отъезда с базы"
-      placeholder="Выберите день..."
+      label={dict.steps.transportation.fromDayLabel}
+      placeholder={dict.steps.transportation.fromDayPlaceholder}
       icon="calendar_month"
       required={true}
       bind:value={formStore.data.transportFrom.day}
@@ -147,7 +145,7 @@
       options={days}
     />
     <TextInput
-      label="Ориентировочное время отъезда"
+      label={dict.steps.transportation.fromTimeLabel}
       icon="schedule"
       type="time"
       bind:value={formStore.data.transportFrom.time}
@@ -157,11 +155,11 @@
     />
   </Section>
 
-  <Section title="{stepNumber}.3. Дополнительно по транспорту">
+  <Section title={dict.steps.transportation.commentTitle(stepNumber)}>
     <TextArea
-      label="Комментарий к дороге"
+      label={dict.steps.transportation.commentLabel}
       icon="edit_note"
-      placeholder="Напишите здесь всё, что считаете важным..."
+      placeholder={dict.steps.transportation.commentPlaceholder}
       helperText={transportHint}
       bind:value={formStore.data.transportComment}
       errorText={errors["transportComment"]}

@@ -1,3 +1,5 @@
+import { dict } from "./locales/ru.js";
+
 export const APPLICATION_TYPE = {
   INDIVIDUAL: "individual",
   GROUP: "group",
@@ -25,59 +27,59 @@ export const TRANSPORT_METHOD = {
   SELF: "self",
 };
 
-export const days = ["Пятница", "Суббота", "Воскресенье"];
+export const days = dict.options.days;
 
 export const transportMethodsTo = [
-  { label: "Как водитель", value: TRANSPORT_METHOD.DRIVER },
-  { label: "Ищу место в авто", value: TRANSPORT_METHOD.PASSENGER },
-  { label: "На организованной маршрутке", value: TRANSPORT_METHOD.BUS },
-  { label: "Самостоятельно", value: TRANSPORT_METHOD.SELF },
+  { label: dict.options.transportMethodsTo.driver, value: TRANSPORT_METHOD.DRIVER },
+  { label: dict.options.transportMethodsTo.passenger, value: TRANSPORT_METHOD.PASSENGER },
+  { label: dict.options.transportMethodsTo.bus, value: TRANSPORT_METHOD.BUS },
+  { label: dict.options.transportMethodsTo.self, value: TRANSPORT_METHOD.SELF },
 ];
 
 // transportMethodsFrom is removed, use transportMethodsTo for both directions.
 
 export const groupedPeriods = [
   {
-    day: "В пятницу",
+    day: dict.options.groupedPeriods.friday,
     items: [
       {
         id: "fri-morn",
-        label: "Утро",
-        helperText: "до обеда",
+        label: dict.options.groupedPeriods.morn,
+        helperText: dict.options.groupedPeriods.mornHelper,
         icon: "wb_sunny",
       },
       {
         id: "fri-eve",
-        label: "Вечер",
-        helperText: "после обеда",
+        label: dict.options.groupedPeriods.eve,
+        helperText: dict.options.groupedPeriods.eveHelper,
         icon: "nightlight_round",
       },
     ],
   },
   {
-    day: "В субботу",
+    day: dict.options.groupedPeriods.saturday,
     items: [
       {
         id: "sat-morn",
-        label: "Утро",
-        helperText: "до обеда",
+        label: dict.options.groupedPeriods.morn,
+        helperText: dict.options.groupedPeriods.mornHelper,
         icon: "wb_sunny",
       },
       {
         id: "sat-eve",
-        label: "Вечер",
-        helperText: "после обеда",
+        label: dict.options.groupedPeriods.eve,
+        helperText: dict.options.groupedPeriods.eveHelper,
         icon: "nightlight_round",
       },
     ],
   },
   {
-    day: "В воскресенье",
+    day: dict.options.groupedPeriods.sunday,
     items: [
       {
         id: "sun-morn",
-        label: "Утро",
-        helperText: "до обеда",
+        label: dict.options.groupedPeriods.morn,
+        helperText: dict.options.groupedPeriods.mornHelper,
         icon: "wb_sunny",
       },
     ],
@@ -85,69 +87,60 @@ export const groupedPeriods = [
 ];
 
 export const groupSizeOptions = [
-  { label: "Всего 2 участника", value: 2 },
-  { label: "Всего 3 участника", value: 3 },
-  { label: "Всего 4 участника", value: 4 },
-  { label: "Всего 5 участников", value: 5 },
+  { label: dict.options.groupSize[2], value: 2 },
+  { label: dict.options.groupSize[3], value: 3 },
+  { label: dict.options.groupSize[4], value: 4 },
+  { label: dict.options.groupSize[5], value: 5 },
 ];
 
 export const foodOptions = [
-  { label: "Без питания", value: PROVISION_TYPE.NONE },
-  { label: "Буду кушать", value: PROVISION_TYPE.REQUIRED },
+  { label: dict.options.food.none, value: PROVISION_TYPE.NONE },
+  { label: dict.options.food.required, value: PROVISION_TYPE.REQUIRED },
 ];
 
 export const alcoholOptions = [
-  { label: "Без алкоголя", value: PROVISION_TYPE.NONE },
-  { label: "Буду выпивать", value: PROVISION_TYPE.REQUIRED },
+  { label: dict.options.alcohol.none, value: PROVISION_TYPE.NONE },
+  { label: dict.options.alcohol.required, value: PROVISION_TYPE.REQUIRED },
 ];
 
 export const nightsList = [
   {
     items: [
-      { id: "fri-sat", label: "С пятницы на субботу", icon: "bedtime" },
-      { id: "sat-sun", label: "С субботы на воскресенье", icon: "bedtime" },
+      { id: "fri-sat", label: dict.options.nights.friSat, icon: "bedtime" },
+      { id: "sat-sun", label: dict.options.nights.satSun, icon: "bedtime" },
     ],
   },
 ];
 
 export const accommodationOptions = [
-  { label: "Размещаюсь самостоятельно", value: ACCOMMODATION_TYPE.SELF },
+  { label: dict.options.accommodation.self, value: ACCOMMODATION_TYPE.SELF },
   {
-    label: "Требуется забронировать номер на базе",
+    label: dict.options.accommodation.booking,
     value: ACCOMMODATION_TYPE.BOOKING,
   },
 ];
 
 export const freeSeatsOptions = [
-  { label: "Нет мест", value: 0 },
-  { label: "1 место", value: 1 },
-  { label: "2 места", value: 2 },
-  { label: "3 места", value: 3 },
-  { label: "4 места", value: 4 },
-  { label: "5 и более", value: 5 },
+  { label: dict.options.freeSeats[0], value: 0 },
+  { label: dict.options.freeSeats[1], value: 1 },
+  { label: dict.options.freeSeats[2], value: 2 },
+  { label: dict.options.freeSeats[3], value: 3 },
+  { label: dict.options.freeSeats[4], value: 4 },
+  { label: dict.options.freeSeats[5], value: 5 },
 ];
 
-export const ERROR_MESSAGES = {
-  RADIO: (label) => ({
-    prefix: "Пожалуйста, выберите один из вариантов для поля ",
-    label: typeof label === "string" ? label.toUpperCase() : label,
-    suffix: ". Без этих данных мы не сможем двигаться дальше",
-  }),
 
-  PERIODS: (label) => ({
-    prefix:
-      "Пожалуйста, отметьте необходимые периоды, чтобы мы могли всё правильно организовать",
-    label: "",
-    suffix: "",
-  }),
-  NIGHTS: (label) => ({
-    prefix: "Пожалуйста, выберите хотя бы одну ночь для поля ",
-    label: typeof label === "string" ? label.toUpperCase() : label,
-    suffix: ", в которую вы планируете остаться",
-  }),
-  TEXT: "Это поле обязательно для заполнения",
-};
 
 // URL веб-приложения Google Apps Script (замените на свой после деплоя скрипта)
 export const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec";
+
+export const FORM_STORAGE_KEY = "zubr_form_draft_2026_v2";
+export const STEP_STORAGE_KEY = "zubr_step_draft_v2";
+
+const getContactName = (nick) => dict.steps.intro.contacts.find(c => c.nick === nick)?.name || nick;
+
+export const CONTACTS = [
+  { phone: "+375 (29) 858-7070", phoneLink: "tel:+375298587070", name: getContactName("Booze"), nick: "Booze" },
+  { phone: "+375 (33) 660-4048", phoneLink: "tel:+375336604048", name: getContactName("krez_by"), nick: "krez_by" }
+];

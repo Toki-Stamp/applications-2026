@@ -1,6 +1,8 @@
 <script>
   import { fade } from "svelte/transition";
   import Button from "../components/ui/Button.svelte";
+  import RichText from "../components/ui/RichText.svelte";
+  import { dict } from "../locales/ru.js";
 
   let { onreset } = $props();
 </script>
@@ -8,13 +10,14 @@
 <div class="success-container" transition:fade={{ duration: 300 }}>
   <div class="block-card success-screen">
     <div class="success-icon">🎉</div>
-    <h2 class="success-title">Ваша заявка принята!</h2>
-    <p class="success-text">
-      Да прибудет с Вами сила зубра!<br />
-      А теперь степенно ожидайте дня сходки...
-    </p>
+    <h2 class="success-title">{dict.steps.outro.title}</h2>
+    <div class="success-text">
+      {#each dict.steps.outro.body as p}
+        <p><RichText content={p} /></p>
+      {/each}
+    </div>
     <Button variant="primary" class="mt-1" onclick={onreset}>
-      Заполнить новую заявку
+      {dict.steps.outro.newForm}
     </Button>
   </div>
 </div>
@@ -86,6 +89,10 @@
     margin-bottom: 2.5rem;
     max-width: 600px;
     font-size: 1.15rem;
+  }
+
+  .success-text p {
+    margin: 0 0 0.5rem 0;
   }
 
   @media (max-width: 600px) {

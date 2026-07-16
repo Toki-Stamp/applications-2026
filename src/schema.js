@@ -7,12 +7,13 @@ import {
   ACCOMMODATION_TYPE,
   TRANSPORT_METHOD,
 } from "./constants.js";
+import { dict } from "./locales/ru.js";
 
 export const ERROR_MESSAGES = {
-  REQUIRED: "Это поле обязательно для заполнения",
-  INVALID_PHONE: "Неверный номер телефона",
-  SELECT_PERIODS: "Пожалуйста, выберите периоды",
-  SELECT_NIGHTS: "Пожалуйста, выберите хотя бы одну ночь",
+  REQUIRED: dict.errors.textRequired,
+  INVALID_PHONE: dict.errors.invalidPhone,
+  SELECT_PERIODS: dict.errors.selectPeriods,
+  SELECT_NIGHTS: dict.errors.selectNights,
 };
 
 const provisionsSchema = z
