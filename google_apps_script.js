@@ -31,6 +31,7 @@ function doPost(e) {
         "Приемы пищи",
         "Алкоголь",
         "Приемы алкоголя",
+        "Коммент (Питание)",
         "Проживание",
         "Ночевки",
         "Коммент (Проживание)",
@@ -39,7 +40,7 @@ function doPost(e) {
       sheet.setFrozenRows(1); // Закрепляем шапку
       // Можно также задать стиль шапки (жирный шрифт, фон), если нужно
       sheet
-        .getRange(1, 1, 1, 26)
+        .getRange(1, 1, 1, 27)
         .setFontWeight("bold")
         .setBackground("#f3f4f6");
     }
@@ -85,14 +86,15 @@ function doPost(e) {
         (person.provisions.foodPeriods || []).join(", "), // 20. Приемы пищи
         person.provisions.alcohol || "", // 21. Алкоголь (provided/none)
         (person.provisions.alcoholPeriods || []).join(", "), // 22. Приемы алкоголя
+        person.provisions.comment || "", // 23. Комментарий к питанию
 
         // Проживание (индивидуальное для каждого человека в v2)
-        person.accommodation.type || "", // 23. Проживание (tent/booking/self)
-        (person.accommodation.nights || []).join(", "), // 24. Ночевки
-        person.accommodation.comment || "", // 25. Комментарий к проживанию
+        person.accommodation.type || "", // 24. Проживание (tent/booking/self)
+        (person.accommodation.nights || []).join(", "), // 25. Ночевки
+        person.accommodation.comment || "", // 26. Комментарий к проживанию
 
         // Свободный микрофон (дублируется для всей группы)
-        data.freeMic || "", // 26. Свободный микрофон
+        data.freeMic || "", // 27. Свободный микрофон
       ];
     }
 
