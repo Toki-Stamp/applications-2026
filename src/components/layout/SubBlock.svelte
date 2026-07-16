@@ -8,7 +8,7 @@
 
 <div class="sub-block-card level-{stickyLevel}">
   {#if title}
-    <h3 class="sub-block-title">{@html title}</h3>
+    <h3 class="sub-block-title glass-header glass-header-accent">{@html title}</h3>
   {/if}
 
   <div class="sub-block-content">
@@ -45,22 +45,7 @@
     align-items: center;
     gap: 0.5rem;
 
-    background: var(--bg-color-accent);
-    background:
-      linear-gradient(
-        to right,
-        color-mix(in srgb, var(--accent) 5%, transparent),
-        transparent
-      ),
-      linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)),
-      color-mix(in srgb, var(--bg-color-accent) 85%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     border-radius: 8px 8px 0 0;
-    border-bottom: 1px solid var(--border-color);
-    box-shadow:
-      0 4px 12px -6px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.02);
     position: sticky;
     z-index: 20;
   }

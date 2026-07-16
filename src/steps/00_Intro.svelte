@@ -37,9 +37,9 @@
     </SubBlock>
 
     <HintBox>
-      Нажмите кнопку
-      <strong class="text-primary">НАЧАТЬ ЗАПОЛНЕНИЕ</strong>, чтобы перейти к
-      форме заявки
+      Кстати, вы можете настроить внешний вид приложения под себя! Нажмите на
+      <md-icon class="inline-icon">settings</md-icon>
+      в левом верхнем углу, чтобы выбрать любимую цветовую тему
     </HintBox>
   </div>
 </Block>
@@ -86,5 +86,13 @@
     &:hover {
       text-decoration: underline;
     }
+  }
+
+  .inline-icon {
+    vertical-align: text-bottom;
+    color: var(--primary);
+    font-size: 1.5em;
+    margin: 0 2px;
+    transform: translateY(4px);
   }
 </style>

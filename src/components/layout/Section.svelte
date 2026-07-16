@@ -5,7 +5,7 @@
 
 <div class="section-container" class:first-section={isFirst}>
   {#if title}
-    <h3 class="section-title">{title}</h3>
+    <h3 class="section-title glass-header glass-header-accent">{title}</h3>
   {/if}
   <div class="section-content">
     {@render children?.()}
@@ -35,22 +35,6 @@
     position: sticky;
     top: calc(var(--sticky-block-offset) - 2px);
     z-index: 25;
-
-    background: var(--bg-color-accent);
-    background:
-      linear-gradient(
-        to right,
-        color-mix(in srgb, var(--accent) 8%, transparent),
-        transparent
-      ),
-      linear-gradient(rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.03)),
-      color-mix(in srgb, var(--bg-color-accent) 85%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-color);
-    box-shadow:
-      0 4px 12px -6px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.02);
   }
 
   /* Compensate gap for the first section to stick directly to main title */

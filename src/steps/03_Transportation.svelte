@@ -171,11 +171,6 @@
 </Block>
 
 <style>
-  .details-wrapper {
-    min-height: 0;
-    overflow: hidden;
-  }
-
   .text-primary {
     color: var(--primary);
   }
