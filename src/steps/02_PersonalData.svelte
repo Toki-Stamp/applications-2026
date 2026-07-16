@@ -13,7 +13,7 @@
 </script>
 
 <Block title="Персональные данные">
-  <Section title="2.1. Заявитель" isFirst={true}>
+  <Section title={formStore.data.applicationType === APPLICATION_TYPE.GROUP ? "2.1. Заявитель" : ""} isFirst={true}>
     <TextInput
       label="Никнейм"
       placeholder="cyber_ninja"

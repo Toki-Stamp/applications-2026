@@ -55,7 +55,7 @@
     pointer-events: none;
     opacity: 0.5;
     transition: var(--transition);
-    z-index: 5;
+    z-index: 35;
   }
 
   .block-card:hover {
@@ -109,7 +109,7 @@
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     box-shadow:
-      0 6px 16px -8px rgba(0, 0, 0, 0.5),
+      0 4px 12px -6px rgba(0, 0, 0, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
@@ -127,13 +127,13 @@
 
   @media (max-width: 600px) {
     .block-card {
-      padding: 1rem;
+      padding: 1.25rem;
     }
 
     .block-title {
       top: -1px;
-      padding: 1rem;
-      margin: -1rem -1rem 0 -1rem;
+      padding: 1rem 1.25rem;
+      margin: -1.25rem -1.25rem 0 -1.25rem;
       font-size: 1.1rem;
     }
   }

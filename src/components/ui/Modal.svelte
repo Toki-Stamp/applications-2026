@@ -1,12 +1,13 @@
 <script>
   import { fade, scale } from "svelte/transition";
+  import Block from "../layout/Block.svelte";
 
-  /** @type {{ variant?: string, dismissible?: boolean, onclose?: () => void, header?: import('svelte').Snippet, children?: import('svelte').Snippet, actions?: import('svelte').Snippet }} */
+  /** @type {{ title?: string, variant?: string, dismissible?: boolean, onclose?: () => void, children?: import('svelte').Snippet, actions?: import('svelte').Snippet }} */
   let {
+    title = "",
     variant = "default",
     dismissible = true,
     onclose,
-    header,
     children,
     actions,
   } = $props();
@@ -29,31 +30,27 @@
   onclick={() => dismissible && onclose?.()}
   role="presentation"
 >
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="block-card modal-card variant-{variant}"
+    class="modal-wrapper variant-{variant}"
     transition:scale={{ start: 0.95, duration: 200 }}
     onclick={(e) => e.stopPropagation()}
     role="dialog"
     aria-modal="true"
     tabindex="-1"
   >
-    {#if header}
-      {@render header()}
-    {/if}
-
-    <div class="modal-content">
-      {#if children}
-        {@render children()}
-      {/if}
-    </div>
-
-    {#if actions}
-      <div class="modal-actions">
-        {@render actions()}
+    <Block {title}>
+      <div class="modal-content">
+        {#if children}
+          {@render children()}
+        {/if}
       </div>
-    {/if}
+
+      {#if actions}
+        <div class="modal-actions">
+          {@render actions()}
+        </div>
+      {/if}
+    </Block>
   </div>
 </div>
 
@@ -74,31 +71,38 @@
     padding: 1.5rem;
   }
 
-  .modal-card {
+  .modal-wrapper {
     width: 100%;
     max-width: 450px;
     margin: 0;
-    box-shadow:
-      0 20px 50px -10px color-mix(in srgb, var(--text-primary) 30%, transparent),
-      0 0 30px var(--primary-glow);
-    background: var(--glass-bg);
   }
 
-  .variant-danger {
+  .variant-danger :global(.block-card) {
     box-shadow:
-      0 20px 50px -10px rgba(0, 0, 0, 0.5),
-      0 0 30px rgba(220, 38, 38, 0.3);
+      0 20px 50px -10px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(220, 38, 38, 0.25);
+    border-color: rgba(220, 38, 38, 0.4);
+    background: color-mix(in srgb, var(--glass-bg) 80%, rgba(220, 38, 38, 0.15)) !important;
   }
 
-  .modal-card :global(.block-title) {
-    position: relative;
-    top: 0;
-    box-shadow: none;
+  .variant-danger :global(.block-card::before) {
+    background: linear-gradient(
+      135deg,
+      rgba(220, 38, 38, 0.5) 0%,
+      transparent 50%,
+      rgba(220, 38, 38, 0.1) 100%
+    ) !important;
   }
 
   .variant-danger :global(.block-title) {
-    color: #fca5a5;
-    border-bottom-color: rgba(220, 38, 38, 0.2);
+    color: var(--error-color);
+    border-bottom-color: rgba(220, 38, 38, 0.3);
+    background: linear-gradient(
+        to right,
+        rgba(220, 38, 38, 0.25),
+        transparent
+      ),
+      color-mix(in srgb, var(--bg-color-accent) 90%, transparent) !important;
   }
 
   .variant-danger :global(.block-title::before),

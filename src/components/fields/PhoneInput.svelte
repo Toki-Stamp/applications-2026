@@ -373,7 +373,7 @@
   }
 
   .country-selector-btn:hover {
-    border-color: var(--text-primary);
+    border-color: var(--primary-hover);
   }
 
   .country-selector-btn:focus-visible,

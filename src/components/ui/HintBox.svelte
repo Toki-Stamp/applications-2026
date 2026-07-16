@@ -22,7 +22,7 @@
     display: flex;
     align-items: center;
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-color);
+    border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
     border-left: 4px solid var(--primary);
     border-radius: 8px;
     padding: 0.75rem 1rem;
@@ -39,6 +39,7 @@
   }
 
   .hint-box.error {
+    border-color: color-mix(in srgb, var(--error-color) 25%, transparent);
     border-left-color: var(--error-color);
     background: color-mix(in srgb, var(--error-color) 10%, transparent);
   }

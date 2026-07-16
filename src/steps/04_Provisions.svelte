@@ -8,6 +8,7 @@
     foodOptions,
     alcoholOptions,
     groupedPeriods,
+    ERROR_MESSAGES,
   } from "../constants.js";
   import RadioGroup from "../components/fields/RadioGroup.svelte";
   import SelectionGrid from "../components/fields/SelectionGrid.svelte";
@@ -58,6 +59,7 @@
           <SelectionGrid
             groups={groupedPeriods}
             required={true}
+            errorMessageFn={ERROR_MESSAGES.PERIODS}
             bind:values={formStore.data.applicant.provisions.foodPeriods}
             errorText={errors["applicant.provisions.foodPeriods"]}
           />
@@ -82,6 +84,7 @@
           <SelectionGrid
             groups={groupedPeriods}
             required={true}
+            errorMessageFn={ERROR_MESSAGES.PERIODS}
             bind:values={formStore.data.applicant.provisions.alcoholPeriods}
             errorText={errors["applicant.provisions.alcoholPeriods"]}
           />
@@ -111,6 +114,7 @@
           <SelectionGrid
             groups={groupedPeriods}
             required={true}
+            errorMessageFn={ERROR_MESSAGES.PERIODS}
             bind:values={formStore.data.applicant.provisions.foodPeriods}
             errorText={errors["applicant.provisions.foodPeriods"]}
           />
@@ -132,6 +136,7 @@
           <SelectionGrid
             groups={groupedPeriods}
             required={true}
+            errorMessageFn={ERROR_MESSAGES.PERIODS}
             bind:values={formStore.data.applicant.provisions.alcoholPeriods}
             errorText={errors["applicant.provisions.alcoholPeriods"]}
           />
@@ -162,6 +167,7 @@
               <SelectionGrid
                 groups={groupedPeriods}
                 required={true}
+                errorMessageFn={ERROR_MESSAGES.PERIODS}
                 bind:values={formStore.data.guests[i].provisions.foodPeriods}
                 errorText={errors[`guests.${i}.provisions.foodPeriods`]}
               />
@@ -184,6 +190,7 @@
               <SelectionGrid
                 groups={groupedPeriods}
                 required={true}
+                errorMessageFn={ERROR_MESSAGES.PERIODS}
                 bind:values={formStore.data.guests[i].provisions.alcoholPeriods}
                 errorText={errors[`guests.${i}.provisions.alcoholPeriods`]}
               />

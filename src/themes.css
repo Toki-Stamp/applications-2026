@@ -70,16 +70,18 @@
 
 /* Theme: Minimal */
 :root[data-theme="minimal"] {
-  --primary-glow: rgba(148, 163, 184, 0.6);
-  --primary: #94a3b8;
-  --primary-hover: #64748b;
-  --accent: #e4e4e7;
-  --accent-glow: rgba(228, 228, 231, 0.6);
-  --cyan: #94a3b8;
+  --primary-glow: rgba(250, 250, 250, 0.4);
+  --primary: #fafafa;
+  --primary-hover: #d4d4d8;
+  --accent: #a1a1aa;
+  --accent-glow: rgba(161, 161, 170, 0.4);
+  --cyan: #fafafa;
 
   --bg-color: #09090b;
   --bg-color-accent: #18181b;
   --glass-bg: rgba(24, 24, 27, 0.5);
+  
+  --text-secondary: #71717a;
 }
 
 /* Theme: Military */
@@ -87,13 +89,15 @@
   --primary-glow: rgba(133, 143, 107, 0.6);
   --primary: #858f6b;
   --primary-hover: #697254;
-  --accent: #5c6348;
-  --accent-glow: rgba(92, 99, 72, 0.6);
+  --accent: #b4bf9a;
+  --accent-glow: rgba(180, 191, 154, 0.6);
   --cyan: #858f6b;
 
   --bg-color: #0d100b;
   --bg-color-accent: #161c13;
   --glass-bg: rgba(22, 28, 19, 0.5);
+  
+  --text-primary: #e8ebe1;
 }
 
 /* Theme: Marshmallow */
@@ -260,26 +264,26 @@
 
 /* Theme: Light Lemon */
 :root[data-theme="light-lemon"] {
-  --primary-glow: rgba(234, 179, 8, 0.4);
+  --primary-glow: rgba(234, 179, 8, 0.3);
   --primary: #eab308;
   --primary-hover: #ca8a04;
   --accent: #d97706;
-  --accent-glow: rgba(217, 119, 6, 0.4);
+  --accent-glow: rgba(217, 119, 6, 0.3);
   --cyan: #eab308;
 
-  --bg-color: #fefce8;
-  --bg-color-accent: #fef08a;
-  --glass-bg: color-mix(in srgb, var(--bg-color-accent) 35%, transparent);
-  --glass-border: rgba(0, 0, 0, 0.08);
-  --glass-border-hover: rgba(0, 0, 0, 0.15);
-  --border-color: rgba(0, 0, 0, 0.06);
+  --bg-color: #fcfcfb;
+  --bg-color-accent: #fef9c3;
+  --glass-bg: color-mix(in srgb, var(--bg-color-accent) 40%, transparent);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --glass-border-hover: rgba(0, 0, 0, 0.1);
+  --border-color: rgba(0, 0, 0, 0.05);
 
-  --text-primary: #422006;
-  --text-secondary: #713f12;
-  --text-placeholder: #facc15;
+  --text-primary: #292524;
+  --text-secondary: #57534e;
+  --text-placeholder: #a8a29e;
 
   --h1-gradient-start: #422006;
-  --h1-gradient-end: #713f12;
+  --h1-gradient-end: #ca8a04;
 }
 
 /* Theme: Light Lavender */
@@ -324,7 +328,7 @@
 
   --text-primary: #431407;
   --text-secondary: #7c2d12;
-  --text-placeholder: #fb923c;
+  --text-placeholder: #b4ada5;
 
   --h1-gradient-start: #431407;
   --h1-gradient-end: #7c2d12;
@@ -370,8 +374,8 @@
   --glass-border-hover: rgba(0, 0, 0, 0.15);
   --border-color: rgba(0, 0, 0, 0.06);
 
-  --text-primary: #0c4a6e;
-  --text-secondary: #1a74a6;
+  --text-primary: #082f49;
+  --text-secondary: #0284c7;
   --text-placeholder: #38bdf8;
 
   --h1-gradient-start: #0c4a6e;

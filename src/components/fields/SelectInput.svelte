@@ -88,9 +88,9 @@
     }
 
     // Use capture phase to catch all scroll events on the page
-    // window.addEventListener("scroll", handleScroll, true);
+    window.addEventListener("scroll", handleScroll, true);
     return () => {
-      // window.removeEventListener("scroll", handleScroll, true);
+      window.removeEventListener("scroll", handleScroll, true);
     };
   });
 </script>
@@ -103,6 +103,7 @@
       class="select-field"
       class:is-empty={value == null || String(value) === ""}
       {id}
+      quick
       error={hasError}
       error-text={errorText}
       supporting-text={computedSupportingText}

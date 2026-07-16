@@ -59,7 +59,7 @@
     border-radius: 8px 8px 0 0;
     border-bottom: 1px solid var(--border-color);
     box-shadow:
-      0 6px 16px -8px rgba(0, 0, 0, 0.5),
+      0 4px 12px -6px rgba(0, 0, 0, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.02);
     position: sticky;
     z-index: 20;

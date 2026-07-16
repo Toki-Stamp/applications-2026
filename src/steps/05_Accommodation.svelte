@@ -7,6 +7,7 @@
     accommodationOptions,
     ACCOMMODATION_TYPE,
     nightsList,
+    ERROR_MESSAGES,
   } from "../constants.js";
   import RadioGroup from "../components/fields/RadioGroup.svelte";
   import SelectionGrid from "../components/fields/SelectionGrid.svelte";
@@ -57,8 +58,8 @@
       >
         <SelectionGrid
           groups={nightsList}
-          required={true}
           label="Укажите ночевки"
+          errorMessageFn={ERROR_MESSAGES.NIGHTS}
           bind:values={formStore.data.applicant.accommodation.nights}
           errorText={errors["applicant.accommodation.nights"]}
         />
@@ -99,6 +100,7 @@
             groups={nightsList}
             required={true}
             label="Укажите ночевки"
+            errorMessageFn={ERROR_MESSAGES.NIGHTS}
             bind:values={formStore.data.applicant.accommodation.nights}
             errorText={errors["applicant.accommodation.nights"]}
           />
@@ -140,6 +142,7 @@
               groups={nightsList}
               required={true}
               label="Укажите ночевки"
+              errorMessageFn={ERROR_MESSAGES.NIGHTS}
               bind:values={guest.accommodation.nights}
               errorText={errors[`guests.${index}.accommodation.nights`]}
             />

@@ -315,19 +315,10 @@ h1::after {
 
 @media (max-width: 600px) {
   :root {
-    --sticky-block-offset: 54px;
-    --sticky-section-offset: 96px;
+    --sticky-block-offset: 56px;
+    --sticky-section-offset: 106px;
   }
 
-  .section-title {
-    margin: 0 -1rem 0 -1rem;
-    padding: 0.75rem 1rem;
-    top: calc(var(--sticky-block-offset) - 1px);
-  }
-
-  .first-section .section-title {
-    margin-top: -1rem;
-  }
 
   .checkbox-grid {
     grid-template-columns: 1fr;

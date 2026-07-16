@@ -79,7 +79,9 @@
       onchange={() => formStore.markTouched("transportTo.method")}
       options={transportMethodsTo}
     />
-    <ExpandableSection show={formStore.data.transportTo.method === TRANSPORT_METHOD.DRIVER}>
+    <ExpandableSection
+      show={formStore.data.transportTo.method === TRANSPORT_METHOD.DRIVER}
+    >
       <SelectInput
         label="Свободных мест для попутчиков"
         placeholder="Укажите кол-во..."

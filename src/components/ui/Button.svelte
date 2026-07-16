@@ -189,6 +189,7 @@
 
   /* Submit Variant */
   .btn-submit {
+    color: white;
     padding: 1.125rem 2.5rem;
     font-size: 1.1rem;
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);

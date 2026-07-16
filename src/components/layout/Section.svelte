@@ -49,7 +49,7 @@
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-color);
     box-shadow:
-      0 6px 16px -8px rgba(0, 0, 0, 0.5),
+      0 4px 12px -6px rgba(0, 0, 0, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.02);
   }
 
@@ -65,5 +65,12 @@
 
   .section-content > :global(* + *) {
     margin-top: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .section-title {
+      margin: 0 -1.25rem 0 -1.25rem;
+      padding: 0.75rem 1.25rem;
+    }
   }
 </style>

@@ -106,8 +106,4 @@
     margin-top: 2px;
     flex-shrink: 0;
   }
-
-  .error-wrapper {
-    margin-top: 0.5rem;
-  }
 </style>

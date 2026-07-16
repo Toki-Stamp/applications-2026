@@ -125,12 +125,16 @@
     return result.success || Object.keys(stepErrors).length === 0;
   }
 
-  // Re-validate when store data OR touchedFields changes
+  // Re-validate and autosave when store data OR touchedFields changes
   $effect(() => {
     // JSON.stringify walks all nested properties, subscribing to every data change
     // This ensures text field inputs (oninput) also trigger re-validation
     JSON.stringify(formStore.data);
     const _t = formStore.meta.touchedFields;
+    
+    // Save draft to localStorage
+    formStore.save();
+
     // Defer to avoid infinite loops during Svelte's own update cycle
     setTimeout(() => validateCurrentStep(false), 0);
   });
@@ -341,10 +345,7 @@
   </div>
 
   {#if showClearModal}
-    <Modal onclose={() => (showClearModal = false)}>
-      {#snippet header()}
-        <h2 class="block-title">Очистить форму?</h2>
-      {/snippet}
+    <Modal title="Очистить форму?" onclose={() => (showClearModal = false)}>
       <p>Вы уверены, что хотите безвозвратно удалить все введенные данные?</p>
       {#snippet actions()}
         <Button variant="secondary" onclick={() => (showClearModal = false)}
@@ -356,12 +357,7 @@
   {/if}
 
   {#if submitErrorMessage}
-    <Modal variant="danger" onclose={() => (submitErrorMessage = null)}>
-      {#snippet header()}
-        <h2 class="block-title">
-          <span>Сбой при отправке!</span>
-        </h2>
-      {/snippet}
+    <Modal title="Сбой при отправке!" variant="danger" onclose={() => (submitErrorMessage = null)}>
       <p>
         Причина: <strong class="error-text">{submitErrorMessage}</strong>
       </p>
@@ -378,13 +374,11 @@
 
   {#if showDraftModal}
     <Modal
+      title="С возвращением!"
       variant="info"
       dismissible={false}
       onclose={() => (showDraftModal = false)}
     >
-      {#snippet header()}
-        <h2 class="block-title">С возвращением!</h2>
-      {/snippet}
       <p>У Вас осталась неотправленная заявка.</p>
       <p>Хотите продолжить её заполнение или начать всё заново?</p>
       {#snippet actions()}
@@ -437,7 +431,7 @@
   }
 
   .error-text {
-    color: #fca5a5;
+    color: var(--error-color);
   }
 
   .mt-1 {

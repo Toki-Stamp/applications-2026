@@ -78,8 +78,37 @@
   let currentTheme = $state("cyberpunk");
   let isOpen = $state(false);
   let isHovered = $state(false);
+  
+  // Store computed colors to dynamically match themes.css
+  /** @type {Record<string, {primary: string, accent: string}>} */
+  let computedColors = $state({});
 
   onMount(() => {
+    // Dynamically fetch actual CSS variables for each theme
+    // by temporarily applying them to the root. Since it's synchronous,
+    // the browser won't paint the intermediate states.
+    const root = document.documentElement;
+    const originalTheme = root.getAttribute("data-theme");
+    /** @type {Record<string, {primary: string, accent: string}>} */
+    const colors = {};
+
+    for (const theme of allThemes) {
+      root.setAttribute("data-theme", theme.id);
+      const computed = getComputedStyle(root);
+      colors[theme.id] = {
+        primary: computed.getPropertyValue("--primary").trim() || theme.primary,
+        accent: computed.getPropertyValue("--accent").trim() || theme.accent,
+      };
+    }
+
+    if (originalTheme) {
+      root.setAttribute("data-theme", originalTheme);
+    } else {
+      root.removeAttribute("data-theme");
+    }
+    
+    computedColors = colors;
+
     const saved = localStorage.getItem("app-theme");
     if (saved && allThemes.some((t) => t.id === saved)) {
       setTheme(saved);
@@ -125,7 +154,7 @@
   </button>
 
   {#if isHovered && !isOpen}
-    <div class="custom-tooltip" transition:fade={{ duration: 150 }}>
+    <div class="custom-tooltip" in:fade={{ duration: 150 }} out:fade={{ duration: isOpen ? 0 : 150 }}>
       Настроить тему
     </div>
   {/if}
@@ -138,7 +167,7 @@
           type="button"
           class="theme-row-btn"
           class:active={currentTheme === theme.id}
-          style="--t-primary: {theme.primary}; --t-accent: {theme.accent};"
+          style="--t-primary: {computedColors[theme.id]?.primary || theme.primary}; --t-accent: {computedColors[theme.id]?.accent || theme.accent};"
           onclick={() => setTheme(theme.id)}
         >
           <div class="swatch-circle">
@@ -155,7 +184,7 @@
           type="button"
           class="theme-row-btn"
           class:active={currentTheme === theme.id}
-          style="--t-primary: {theme.primary}; --t-accent: {theme.accent};"
+          style="--t-primary: {computedColors[theme.id]?.primary || theme.primary}; --t-accent: {computedColors[theme.id]?.accent || theme.accent};"
           onclick={() => setTheme(theme.id)}
         >
           <div class="swatch-circle">
@@ -307,14 +336,14 @@
   }
 
   .swatch-circle {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid color-mix(in srgb, var(--text-primary) 15%, transparent);
   }
 
   .color-half {
