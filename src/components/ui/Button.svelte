@@ -84,6 +84,7 @@
   :global(.btn-danger md-icon),
   :global(.btn-submit md-icon) {
     font-size: var(--text-xl);
+    --md-icon-size: var(--text-xl);
   }
 
   .icon-only {
@@ -97,9 +98,9 @@
 
   :global(.icon-only md-icon) {
     font-size: var(--text-3xl) !important;
-    --md-icon-size: 1.8rem;
-    width: 1.8rem;
-    height: 1.8rem;
+    --md-icon-size: var(--text-3xl);
+    width: var(--text-3xl);
+    height: var(--text-3xl);
   }
 
   /* Primary Variant */

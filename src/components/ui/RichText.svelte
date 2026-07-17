@@ -1,12 +1,14 @@
 <script>
-  let { content = [] } = $props();
+  let { content } = $props();
 
   const parts = $derived(
     Array.isArray(content)
       ? content
       : typeof content === "string"
         ? [{ text: content }]
-        : [content],
+        : content
+          ? [content]
+          : [],
   );
 </script>
 

@@ -217,6 +217,7 @@
     border: none;
     color: var(--text-secondary);
     font-size: var(--text-2xl);
+    --md-icon-size: var(--text-2xl);
     cursor: pointer;
     border-radius: 50%;
     width: 48px;

@@ -35,6 +35,7 @@
   .hint-icon {
     color: var(--primary);
     font-size: var(--text-3xl);
+    --md-icon-size: var(--text-3xl);
     flex-shrink: 0;
   }
 
