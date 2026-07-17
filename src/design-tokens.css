@@ -108,11 +108,11 @@
     --sticky-section-offset: 106px;
 
     /* Override padding tokens for mobile */
-    --layout-px-base: 1.25rem;
-    --layout-px-sm: 1rem;
+    --layout-px-base: 1rem;
+    --layout-px-sm: 0.75rem;
 
-    --layout-py-base: 1.25rem;
-    --layout-py-sm: 1rem;
+    --layout-py-base: 1rem;
+    --layout-py-sm: 0.75rem;
 
     --title-py-lg: 1rem;
     --title-py-md: 0.75rem;

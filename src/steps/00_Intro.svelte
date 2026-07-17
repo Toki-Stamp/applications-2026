@@ -54,7 +54,7 @@
 
   .intro-list {
     margin: 0;
-    padding-left: var(--layout-px-sm);
+    padding-left: 1.15rem;
     display: flex;
     flex-direction: column;
     gap: var(--gap-sm);
