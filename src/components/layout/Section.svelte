@@ -15,7 +15,7 @@
   .section-container {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--gap-section);
   }
 
   .section-title {
@@ -27,18 +27,19 @@
     display: flex;
     align-items: center;
 
-    margin: 0 -2rem 0 -2rem;
-    padding: 0.75rem 2rem;
+    /* Full-bleed out of Block content padding using token */
+    margin: 0 calc(var(--layout-px-base) * -1) 0 calc(var(--layout-px-base) * -1);
+    padding: var(--title-py-sm) var(--layout-px-base);
 
     /* Sticky behavior: stacks under .block-title */
     position: sticky;
-    top: calc(var(--sticky-block-offset) - 2px);
+    top: calc(var(--sticky-block-offset) - 2px); /* 2px compensation for sticky header gap */
     z-index: 25;
   }
 
   /* Compensate gap for the first section to stick directly to main title */
   .first-section .section-title {
-    margin-top: -1.5rem;
+    margin-top: calc(var(--layout-py-base) * -1);
   }
 
   .section-content {
@@ -47,13 +48,6 @@
   }
 
   .section-content > :global(* + *) {
-    margin-top: var(--section-gap, 1rem);
-  }
-
-  @media (max-width: 600px) {
-    .section-title {
-      margin: 0 -1.25rem 0 -1.25rem;
-      padding: 0.75rem 1.25rem;
-    }
+    margin-top: var(--section-gap, var(--gap-fields));
   }
 </style>

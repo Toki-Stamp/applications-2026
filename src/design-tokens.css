@@ -1,0 +1,97 @@
+:root {
+  /* Color Palette - Premium Dark Theme */
+  --bg-color: #09090b;
+  /* Zinc 950 */
+  --bg-color-accent: #18181b;
+  /* Zinc 900 */
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-placeholder: #71717a;
+  /* Zinc 500 */
+  
+  /* 
+   * Default Theme (Cyberpunk) 
+   * Variables defined here act as fallbacks if no theme is set
+   */
+  --primary-glow: rgba(6, 182, 212, 0.6);
+  --primary: #06b6d4;
+  /* Cyan 500 */
+  --primary-hover: #0891b2;
+  /* Cyan 600 */
+  --accent: #6366f1;
+  /* Indigo 500 */
+  --accent-glow: rgba(99, 102, 241, 0.6);
+  --cyan: #06b6d4;
+
+  /* Layout and Styling Basics */
+  --border-color: rgba(255, 255, 255, 0.06);
+  --glass-bg: rgba(24, 24, 27, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(255, 255, 255, 0.15);
+
+  /* Typography */
+  --font-family: "JetBrains Mono", monospace;
+  /* Layout Dimensions */
+  --max-width: 700px;
+  --border-radius: 16px;
+  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --sticky-block-offset: 67px;
+  --sticky-section-offset: 116px;
+
+  /* Layout Paddings */
+  --layout-px-base: 2rem;
+  --layout-px-sm: 1.5rem;
+  --layout-py-base: 2rem;
+  --layout-py-sm: 1.5rem;
+
+  /* Title Paddings */
+  --title-py-lg: 1.125rem;
+  --title-py-md: 1rem;
+  --title-py-sm: 0.75rem;
+
+  /* Gaps */
+  --gap-layout: 2rem;
+  --gap-section: 1.5rem;
+  --gap-fields: 1rem;
+
+  /* Element Paddings */
+  --element-px: 16px;
+  --element-py: 16px;
+
+  /* Config */
+  --scrollbar-width: 10px;
+
+  --h1-gradient-start: #fff;
+  --h1-gradient-end: #a1a1aa;
+
+  --error-color: #ff2b2b;
+  --md-sys-color-error: var(--error-color);
+
+  /* Make material web input outlines more visible in resting state */
+  --input-border-color: color-mix(in srgb, var(--text-primary) 25%, transparent);
+}
+
+@media (max-width: 600px) {
+  :root {
+    --sticky-block-offset: 56px;
+    --sticky-section-offset: 106px;
+
+    /* Override padding tokens for mobile */
+    --layout-px-base: 1.25rem;
+    --layout-px-sm: 1rem;
+
+    --layout-py-base: 1.25rem;
+    --layout-py-sm: 1rem;
+
+    --title-py-lg: 1rem;
+    --title-py-md: 0.75rem;
+
+    --element-px: 12px;
+    --element-py: 12px;
+
+    /* Override gap tokens for mobile */
+    --gap-layout: 1.5rem;   /* 24px */
+    --gap-section: 1rem;    /* 16px */
+    --gap-fields: 0.75rem;  /* 12px */
+  }
+}

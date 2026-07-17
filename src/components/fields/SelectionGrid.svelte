@@ -127,7 +127,7 @@
     background: transparent;
     border: 1px solid var(--input-border-color);
     border-radius: 8px;
-    padding: 0.5rem 1rem;
+    padding: calc(var(--element-py) / 2) var(--element-px);
     min-height: 56px;
     box-sizing: border-box;
     cursor: pointer;

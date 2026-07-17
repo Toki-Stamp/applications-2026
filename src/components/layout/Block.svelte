@@ -11,20 +11,25 @@
       {title}
     </h2>
   {/if}
-  {@render children?.()}
+  <div class="block-content">
+    {@render children?.()}
+  </div>
 </div>
 
 <style>
   /* Glassmorphism Cards */
   .block-card {
-    padding: 2rem;
     position: relative;
     z-index: 10;
     overflow: visible;
     transition: var(--transition);
+  }
+
+  .block-content {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--gap-section);
+    padding: var(--layout-py-base) var(--layout-px-base);
   }
 
   .block-card:hover {
@@ -36,8 +41,7 @@
 
   .block-title {
     font-size: 1.25rem;
-    padding: 1.125rem 2rem;
-    margin: -2rem -2rem 0 -2rem;
+    padding: var(--title-py-lg) var(--layout-px-base);
     border-radius: calc(var(--border-radius) - 1px)
       calc(var(--border-radius) - 1px) 0 0;
     color: var(--text-primary);
@@ -71,7 +75,6 @@
 
   @media (max-width: 600px) {
     .block-card {
-      padding: 1.25rem;
       border-color: var(--glass-border-hover);
       box-shadow:
         0 10px 40px -10px rgba(0, 0, 0, 0.3),
@@ -80,8 +83,6 @@
 
     .block-title {
       top: -1px;
-      padding: 1rem 1.25rem;
-      margin: -1.25rem -1.25rem 0 -1.25rem;
       font-size: 1.1rem;
     }
   }

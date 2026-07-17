@@ -24,7 +24,6 @@
     border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
     border-left: 4px solid var(--accent);
     border-radius: 8px;
-    padding: 1.5rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     position: relative;
   }
@@ -32,7 +31,8 @@
   .sub-block-content {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--gap-fields);
+    padding: var(--layout-py-sm) var(--layout-px-sm);
   }
 
   .sub-block-title {
@@ -41,8 +41,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin: -1.5rem -1.5rem 1.25rem -1.5rem;
-    padding: 1rem 1.5rem;
+    padding: var(--title-py-md) var(--layout-px-sm);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -57,15 +56,5 @@
   }
   .sub-block-card.level-3 .sub-block-title {
     top: calc(var(--sticky-section-offset) - 2px);
-  }
-
-  @media (max-width: 600px) {
-    .sub-block-card {
-      padding: 1rem;
-    }
-    .sub-block-title {
-      margin: -1rem -1rem 1rem -1rem;
-      padding: 0.75rem 1rem;
-    }
   }
 </style>

@@ -170,6 +170,6 @@
   .transport-hint {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--gap-section);
   }
 </style>

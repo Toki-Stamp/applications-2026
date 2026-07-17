@@ -1,68 +1,12 @@
 @import "./themes.css";
 
-:root {
-  /* Color Palette - Premium Dark Theme */
-  --bg-color: #09090b;
-  /* Zinc 950 */
-  --bg-color-accent: #18181b;
-  /* Zinc 900 */
-  --text-primary: #fafafa;
-  --text-secondary: #a1a1aa;
-  --text-placeholder: #71717a;
-  /* Zinc 500 */
-  /* 
-   * Default Theme (Cyberpunk) 
-   * Variables defined here act as fallbacks if no theme is set
-   */
-  --primary-glow: rgba(6, 182, 212, 0.6);
-  --primary: #06b6d4;
-  /* Cyan 500 */
-  --primary-hover: #0891b2;
-  /* Cyan 600 */
-  --accent: #6366f1;
-  /* Indigo 500 */
-  --accent-glow: rgba(99, 102, 241, 0.6);
-  --cyan: #06b6d4;
-
-  /* Layout and Styling Basics */
-  --border-color: rgba(255, 255, 255, 0.06);
-  --glass-bg: rgba(24, 24, 27, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-border-hover: rgba(255, 255, 255, 0.15);
-
-  /* Typography */
-  --font-family: "JetBrains Mono", monospace;
-
-  .text-primary {
-    color: var(--primary);
-  }
-
-  /* Layout Dimensions */
-  --max-width: 700px;
-  --border-radius: 16px;
-  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  --sticky-block-offset: 67px;
-  --sticky-section-offset: 116px;
-
-  --h1-gradient-start: #fff;
-  --h1-gradient-end: #a1a1aa;
-
-  --error-color: #ff2b2b;
-  --md-sys-color-error: var(--error-color);
-
-  /* Make material web input outlines more visible in resting state */
-  --input-border-color: color-mix(
-    in srgb,
-    var(--text-primary) 25%,
-    transparent
-  );
-}
+@import "./design-tokens.css";
 
 md-outlined-text-field {
   --md-outlined-text-field-outline-color: var(--input-border-color);
   --md-outlined-text-field-hover-outline-color: var(--primary-hover);
   --md-outlined-text-field-focus-outline-color: var(--primary);
-  
+
   --md-outlined-text-field-error-outline-color: var(--error-color);
   --md-outlined-text-field-error-hover-outline-color: color-mix(in srgb, var(--error-color) 70%, var(--text-primary));
   --md-outlined-text-field-error-focus-outline-color: var(--error-color);
@@ -146,31 +90,23 @@ body::after {
 
 body::before {
   background:
-    radial-gradient(
-      circle at 20% 30%,
+    radial-gradient(circle at 20% 30%,
       rgba(139, 92, 246, 0.12) 0%,
-      transparent 40%
-    ),
-    radial-gradient(
-      circle at 80% 20%,
+      transparent 40%),
+    radial-gradient(circle at 80% 20%,
       rgba(236, 72, 153, 0.1) 0%,
-      transparent 40%
-    );
+      transparent 40%);
   animation: aurora-1 25s infinite linear;
 }
 
 body::after {
   background:
-    radial-gradient(
-      circle at 40% 80%,
+    radial-gradient(circle at 40% 80%,
       rgba(6, 182, 212, 0.08) 0%,
-      transparent 45%
-    ),
-    radial-gradient(
-      circle at 80% 80%,
+      transparent 45%),
+    radial-gradient(circle at 80% 80%,
       rgba(139, 92, 246, 0.08) 0%,
-      transparent 45%
-    );
+      transparent 45%);
   animation: aurora-2 30s infinite linear reverse;
 }
 
@@ -217,18 +153,16 @@ h2,
 h3 {
   color: var(--text-primary);
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 h1 {
   font-size: 2.5rem;
-  background: linear-gradient(
-    135deg,
-    var(--h1-gradient-start) 0%,
-    var(--h1-gradient-end) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--h1-gradient-start) 0%,
+      var(--h1-gradient-end) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -287,12 +221,10 @@ h1::after {
   bottom: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.2) 0%,
-    rgba(255, 255, 255, 0) 50%,
-    rgba(255, 255, 255, 0.05) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      rgba(255, 255, 255, 0.05) 100%);
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -309,22 +241,18 @@ h1::after {
 
 .glass-panel:hover::before {
   opacity: 1;
-  background: linear-gradient(
-    135deg,
-    var(--primary) 0%,
-    rgba(255, 255, 255, 0) 50%,
-    var(--accent) 100%
-  );
+  background: linear-gradient(135deg,
+      var(--primary) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      var(--accent) 100%);
 }
 
 .glass-header {
   background: var(--bg-color-accent);
   background:
-    linear-gradient(
-      to right,
+    linear-gradient(to right,
       color-mix(in srgb, var(--header-tint, var(--primary)) 8%, transparent),
-      transparent
-    ),
+      transparent),
     linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)),
     color-mix(in srgb, var(--bg-color-accent) 85%, transparent);
   backdrop-filter: blur(12px);
@@ -370,9 +298,7 @@ h1::after {
   --md-outlined-text-field-hover-label-text-color: var(--text-primary);
   --md-outlined-text-field-focus-label-text-color: var(--primary);
   --md-outlined-text-field-input-text-color: var(--text-primary);
-  --md-outlined-text-field-input-text-placeholder-color: var(
-    --text-placeholder
-  );
+  --md-outlined-text-field-input-text-placeholder-color: var(--text-placeholder);
   --md-outlined-text-field-outline-color: var(--border-color);
   --md-outlined-text-field-hover-outline-color: var(--primary-hover);
   --md-outlined-text-field-focus-outline-color: var(--primary);
@@ -409,19 +335,12 @@ h1::after {
 }
 
 @media (max-width: 600px) {
-  :root {
-    --sticky-block-offset: 56px;
-    --sticky-section-offset: 106px;
-  }
-
   .glass-panel::before {
     opacity: 1;
-    background: linear-gradient(
-      135deg,
-      var(--primary) 0%,
-      rgba(255, 255, 255, 0) 50%,
-      var(--accent) 100%
-    );
+    background: linear-gradient(135deg,
+        var(--primary) 0%,
+        rgba(255, 255, 255, 0) 50%,
+        var(--accent) 100%);
   }
 
   .checkbox-grid {
@@ -436,4 +355,8 @@ h1::after {
   .subtitle {
     display: none;
   }
+}
+
+.text-primary {
+  color: var(--primary);
 }

@@ -84,17 +84,19 @@
     width: 100%;
     min-height: 56px;
     --md-outlined-text-field-container-shape: 8px;
-    --md-outlined-field-leading-space: 12px;
-    --md-outlined-field-content-space: 12px;
+    --md-outlined-field-leading-space: var(--element-px);
+    --md-outlined-field-with-leading-content-leading-space: var(--element-px);
+    --md-outlined-field-content-space: var(--element-px);
+    --md-outlined-field-with-trailing-content-trailing-space: var(--element-px);
   }
 
   .input-wrapper:has(.clear-button-wrapper) .text-field {
-    --md-outlined-field-trailing-space: 48px;
+    --md-outlined-field-trailing-space: calc(var(--element-px) * 2 + 24px);
   }
 
   .clear-button-wrapper {
     position: absolute;
-    right: 12px;
+    right: var(--element-px);
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;

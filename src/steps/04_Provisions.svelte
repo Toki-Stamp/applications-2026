@@ -14,6 +14,7 @@
   import TextArea from "../components/fields/TextArea.svelte";
   import SubBlock from "../components/layout/SubBlock.svelte";
   import HintBox from "../components/ui/HintBox.svelte";
+  import RichText from "../components/ui/RichText.svelte";
   import Block from "../components/layout/Block.svelte";
   import Section from "../components/layout/Section.svelte";
   import ExpandableSection from "../components/layout/ExpandableSection.svelte";
@@ -105,7 +106,9 @@
       />
     </Section>
   {:else}
-    <HintBox>{dict.steps.provisions.diffHint}</HintBox>
+    <HintBox>
+      <RichText content={dict.steps.provisions.diffHint} />
+    </HintBox>
 
     <Section
       title={dict.steps.provisions.forApplicant(

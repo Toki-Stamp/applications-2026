@@ -87,7 +87,9 @@
       />
     </Section>
   {:else}
-    <HintBox>{dict.steps.accommodation.diffHint}</HintBox>
+    <HintBox>
+      <RichText content={dict.steps.accommodation.diffHint} />
+    </HintBox>
 
     <Section
       title={dict.steps.accommodation.forApplicant(
@@ -184,6 +186,6 @@
   .transport-hint {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--gap-section);
   }
 </style>

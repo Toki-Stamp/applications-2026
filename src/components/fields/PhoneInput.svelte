@@ -336,7 +336,7 @@
 <style>
   :global(.phone-clear-btn) {
     position: absolute !important;
-    right: 8px;
+    right: var(--element-px);
     top: 14px;
   }
 
@@ -361,7 +361,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 12px 0 16px;
+    padding: 0 8px 0 var(--element-px);
     color: var(--text-primary);
     cursor: pointer;
     font-family: inherit;
@@ -535,12 +535,12 @@
     width: 100%;
     min-height: 56px;
     --md-outlined-text-field-container-shape: 8px;
-    --md-outlined-field-leading-space: 12px;
-    --md-outlined-field-content-space: 12px;
+    --md-outlined-field-leading-space: var(--element-px);
+    --md-outlined-field-content-space: var(--element-px);
   }
   
   .phone-input:has(.phone-clear-btn) md-outlined-text-field {
-    --md-outlined-field-trailing-space: 48px;
+    --md-outlined-field-trailing-space: calc(var(--element-px) * 2 + 24px);
   }
 
   @media (max-width: 600px) {

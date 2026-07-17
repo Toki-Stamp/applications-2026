@@ -88,8 +88,8 @@
 
   .leading-icon {
     position: absolute;
-    left: 16px;
-    top: 16px;
+    left: var(--element-px);
+    top: var(--element-py);
     color: var(--text-secondary);
     pointer-events: none;
     z-index: 1;
@@ -98,8 +98,8 @@
 
   .clear-button-wrapper {
     position: absolute;
-    right: 16px;
-    top: 14px;
+    right: var(--element-px);
+    top: calc(var(--element-py) - 2px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -114,8 +114,8 @@
     --md-outlined-field-leading-space: 12px;
     --md-outlined-field-content-space: 12px;
     min-height: 104px; /* 3 rows: 32px padding + (24px * 3) */
-    padding: 16px;
-    padding-right: 52px; /* space for clear button */
+    padding: var(--element-py) var(--element-px);
+    padding-right: calc(var(--element-px) * 2 + 20px); /* space for clear button */
     font-family: inherit;
     font-size: 1rem;
     color: var(--text-primary);
@@ -134,7 +134,7 @@
   }
 
   .custom-textarea.has-icon {
-    padding-left: 52px;
+    padding-left: calc(var(--element-px) * 2 + 20px);
   }
 
   .custom-textarea:hover {

@@ -468,7 +468,7 @@
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    padding: 1.5rem calc(1.5rem - 10px) 1.5rem 1.5rem;
+    padding: var(--gap-layout) calc(var(--gap-layout) - var(--scrollbar-width)) var(--gap-layout) var(--gap-layout);
   }
 
   .app-transition-wrapper {
@@ -487,7 +487,7 @@
 
   @media (max-width: 600px) {
     .step-content {
-      padding: 0.5rem;
+      padding: var(--gap-fields);
     }
   }
 </style>
