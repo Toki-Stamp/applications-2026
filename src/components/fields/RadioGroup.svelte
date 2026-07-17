@@ -106,4 +106,12 @@
     margin-top: 2px;
     flex-shrink: 0;
   }
+
+  @media (max-width: 600px) {
+    .supp-text {
+      text-align: justify;
+      -webkit-hyphens: auto;
+      hyphens: auto;
+    }
+  }
 </style>
