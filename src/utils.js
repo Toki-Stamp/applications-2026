@@ -38,3 +38,26 @@ export function gridExpand(node, { duration = 300, easing = cubicOut } = {}) {
     `,
   };
 }
+
+/**
+ * Formats the applicant name display for differential sections
+ * @param {Object} applicant
+ * @returns {string}
+ */
+export function getApplicantDisplayName(applicant) {
+  const main = applicant.nickname || "Заявителя";
+  const fullName = [applicant.firstName, applicant.lastName].filter(Boolean).join(" ");
+  return fullName ? `${main} (${fullName})` : main;
+}
+
+/**
+ * Formats the guest name display for differential sections
+ * @param {Object} guest
+ * @param {number} index
+ * @returns {string}
+ */
+export function getGuestDisplayName(guest, index) {
+  const fullName = [guest.firstName, guest.lastName].filter(Boolean).join(" ");
+  const main = fullName || `Гостя #${index + 1}`;
+  return guest.nickname ? `${main} (${guest.nickname})` : main;
+}

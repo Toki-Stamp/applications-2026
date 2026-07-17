@@ -12,6 +12,7 @@
   import RadioGroup from "../components/fields/RadioGroup.svelte";
   import SelectionGrid from "../components/fields/SelectionGrid.svelte";
   import TextArea from "../components/fields/TextArea.svelte";
+  import { getApplicantDisplayName, getGuestDisplayName } from "../utils.js";
   import SubBlock from "../components/layout/SubBlock.svelte";
   import HintBox from "../components/ui/HintBox.svelte";
   import RichText from "../components/ui/RichText.svelte";
@@ -112,7 +113,7 @@
 
     <Section
       title={dict.steps.provisions.forApplicant(
-        formStore.data.applicant.nickname || "Заявителя",
+        getApplicantDisplayName(formStore.data.applicant)
       )}
     >
       <div class="provision-item">
@@ -178,7 +179,7 @@
             <ExpandableSection show={true}>
               <SubBlock
                 title={dict.steps.provisions.forGuest(
-                  guest.firstName || `Гостя #${i + 1}`,
+                  getGuestDisplayName(guest, i)
                 )}
               >
                 <div class="provision-item">
