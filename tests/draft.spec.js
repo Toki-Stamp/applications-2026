@@ -48,7 +48,7 @@ async function selectDropdown(page, labelText, valueText) {
 
 async function selectGuestRadio(page, guestName, labelText, valueText) {
   const guestGroup = page
-    .locator(".sub-block-card")
+    .locator(".sub-block-card, .section-container")
     .filter({ hasText: guestName })
     .first();
   const group = guestGroup
@@ -67,7 +67,7 @@ async function selectGuestRadio(page, guestName, labelText, valueText) {
 
 async function fillGuestText(page, guestName, labelText, value) {
   const guestGroup = page
-    .locator(".sub-block-card")
+    .locator(".sub-block-card, .section-container")
     .filter({ hasText: guestName })
     .first();
   const group = guestGroup
@@ -118,7 +118,7 @@ async function checkNight(page, nightLabel) {
 
 async function checkGuestNight(page, guestName, nightLabel) {
   const guestGroup = page
-    .locator(".sub-block-card")
+    .locator(".sub-block-card, .section-container")
     .filter({ hasText: guestName })
     .first();
   const card = guestGroup
@@ -142,7 +142,7 @@ async function verifyText(page, labelText, expectedValue) {
 
 async function verifyGuestText(page, guestName, labelText, expectedValue) {
   const guestGroup = page
-    .locator(".sub-block-card")
+    .locator(".sub-block-card, .section-container")
     .filter({ hasText: guestName })
     .first();
   const group = guestGroup
@@ -168,9 +168,14 @@ async function verifyRadioChecked(page, labelText, valueText) {
   expect(isChecked).toBe(true);
 }
 
-async function verifyGuestRadioChecked(page, guestName, labelText, valueText) {
+async function verifyGuestRadioChecked(
+  page,
+  guestName,
+  labelText,
+  valueText,
+) {
   const guestGroup = page
-    .locator(".sub-block-card")
+    .locator(".sub-block-card, .section-container")
     .filter({ hasText: guestName })
     .first();
   const group = guestGroup
@@ -230,7 +235,7 @@ async function verifyNightChecked(page, nightLabel) {
 
 async function verifyGuestNightChecked(page, guestName, nightLabel) {
   const guestGroup = page
-    .locator(".sub-block-card")
+    .locator(".sub-block-card, .section-container")
     .filter({ hasText: guestName })
     .first();
   const card = guestGroup
@@ -371,6 +376,12 @@ test.describe("Draft Restoration E2E Tests", () => {
       "Потребность в алкоголе",
       "Без алкоголя",
     );
+    await fillGuestText(
+      page,
+      "leader_nick",
+      "Комментарий к питанию",
+      "Только теплое питье",
+    );
 
     await page.reload();
     await page.locator('button:has-text("Продолжить")').click();
@@ -408,6 +419,12 @@ test.describe("Draft Restoration E2E Tests", () => {
       "Потребность в алкоголе",
       "Без алкоголя",
     );
+    await verifyGuestText(
+      page,
+      "leader_nick",
+      "Комментарий к питанию",
+      "Только теплое питье",
+    );
 
     await clickNext(page);
 
@@ -422,7 +439,7 @@ test.describe("Draft Restoration E2E Tests", () => {
     await fillGuestText(
       page,
       "Для leader_nick",
-      "Дополнительные комментарии к проживанию и обеспечению",
+      "Комментарий к проживанию",
       "Нужен тихий номер",
     );
 
@@ -435,7 +452,7 @@ test.describe("Draft Restoration E2E Tests", () => {
     await fillGuestText(
       page,
       "Для guest_name",
-      "Дополнительные комментарии к проживанию и обеспечению",
+      "Комментарий к проживанию",
       "Беру палатку",
     );
 
@@ -459,7 +476,7 @@ test.describe("Draft Restoration E2E Tests", () => {
     await verifyGuestText(
       page,
       "Для leader_nick",
-      "Дополнительные комментарии к проживанию и обеспечению",
+      "Комментарий к проживанию",
       "Нужен тихий номер",
     );
 
@@ -472,7 +489,7 @@ test.describe("Draft Restoration E2E Tests", () => {
     await verifyGuestText(
       page,
       "Для guest_name",
-      "Дополнительные комментарии к проживанию и обеспечению",
+      "Комментарий к проживанию",
       "Беру палатку",
     );
 

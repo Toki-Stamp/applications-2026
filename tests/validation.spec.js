@@ -421,7 +421,7 @@ test.describe("Validation UX Tests", () => {
 
     // Fast Provision
     const leaderProv = page
-      .locator(".sub-block-card")
+      .locator(".sub-block-card, .section-container")
       .filter({ hasText: "leader" })
       .first();
     await leaderProv
@@ -436,7 +436,7 @@ test.describe("Validation UX Tests", () => {
       .click();
 
     const petrProv = page
-      .locator(".sub-block-card")
+      .locator(".sub-block-card, .section-container")
       .filter({ hasText: "Для Петр" })
       .first();
     await petrProv
@@ -463,7 +463,7 @@ test.describe("Validation UX Tests", () => {
 
     // Fill leader
     const leaderAcc = accommodationBlock
-      .locator(".sub-block-card")
+      .locator(".sub-block-card, .section-container")
       .filter({ hasText: "leader" })
       .first();
     await leaderAcc
@@ -478,7 +478,7 @@ test.describe("Validation UX Tests", () => {
 
     // Petr should have error
     const petrAcc = accommodationBlock
-      .locator(".sub-block-card")
+      .locator(".sub-block-card, .section-container")
       .filter({ hasText: "Для Петр" });
     await expect(
       petrAcc.first().locator(".hint-box.error").first(),

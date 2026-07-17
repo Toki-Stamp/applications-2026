@@ -70,7 +70,7 @@ async function checkGuestPeriod(
   periodLabel,
 ) {
   const guestGroup = page
-    .locator(".sub-block-card")
+    .locator(".sub-block-card, .section-container")
     .filter({ hasText: guestName })
     .first();
   const provisionItem = guestGroup
@@ -101,7 +101,7 @@ async function checkNight(page, nightLabel) {
 
 async function checkGuestNight(page, guestName, nightLabel) {
   const guestGroup = page
-    .locator(".sub-block-card")
+    .locator(".sub-block-card, .section-container")
     .filter({ hasText: guestName })
     .first();
   const card = guestGroup
@@ -113,7 +113,7 @@ async function checkGuestNight(page, guestName, nightLabel) {
 
 async function selectGuestRadio(page, guestName, labelText, valueText) {
   const guestGroup = page
-    .locator(".sub-block-card")
+    .locator(".sub-block-card, .section-container")
     .filter({ hasText: guestName })
     .first();
   const group = guestGroup
@@ -129,7 +129,7 @@ async function selectGuestRadio(page, guestName, labelText, valueText) {
 
 async function fillGuestText(page, guestName, labelText, value) {
   const guestGroup = page
-    .locator(".sub-block-card")
+    .locator(".sub-block-card, .section-container")
     .filter({ hasText: guestName })
     .first();
   const group = guestGroup
@@ -149,6 +149,8 @@ async function fillGuestText(page, guestName, labelText, value) {
 
 async function clickNext(page) {
   await page.locator(".right-buttons button").last().click();
+  await page.waitForFunction(() => document.querySelectorAll('.step-layer').length === 1);
+  await page.waitForTimeout(100); // small buffer
 }
 
 async function clickSubmit(page) {
@@ -479,6 +481,12 @@ test.describe("Form E2E Tests", () => {
       "В субботу",
       "Вечер",
     );
+    await fillGuestText(
+      page,
+      "Для Иван",
+      "Комментарий к питанию",
+      "Только веганское",
+    );
     await clickNext(page);
 
     // Accommodation for Applicant
@@ -500,7 +508,7 @@ test.describe("Form E2E Tests", () => {
     await fillGuestText(
       page,
       "Для Иван",
-      "Дополнительные комментарии к проживанию и обеспечению",
+      "Комментарий к проживанию",
       "Вид на лес",
     );
     await clickNext(page);
@@ -520,6 +528,7 @@ test.describe("Form E2E Tests", () => {
     expect(submittedData.guests[0].accommodation.type).toBe("booking");
     expect(submittedData.guests[0].accommodation.nights).toContain("fri-sat");
     expect(submittedData.guests[0].accommodation.comment).toBe("Вид на лес");
+    expect(submittedData.guests[0].provisions.comment).toBe("Только веганское");
   });
 
   test("Case 5: Validation Check (Negative Path)", async ({ page }) => {
@@ -720,7 +729,7 @@ test.describe("Form E2E Tests", () => {
     await fillGuestText(
       page,
       "Для GuestOne",
-      "Дополнительные комментарии к проживанию и обеспечению",
+      "Комментарий к проживанию",
       "Хочу отдельный номер",
     );
 
