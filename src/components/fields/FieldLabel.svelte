@@ -45,6 +45,14 @@
     font-size: 0.85rem;
   }
 
+  @media (max-width: 600px) {
+    .helper-text {
+      text-align: justify;
+      -webkit-hyphens: auto;
+      hyphens: auto;
+    }
+  }
+
   .optional-tag {
     font-size: 0.85rem;
     font-weight: 500;
