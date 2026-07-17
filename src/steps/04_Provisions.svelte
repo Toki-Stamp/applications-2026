@@ -266,11 +266,6 @@
     gap: 0.5rem;
   }
 
-  .diff-section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-section);
-  }
 
   .provision-hint {
     display: flex;
