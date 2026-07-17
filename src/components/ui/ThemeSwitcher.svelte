@@ -251,10 +251,10 @@
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 0 0 0.5rem 0;
+    padding: 0 0 var(--gap-sm) 0;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: var(--gap-xs);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     width: 220px;
     max-height: 260px;
@@ -291,7 +291,7 @@
     letter-spacing: 0.1em;
     font-weight: 700;
     color: var(--text-secondary);
-    padding: 0.75rem 1rem 0.25rem 1rem;
+    padding: 0.75rem var(--element-px) var(--gap-xs) var(--element-px);
     border-bottom: 1px solid
       color-mix(in srgb, var(--text-primary) 10%, transparent);
   }
@@ -319,12 +319,12 @@
   }
 
   .theme-row-btn {
-    margin: 0 0.5rem;
-    width: calc(100% - 1rem);
+    margin: 0 var(--gap-sm);
+    width: calc(100% - calc(var(--gap-sm) * 2));
     background: transparent;
     border: none;
     border-radius: 8px;
-    padding: 0.5rem;
+    padding: var(--gap-sm);
     display: flex;
     align-items: center;
     gap: 0.75rem;

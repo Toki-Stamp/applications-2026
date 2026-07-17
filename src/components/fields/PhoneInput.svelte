@@ -342,7 +342,7 @@
 
   .phone-inputs-container {
     display: flex;
-    gap: 8px;
+    gap: var(--gap-sm);
     width: 100%;
     position: relative;
   }

@@ -33,7 +33,7 @@
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 
-    padding: 0.4rem 0.8rem;
+    padding: calc(var(--gap-sm) * 0.8) calc(var(--gap-fields) * 0.8);
     border-radius: 8px;
     font-size: 0.85rem;
     font-family: var(--font-family);

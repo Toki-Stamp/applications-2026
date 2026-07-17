@@ -42,7 +42,7 @@
   .header-content {
     max-width: 800px;
     margin: 0 auto;
-    padding: 1rem 1.5rem;
+    padding: var(--gap-fields) var(--layout-px-base);
     position: relative;
     display: flex;
     flex-direction: column;
@@ -73,7 +73,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.1rem;
+    gap: var(--gap-xs);
   }
 
   .title-text {
@@ -99,7 +99,7 @@
 
   @media (max-width: 600px) {
     .header-content {
-      padding: 0.5rem 1rem;
+      padding: var(--gap-sm) var(--gap-fields);
     }
   }
 </style>

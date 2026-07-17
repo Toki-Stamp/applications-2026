@@ -25,8 +25,8 @@
     border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
     border-left: 4px solid var(--primary);
     border-radius: 8px;
-    padding: 0.75rem 1rem;
-    gap: 0.75rem;
+    padding: calc(var(--element-py) * 0.75) var(--element-px);
+    gap: var(--gap-sm);
     color: var(--text-primary);
     font-size: 1rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);

@@ -54,10 +54,10 @@
 
   .intro-list {
     margin: 0;
-    padding-left: 1.5rem;
+    padding-left: var(--layout-px-sm);
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--gap-sm);
   }
 
   p {

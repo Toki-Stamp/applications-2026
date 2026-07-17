@@ -93,26 +93,26 @@
   .selection-grid-root {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--gap-fields);
   }
 
   .selection-content,
   .group-container {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--gap-sm);
   }
 
   .groups-container {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--gap-fields);
   }
 
   .cards-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: var(--gap-fields);
   }
 
   @media (min-width: 500px) {

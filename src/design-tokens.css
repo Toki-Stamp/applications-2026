@@ -53,6 +53,8 @@
   --gap-layout: 2rem;
   --gap-section: 1.5rem;
   --gap-fields: 1rem;
+  --gap-sm: 0.5rem;
+  --gap-xs: 0.25rem;
 
   /* Element Paddings */
   --element-px: 16px;
@@ -93,5 +95,6 @@
     --gap-layout: 1.5rem;   /* 24px */
     --gap-section: 1rem;    /* 16px */
     --gap-fields: 0.75rem;  /* 12px */
+    --gap-sm: 0.375rem;     /* 6px */
   }
 }

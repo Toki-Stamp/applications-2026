@@ -43,7 +43,7 @@
   .btn-secondary,
   .btn-danger,
   .btn-submit {
-    padding: 0.8rem 1.5rem;
+    padding: calc(var(--element-py) * 0.8) var(--layout-px-sm);
     font-size: 0.95rem;
     font-weight: 700;
     font-family: var(--font-family);
@@ -58,7 +58,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: var(--gap-sm);
   }
 
   button:disabled,
@@ -190,7 +190,7 @@
   /* Submit Variant */
   .btn-submit {
     color: white;
-    padding: 1.125rem 2.5rem;
+    padding: calc(var(--element-py) * 1.125) var(--layout-px-base);
     font-size: 1.1rem;
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     box-shadow: 0 4px 15px var(--primary-glow);

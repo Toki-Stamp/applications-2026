@@ -111,20 +111,20 @@
   .footer-content {
     max-width: 800px;
     margin: 0 auto;
-    padding: 1rem 1.5rem;
+    padding: var(--gap-fields) var(--layout-px-base);
   }
 
   .navigation-buttons {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem;
+    gap: var(--gap-fields);
   }
 
   .left-buttons,
   .right-buttons {
     display: flex;
-    gap: 1rem;
+    gap: var(--gap-fields);
     align-items: center;
   }
 
@@ -138,7 +138,7 @@
 
   @media (max-width: 600px) {
     .footer-content {
-      padding: 0.5rem 1rem;
+      padding: var(--gap-sm) var(--gap-fields);
     }
   }
 

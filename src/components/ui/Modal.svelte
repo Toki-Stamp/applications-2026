@@ -68,7 +68,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1.5rem;
+    padding: var(--layout-py-sm) var(--layout-px-sm);
   }
 
   .modal-wrapper {
@@ -121,7 +121,7 @@
 
   .modal-actions {
     display: flex;
-    gap: 1rem;
+    gap: var(--gap-fields);
     justify-content: stretch;
   }
 

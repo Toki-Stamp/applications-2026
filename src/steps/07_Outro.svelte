@@ -27,7 +27,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: var(--layout-py-base) var(--layout-px-base);
     max-width: 800px;
     margin: 0 auto;
     grid-area: 1 / 1;
@@ -36,7 +36,7 @@
 
   .success-screen {
     text-align: center;
-    padding: 4rem 2rem;
+    padding: calc(var(--layout-py-base) * 2) var(--layout-px-base);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -92,12 +92,12 @@
   }
 
   .success-text p {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 var(--gap-sm) 0;
   }
 
   @media (max-width: 600px) {
     .success-container {
-      padding: 1rem;
+      padding: var(--element-py) var(--element-px);
     }
   }
 </style>

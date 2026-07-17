@@ -75,7 +75,7 @@
   .options-container {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: var(--gap-xs);
   }
 
   .radio-label {
