@@ -533,7 +533,14 @@
 
   .phone-input md-outlined-text-field {
     width: 100%;
+    min-height: 56px;
     --md-outlined-text-field-container-shape: 8px;
+    --md-outlined-field-leading-space: 12px;
+    --md-outlined-field-content-space: 12px;
+  }
+  
+  .phone-input:has(.phone-clear-btn) md-outlined-text-field {
+    --md-outlined-field-trailing-space: 48px;
   }
 
   @media (max-width: 600px) {

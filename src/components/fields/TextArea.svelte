@@ -110,6 +110,9 @@
 
   .custom-textarea {
     width: 100%;
+    --md-outlined-text-field-container-shape: 8px;
+    --md-outlined-field-leading-space: 12px;
+    --md-outlined-field-content-space: 12px;
     min-height: 104px; /* 3 rows: 32px padding + (24px * 3) */
     padding: 16px;
     padding-right: 52px; /* space for clear button */

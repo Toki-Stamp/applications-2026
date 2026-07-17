@@ -1,12 +1,12 @@
 <script>
-  let { title = "", isFirst = false, children } = $props();
+  let { title = "", isFirst = false, gap = "1rem", children } = $props();
 </script>
 
 <div class="section-container" class:first-section={isFirst}>
   {#if title}
     <h3 class="section-title glass-header glass-header-accent">{title}</h3>
   {/if}
-  <div class="section-content">
+  <div class="section-content" style="--section-gap: {gap};">
     {@render children?.()}
   </div>
 </div>
@@ -47,7 +47,7 @@
   }
 
   .section-content > :global(* + *) {
-    margin-top: 1rem;
+    margin-top: var(--section-gap, 1rem);
   }
 
   @media (max-width: 600px) {

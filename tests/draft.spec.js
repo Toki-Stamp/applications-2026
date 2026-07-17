@@ -328,7 +328,7 @@ test.describe("Draft Restoration E2E Tests", () => {
     await fillText(page, "Ориентировочное время отправления", "14:30");
     await fillText(page, "Город отправления", "Минск");
 
-    await selectDropdown(page, "Способ отъезда", "Ищу место в авто");
+    await selectDropdown(page, "Способ отъезда", "Ищу место в попутном транспорте");
     await selectDropdown(page, "День отъезда с базы", "Воскресенье");
     await fillText(page, "Ориентировочное время отъезда", "16:00");
 

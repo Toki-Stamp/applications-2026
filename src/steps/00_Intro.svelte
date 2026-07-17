@@ -14,6 +14,12 @@
       <RichText content={dict.steps.intro.hint1} />
     </HintBox>
 
+    <HintBox>
+      {dict.steps.intro.hint2Prefix}<md-icon class="inline-icon"
+        >settings</md-icon
+      >{dict.steps.intro.hint2Suffix}
+    </HintBox>
+
     <SubBlock title={dict.steps.intro.datesTitle} stickyLevel={2}>
       <p><RichText content={dict.steps.intro.datesSubtitle} /></p>
       <ul class="intro-list">
@@ -24,7 +30,7 @@
     </SubBlock>
 
     <SubBlock title={dict.steps.intro.contactsTitle} stickyLevel={2}>
-      <p><RichText content={dict.steps.intro.contactsSubtitle} /></p>
+      <p>{dict.steps.intro.contactsSubtitle}</p>
       <ul class="intro-list">
         {#each CONTACTS as contact}
           <li>
@@ -36,12 +42,6 @@
         {/each}
       </ul>
     </SubBlock>
-
-    <HintBox>
-      {dict.steps.intro.hint2Prefix}<md-icon class="inline-icon"
-        >settings</md-icon
-      >{dict.steps.intro.hint2Suffix}
-    </HintBox>
   </div>
 </Block>
 
@@ -50,12 +50,6 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-  }
-
-  .block-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
   }
 
   .intro-list {

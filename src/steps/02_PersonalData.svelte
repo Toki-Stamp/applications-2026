@@ -60,7 +60,7 @@
     show={formStore.data.applicationType === APPLICATION_TYPE.GROUP &&
       formStore.data.guests.length > 0}
   >
-    <Section title={dict.steps.personalData.groupTitle}>
+    <Section title={dict.steps.personalData.groupTitle} gap="1.5rem">
       {#each formStore.data.guests as guest, i}
         <ExpandableSection show={true}>
           <SubBlock title={dict.steps.personalData.guestTitle(i + 1)}>

@@ -170,7 +170,7 @@
 
     {#if formStore.data.guests.length > 0}
       <ExpandableSection show={true}>
-        <Section title={dict.steps.personalData.groupTitle}>
+        <Section title={dict.steps.personalData.groupTitle} gap="1.5rem">
           {#each formStore.data.guests as guest, i}
             <ExpandableSection show={true}>
               <SubBlock

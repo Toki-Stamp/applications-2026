@@ -13,6 +13,7 @@
   import TextArea from "../components/fields/TextArea.svelte";
   import SubBlock from "../components/layout/SubBlock.svelte";
   import HintBox from "../components/ui/HintBox.svelte";
+  import RichText from "../components/ui/RichText.svelte";
   import Block from "../components/layout/Block.svelte";
   import Section from "../components/layout/Section.svelte";
   import ExpandableSection from "../components/layout/ExpandableSection.svelte";
@@ -41,7 +42,18 @@
 
 <Block title={dict.steps.accommodation.title} icon="hotel">
   {#if formStore.data.applicationType === APPLICATION_TYPE.INDIVIDUAL || formStore.data.groupConditions === GROUP_CONDITIONS.UNIFIED}
-    <Section isFirst={true}>
+    {#if formStore.data.applicationType === APPLICATION_TYPE.GROUP}
+      <div class="transport-hint">
+        <HintBox>
+          <RichText content={dict.steps.accommodation.unifiedHint1} />
+        </HintBox>
+        <HintBox>
+          <RichText content={dict.steps.accommodation.unifiedHint2} />
+        </HintBox>
+      </div>
+    {/if}
+
+    <Section isFirst={formStore.data.applicationType !== APPLICATION_TYPE.GROUP}>
       <RadioGroup
         label={dict.steps.accommodation.typeLabel}
         required={true}
@@ -63,9 +75,7 @@
           errorText={errors["applicant.accommodation.nights"]}
         />
       </ExpandableSection>
-    </Section>
 
-    <Section title={dict.steps.accommodation.commentTitle}>
       <TextArea
         label={dict.steps.accommodation.commentLabel}
         icon="edit_note"
@@ -120,7 +130,7 @@
 
     {#if formStore.data.guests.length > 0}
       <ExpandableSection show={true}>
-        <Section title={dict.steps.personalData.groupTitle}>
+        <Section title={dict.steps.personalData.groupTitle} gap="1.5rem">
           {#each formStore.data.guests as guest, index}
             <ExpandableSection show={true}>
               <SubBlock
@@ -169,3 +179,11 @@
     {/if}
   {/if}
 </Block>
+
+<style>
+  .transport-hint {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+</style>

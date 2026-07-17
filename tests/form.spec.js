@@ -71,7 +71,7 @@ async function checkGuestPeriod(
 ) {
   const guestGroup = page
     .locator(".sub-block-card, .section-container")
-    .filter({ hasText: guestName })
+    .filter({ has: page.locator("> h3", { hasText: guestName }) })
     .first();
   const provisionItem = guestGroup
     .locator(".provision-item")
@@ -102,7 +102,7 @@ async function checkNight(page, nightLabel) {
 async function checkGuestNight(page, guestName, nightLabel) {
   const guestGroup = page
     .locator(".sub-block-card, .section-container")
-    .filter({ hasText: guestName })
+    .filter({ has: page.locator("> h3", { hasText: guestName }) })
     .first();
   const card = guestGroup
     .locator(".period-card")
@@ -114,7 +114,7 @@ async function checkGuestNight(page, guestName, nightLabel) {
 async function selectGuestRadio(page, guestName, labelText, valueText) {
   const guestGroup = page
     .locator(".sub-block-card, .section-container")
-    .filter({ hasText: guestName })
+    .filter({ has: page.locator("> h3", { hasText: guestName }) })
     .first();
   const group = guestGroup
     .locator(".form-group")
@@ -130,7 +130,7 @@ async function selectGuestRadio(page, guestName, labelText, valueText) {
 async function fillGuestText(page, guestName, labelText, value) {
   const guestGroup = page
     .locator(".sub-block-card, .section-container")
-    .filter({ hasText: guestName })
+    .filter({ has: page.locator("> h3", { hasText: guestName }) })
     .first();
   const group = guestGroup
     .locator(".form-group")
@@ -149,8 +149,8 @@ async function fillGuestText(page, guestName, labelText, value) {
 
 async function clickNext(page) {
   await page.locator(".right-buttons button").last().click();
+  await page.waitForTimeout(600); // wait for transition
   await page.waitForFunction(() => document.querySelectorAll('.step-layer').length === 1);
-  await page.waitForTimeout(100); // small buffer
 }
 
 async function clickSubmit(page) {
@@ -257,7 +257,7 @@ test.describe("Form E2E Tests", () => {
     await fillText(page, "Ориентировочное время отправления", "18:00");
     await fillText(page, "Город отправления", "Брест");
 
-    await selectDropdown(page, "Способ отъезда", "Ищу место в авто");
+    await selectDropdown(page, "Способ отъезда", "Ищу место в попутном транспорте");
     await selectDropdown(page, "День отъезда с базы", "Воскресенье");
     await fillText(page, "Ориентировочное время отъезда", "15:00");
     await clickNext(page);

@@ -2,7 +2,7 @@ export const dict = {
   options: {
     transportMethodsTo: {
       driver: "Как водитель",
-      passenger: "Ищу место в авто",
+      passenger: "Ищу место в попутном транспорте",
       bus: "На организованной маршрутке",
       self: "Самостоятельно",
     },
@@ -92,7 +92,7 @@ export const dict = {
     submitError: {
       title: "Сбой при отправке!",
       reasonPrefix: "Причина: ",
-      hint: "Попробуйте позже или проверьте правильность развертывания скрипта",
+      hint: "Попробуйте позже или свяжитесь с организаторами",
       gotIt: "Понятно",
     },
     draft: {
@@ -113,9 +113,9 @@ export const dict = {
       title: "Вводная информация",
       hint1: [
         { text: "Дорогие друзья, нас ждёт " },
-        { text: "юбилейная", highlight: true, upper: true },
+        { text: "юбилейная", bold: true, highlight: true, upper: true },
         { text: " сходка! Нам исполняется " },
-        { text: "15", highlight: true },
+        { text: "15", bold: true, highlight: true },
         { text: " лет!" },
       ],
       datesTitle: "Дата проведения",
@@ -181,7 +181,7 @@ export const dict = {
       title: "Транспорт",
       groupHint1: [
         { text: "Для " },
-        { text: "групповых заявок", highlight: true, upper: true },
+        { text: "групповых заявок", bold: true, highlight: true, upper: true },
         {
           text: " условия транспортировки распространяются на всех участников группы единым образом",
         },
@@ -220,7 +220,26 @@ export const dict = {
       foodLabel: "Потребность в питании",
       alcoholTitle: `Алкогольные напитки`,
       alcoholLabel: "Потребность в алкоголе",
-      diffHint: "Укажите потребности для каждого участника группы отдельно",
+      unifiedHint1: [
+        { text: "Для " },
+        { text: "групповых заявок", bold: true, highlight: true, upper: true },
+        { text: " с " },
+        { text: "едиными условиями", bold: true, highlight: true, upper: true },
+        { text: " выбранные опции питания и алкоголя будут применены ко всем участникам группы одинаково" },
+      ],
+      unifiedHint2: [
+        { text: "Если у участников группы разные вкусы или потребности в провизии, пожалуйста, вернитесь на шаг " },
+        { text: "формат участия", bold: true, highlight: true, upper: true },
+        { text: " и выберите " },
+        { text: "дифференцированные условия", bold: true, highlight: true, upper: true },
+      ],
+      diffHint: [
+        { text: "В режиме " },
+        { text: "групповых заявок", bold: true, highlight: true, upper: true },
+        { text: " с " },
+        { text: "дифференцированными условиями", bold: true, highlight: true, upper: true },
+        { text: " Вы можете индивидуально настроить параметры обеспечения для себя и каждого вашего гостя" },
+      ],
       forApplicant: (name) => `Для ${name}`,
       forGuest: (name) => `Для ${name}`,
       commentTitle: "Дополнительно по питанию",
@@ -236,7 +255,26 @@ export const dict = {
       commentLabel: "Комментарий к проживанию",
       commentPlaceholder: "Напишите здесь всё, что считаете важным...",
       commentHint: `"нужен 2-местный номер с тихой кроватью" или "проживание не нужно, беру палатку и надувную лодку".`,
-      diffHint: "Укажите потребности для каждого участника группы отдельно",
+      unifiedHint1: [
+        { text: "Для " },
+        { text: "групповых заявок", highlight: true, upper: true },
+        { text: " с " },
+        { text: "едиными условиями", highlight: true, upper: true },
+        { text: "," },
+        { text: " выбранный вариант размещения распространяется на всю группу целиком" },
+      ],
+      unifiedHint2: [
+        { text: "Если кому-то из участников требуется отдельный номер или кто-то размещается самостоятельно, пожалуйста, вернитесь на \"Шаг 1\" и выберите " },
+        { text: "дифференцированные условия", highlight: true, upper: true },
+        { text: "." },
+      ],
+      diffHint: [
+        { text: "В режиме " },
+        { text: "групповых заявок", bold: true, highlight: true, upper: true },
+        { text: " с " },
+        { text: "дифференцированными условиями", bold: true, highlight: true, upper: true },
+        { text: " Вы можете индивидуально настроить параметры проживания для себя и каждого вашего гостя" },
+      ],
       forApplicant: (name) => `Для ${name}`,
       forGuest: (name) => `Для ${name}`,
     },

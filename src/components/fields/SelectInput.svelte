@@ -181,7 +181,7 @@
 
   .clear-button-wrapper {
     position: absolute;
-    right: 36px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
@@ -203,6 +203,13 @@
     width: 100%;
     min-height: 56px;
     --md-outlined-select-text-field-container-shape: 8px;
+    --md-outlined-field-leading-space: 12px;
+    --md-outlined-field-content-space: 12px;
+  }
+  
+  .select-wrapper:has(.clear-button-wrapper) .select-field {
+    --md-outlined-field-trailing-space: 48px;
+    --md-outlined-select-text-field-trailing-space: 40px;
   }
 
 
