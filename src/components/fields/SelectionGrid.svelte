@@ -168,13 +168,13 @@
   }
 
   .card-label {
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--text-primary);
-    line-height: 1.4;
+    line-height: var(--line-height-normal);
   }
 
   .card-helper {
-    font-size: 0.85rem;
+    font-size: var(--text-sm);
     color: var(--text-secondary);
     margin-top: 2px;
   }

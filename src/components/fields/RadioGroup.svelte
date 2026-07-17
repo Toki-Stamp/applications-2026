@@ -102,7 +102,7 @@
 
   .supp-text {
     color: var(--text-secondary);
-    font-size: 0.85rem;
+    font-size: var(--text-sm);
     margin-top: 2px;
     flex-shrink: 0;
   }

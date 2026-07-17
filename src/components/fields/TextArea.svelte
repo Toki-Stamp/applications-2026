@@ -117,7 +117,7 @@
     padding: var(--element-py) var(--element-px);
     padding-right: calc(var(--element-px) * 2 + 20px); /* space for clear button */
     font-family: inherit;
-    font-size: 1rem;
+    font-size: var(--text-base);
     color: var(--text-primary);
     caret-color: var(--primary);
     background-color: transparent;
@@ -127,7 +127,7 @@
     outline: none;
     overflow: hidden; /* Hide scrollbar since it grows infinitely */
     box-sizing: border-box;
-    line-height: 1.5;
+    line-height: var(--line-height-normal);
     transition:
       border-color 0.2s,
       box-shadow 0.2s;

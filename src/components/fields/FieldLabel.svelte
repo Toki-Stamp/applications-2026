@@ -35,9 +35,9 @@
     align-items: baseline;
     column-gap: var(--gap-sm);
     row-gap: 0.2rem;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     color: var(--text-primary);
-    font-size: 1rem;
+    font-size: var(--text-base);
   }
 
   .helper-text {

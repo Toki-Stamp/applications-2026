@@ -37,8 +37,8 @@
 
   .sub-block-title {
     color: var(--accent);
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-semibold);
     text-transform: uppercase;
     letter-spacing: 1px;
     padding: var(--title-py-md) var(--layout-px-sm);

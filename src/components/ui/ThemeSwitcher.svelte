@@ -216,7 +216,7 @@
     background: transparent;
     border: none;
     color: var(--text-secondary);
-    font-size: 1.5rem;
+    font-size: var(--text-2xl);
     cursor: pointer;
     border-radius: 50%;
     width: 48px;
@@ -286,10 +286,10 @@
     background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    font-size: 0.7rem;
+    font-size: var(--text-xs);
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     color: var(--text-secondary);
     padding: 0.75rem var(--element-px) var(--gap-xs) var(--element-px);
     border-bottom: 1px solid
@@ -304,7 +304,7 @@
     color: var(--text-primary);
     padding: 0.4rem 0.8rem;
     border-radius: 8px;
-    font-size: 0.85rem;
+    font-size: var(--text-sm);
     font-weight: normal;
     font-family: var(--font-family);
     text-transform: uppercase;
@@ -340,7 +340,7 @@
 
   .theme-row-btn.active {
     background: color-mix(in srgb, var(--text-primary) 10%, transparent);
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
   }
 
   .swatch-circle {
@@ -367,7 +367,7 @@
   }
 
   .theme-name {
-    font-size: 0.95rem;
+    font-size: var(--text-base);
     font-family: var(--font-family);
   }
 </style>

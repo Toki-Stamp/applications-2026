@@ -44,8 +44,8 @@
   .btn-danger,
   .btn-submit {
     padding: calc(var(--element-py) * 0.8) var(--layout-px-sm);
-    font-size: 0.95rem;
-    font-weight: 700;
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-bold);
     font-family: var(--font-family);
     border-radius: 10px;
     cursor: pointer;
@@ -83,7 +83,7 @@
   :global(.btn-secondary md-icon),
   :global(.btn-danger md-icon),
   :global(.btn-submit md-icon) {
-    font-size: 1.2rem;
+    font-size: var(--text-xl);
   }
 
   .icon-only {
@@ -96,7 +96,7 @@
   }
 
   :global(.icon-only md-icon) {
-    font-size: 1.8rem !important;
+    font-size: var(--text-3xl) !important;
     --md-icon-size: 1.8rem;
     width: 1.8rem;
     height: 1.8rem;
@@ -191,7 +191,7 @@
   .btn-submit {
     color: white;
     padding: calc(var(--element-py) * 1.125) var(--layout-px-base);
-    font-size: 1.1rem;
+    font-size: var(--text-lg);
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     box-shadow: 0 4px 15px var(--primary-glow);
     border: none;
@@ -240,7 +240,7 @@
     z-index: 2;
   }
   :global(.compact-clear-btn md-icon) {
-    font-size: 20px;
+    font-size: var(--text-xl);
   }
   .compact-clear-btn:hover {
     background: color-mix(

@@ -113,10 +113,10 @@
   }
 
   .modal-content {
-    font-size: 1.05rem;
+    font-size: var(--text-base);
     text-align: center;
     color: var(--text-primary);
-    line-height: 1.5;
+    line-height: var(--line-height-normal);
   }
 
   .modal-actions {

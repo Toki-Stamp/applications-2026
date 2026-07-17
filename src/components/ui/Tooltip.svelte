@@ -35,9 +35,9 @@
 
     padding: calc(var(--gap-sm) * 0.8) calc(var(--gap-fields) * 0.8);
     border-radius: 8px;
-    font-size: 0.85rem;
+    font-size: var(--text-sm);
     font-family: var(--font-family);
-    font-weight: normal;
+    font-weight: var(--font-weight-normal);
     text-transform: uppercase;
     letter-spacing: 1px;
     white-space: nowrap;

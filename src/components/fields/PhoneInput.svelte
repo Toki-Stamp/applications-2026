@@ -365,7 +365,7 @@
     color: var(--text-primary);
     cursor: pointer;
     font-family: inherit;
-    font-size: 1rem;
+    font-size: var(--text-base);
     transition:
       border-color 0.2s,
       box-shadow 0.2s;
@@ -389,14 +389,14 @@
   }
 
   .country-selector-btn .dial-code {
-    font-size: 1rem;
+    font-size: var(--text-base);
     margin-left: 8px;
     font-weight: normal;
     text-transform: uppercase;
   }
 
   .country-selector-btn .arrow-icon {
-    font-size: 20px;
+    font-size: var(--text-xl);
     color: var(--text-secondary);
   }
 
@@ -433,7 +433,7 @@
   }
 
   .search-icon {
-    font-size: 18px;
+    font-size: var(--text-lg);
     color: var(--text-secondary);
     margin-right: 12px;
   }
@@ -443,7 +443,7 @@
     background: transparent;
     border: none;
     color: var(--text-primary);
-    font-size: 0.95rem;
+    font-size: var(--text-base);
     outline: none;
     font-family: inherit;
   }
@@ -502,7 +502,7 @@
 
   .country-item .name {
     flex: 1;
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -510,9 +510,9 @@
   }
 
   .country-item .dial-code {
-    font-size: 0.85rem;
+    font-size: var(--text-sm);
     color: var(--text-secondary);
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
   }
 
   .country-item.selected .dial-code {
@@ -523,7 +523,7 @@
     padding: 24px;
     text-align: center;
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
   }
 
   .phone-input {
@@ -556,7 +556,7 @@
     }
     .country-selector-btn .arrow-icon {
       display: block;
-      font-size: 16px;
+      font-size: var(--text-base);
       margin-left: -2px; /* Pull it slightly closer */
     }
     .flag-icon {

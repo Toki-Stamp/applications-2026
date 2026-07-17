@@ -67,8 +67,8 @@
   }
 
   h1 {
-    font-size: 1.6rem;
-    font-weight: 800;
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-extrabold);
     margin: 0;
     display: flex;
     align-items: center;

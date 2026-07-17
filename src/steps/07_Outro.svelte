@@ -43,8 +43,8 @@
   }
 
   .success-icon {
-    font-size: 5rem;
-    line-height: 1;
+    font-size: var(--text-hero);
+    line-height: var(--line-height-none);
     margin-bottom: 1.5rem;
     filter: drop-shadow(0 0 20px rgba(0, 191, 255, 0.4));
     display: inline-block;
@@ -85,10 +85,10 @@
   .success-text {
     font-family: monospace, var(--font-family);
     color: var(--text-primary);
-    line-height: 1.6;
+    line-height: var(--line-height-relaxed);
     margin-bottom: 2.5rem;
     max-width: 600px;
-    font-size: 1.15rem;
+    font-size: var(--text-lg);
   }
 
   .success-text p {

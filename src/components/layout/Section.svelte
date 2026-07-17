@@ -19,7 +19,7 @@
   }
 
   .section-title {
-    font-size: 1.1rem;
+    font-size: var(--text-lg);
     color: var(--accent);
 
     min-height: 52px;

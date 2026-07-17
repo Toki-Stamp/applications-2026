@@ -28,13 +28,13 @@
     padding: calc(var(--element-py) * 0.75) var(--element-px);
     gap: var(--gap-sm);
     color: var(--text-primary);
-    font-size: 1rem;
+    font-size: var(--text-base);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   }
 
   .hint-icon {
     color: var(--primary);
-    font-size: 1.8rem;
+    font-size: var(--text-3xl);
     flex-shrink: 0;
   }
 

@@ -67,7 +67,7 @@
   .contact-link {
     color: var(--primary);
     text-decoration: none;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
   }
 
   .contact-link:hover {
@@ -77,7 +77,7 @@
   .inline-icon {
     vertical-align: text-bottom;
     color: var(--primary);
-    font-size: 1.5em;
+    font-size: var(--text-2xl);
     margin: 0 2px;
     transform: translateY(4px);
   }

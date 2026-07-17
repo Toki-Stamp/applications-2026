@@ -40,14 +40,14 @@
   }
 
   .block-title {
-    font-size: 1.25rem;
+    font-size: var(--text-xl);
     padding: var(--title-py-lg) var(--layout-px-base);
     border-radius: calc(var(--border-radius) - 1px)
       calc(var(--border-radius) - 1px) 0 0;
     color: var(--text-primary);
     display: flex;
     align-items: center;
-    line-height: 1.4;
+    line-height: var(--line-height-normal);
     gap: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -83,7 +83,7 @@
 
     .block-title {
       top: -1px;
-      font-size: 1.1rem;
+      font-size: var(--text-lg);
     }
   }
 </style>

@@ -41,6 +41,31 @@
 * `--element-px` (`16px` -> `12px`) — Горизонтальные внутренние отступы по бокам в `TextInput`, `SelectInput`, `PhoneInput`, `TextArea`, а также позиционирование крестика очистки.
 * `--element-py` (`16px` -> `12px`) — Вертикальные внутренние отступы (сверху/снизу) в многострочных элементах, таких как `TextArea` и карточки внутри `SelectionGrid`.
 
-## 5. Системные константы (Config)
+## 5. Типографика (Typography Scale)
+
+### Размеры шрифта (Font Sizes)
+* `--text-xs` (`0.75rem` / 12px) — мелкие подписи, тултипы
+* `--text-sm` (`0.85rem` / ~14px) — вторичный текст, мелкие кнопки
+* `--text-base` (`1rem` / 16px) — основной текст по умолчанию
+* `--text-lg` (`1.1rem` / ~18px) — увеличенный текст, подзаголовки
+* `--text-xl` (`1.25rem` / 20px) — заголовки блоков
+* `--text-2xl` (`1.5rem` / 24px) — крупные заголовки
+* `--text-4xl` (`2.25rem` / 36px) — огромные заголовки
+* `--text-hero` (`5rem` / 80px) — для главного экрана (Intro/Outro)
+
+### Насыщенность (Font Weights)
+* `--font-weight-normal: 400;`
+* `--font-weight-medium: 500;`
+* `--font-weight-semibold: 600;`
+* `--font-weight-bold: 700;`
+* `--font-weight-extrabold: 800;`
+
+### Межстрочный интервал (Line Heights)
+* `--line-height-none: 1;`
+* `--line-height-tight: 1.2;`
+* `--line-height-normal: 1.4;`
+* `--line-height-relaxed: 1.6;`
+
+## 6. Системные переменные (System Variables)
 
 * `--scrollbar-width` (`10px`) — Зафиксированная ширина скроллбара. Используется в функции `calc()` (например, в `App.svelte`) для резервирования места под скролл и предотвращения скачков интерфейса (layout shift) при переходе между шагами.
