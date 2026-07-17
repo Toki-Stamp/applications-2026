@@ -190,7 +190,7 @@ export const dict = {
         {
           text: "Если кому-то из участников требуется другой вид транспорта или иное время выезда, пожалуйста, оформите на них отдельные ",
         },
-        { text: "индивидуальные заявки", highlight: true, upper: true },
+        { text: "индивидуальные заявки", bold: true, highlight: true, upper: true },
       ],
       toTitle: `Дорога туда`,
       toMethodLabel: "Способ прибытия",
@@ -257,9 +257,9 @@ export const dict = {
       commentHint: `"нужен 2-местный номер с тихой кроватью" или "проживание не нужно, беру палатку и надувную лодку".`,
       unifiedHint1: [
         { text: "Для " },
-        { text: "групповой заявки", highlight: true, upper: true },
+        { text: "групповой заявки", bold: true, highlight: true, upper: true },
         { text: " с " },
-        { text: "едиными условиями", highlight: true, upper: true },
+        { text: "едиными условиями", bold: true, highlight: true, upper: true },
         { text: "," },
         { text: " выбранный вариант размещения распространяется на всю группу целиком" },
       ],

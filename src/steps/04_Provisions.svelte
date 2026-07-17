@@ -45,7 +45,18 @@
 
 <Block title={dict.steps.provisions.title} icon="restaurant">
   {#if formStore.data.applicationType === APPLICATION_TYPE.INDIVIDUAL || formStore.data.groupConditions === GROUP_CONDITIONS.UNIFIED}
-    <Section title={dict.steps.provisions.foodTitle} isFirst={true}>
+    {#if formStore.data.applicationType === APPLICATION_TYPE.GROUP}
+      <div class="provision-hint">
+        <HintBox>
+          <RichText content={dict.steps.provisions.unifiedHint1} />
+        </HintBox>
+        <HintBox>
+          <RichText content={dict.steps.provisions.unifiedHint2} />
+        </HintBox>
+      </div>
+    {/if}
+
+    <Section title={dict.steps.provisions.foodTitle} isFirst={formStore.data.applicationType !== APPLICATION_TYPE.GROUP}>
       <div class="provision-item">
         <RadioGroup
           label={dict.steps.provisions.foodLabel}
@@ -253,5 +264,17 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .diff-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-section);
+  }
+
+  .provision-hint {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-section);
   }
 </style>
