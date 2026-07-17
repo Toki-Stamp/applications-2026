@@ -39,6 +39,28 @@
     flex-shrink: 0;
   }
 
+  /* Clearfix for float if needed */
+  .hint-box::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  @media (max-width: 600px) {
+    .hint-box {
+      display: block;
+      text-align: justify;
+      -webkit-hyphens: auto;
+      hyphens: auto;
+    }
+    .hint-icon {
+      float: left;
+      margin-right: var(--gap-sm);
+      margin-top: 2px; /* slight adjustment to align with first line of text */
+      margin-bottom: 4px;
+    }
+  }
+
   .hint-box.error {
     border-color: color-mix(in srgb, var(--error-color) 25%, transparent);
     border-left-color: var(--error-color);
