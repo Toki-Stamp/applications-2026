@@ -61,6 +61,7 @@
             outline: 1px solid ${outlineColor} !important;
             outline-offset: -1px !important;
             border-radius: 8px !important;
+            max-width: ${selectEl.offsetWidth}px !important;
           }
         `;
       }
@@ -237,5 +238,12 @@
 
   md-select-option.placeholder-option {
     display: none !important;
+  }
+
+  /* Allow text to wrap if option is too long */
+  md-select-option [slot="headline"] {
+    white-space: normal;
+    line-height: var(--line-height-normal);
+    padding: 4px 0;
   }
 </style>
