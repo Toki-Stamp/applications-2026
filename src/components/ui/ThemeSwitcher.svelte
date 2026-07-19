@@ -3,74 +3,29 @@
   import { fade } from "svelte/transition";
 
   const darkThemes = [
-    {
-      id: "cyberpunk",
-      name: "Cyberpunk",
-      primary: "#06b6d4",
-      accent: "#6366f1",
-    },
-    {
-      id: "original",
-      name: "Neon Pink",
-      primary: "#8b5cf6",
-      accent: "#ec4899",
-    },
-    { id: "mint", name: "Mint", primary: "#10b981", accent: "#14b8a6" },
-    { id: "sunset", name: "Sunset", primary: "#f97316", accent: "#f59e0b" },
-    { id: "ocean", name: "Ocean", primary: "#3b82f6", accent: "#4f46e5" },
-    { id: "minimal", name: "Minimal", primary: "#94a3b8", accent: "#e4e4e7" },
-    { id: "military", name: "Military", primary: "#858f6b", accent: "#5c6348" },
-    { id: "galaxy", name: "Galaxy", primary: "#a855f7", accent: "#6366f1" },
-    {
-      id: "marshmallow",
-      name: "Marshmallow",
-      primary: "#fda4af",
-      accent: "#fbcfe8",
-    },
-    { id: "lava", name: "Lava", primary: "#ef4444", accent: "#f97316" },
+    { id: "cyberpunk", name: "Cyberpunk" },
+    { id: "original", name: "Neon Pink" },
+    { id: "mint", name: "Mint" },
+    { id: "sunset", name: "Sunset" },
+    { id: "ocean", name: "Ocean" },
+    { id: "minimal", name: "Minimal" },
+    { id: "military", name: "Military" },
+    { id: "galaxy", name: "Galaxy" },
+    { id: "marshmallow", name: "Marshmallow" },
+    { id: "mocha", name: "Mocha" },
   ];
 
   const lightThemes = [
-    {
-      id: "light-daylight",
-      name: "Daylight",
-      primary: "#0ea5e9",
-      accent: "#4f46e5",
-    },
-    {
-      id: "light-cotton",
-      name: "Cotton",
-      primary: "#a855f7",
-      accent: "#ec4899",
-    },
-    {
-      id: "light-sunrise",
-      name: "Sunrise",
-      primary: "#f97316",
-      accent: "#f59e0b",
-    },
-    { id: "light-mint", name: "Mint", primary: "#10b981", accent: "#0d9488" },
-    {
-      id: "light-sakura",
-      name: "Sakura",
-      primary: "#f43f5e",
-      accent: "#e11d48",
-    },
-    { id: "light-lemon", name: "Lemon", primary: "#eab308", accent: "#d97706" },
-    {
-      id: "light-lavender",
-      name: "Lavender",
-      primary: "#8b5cf6",
-      accent: "#6d28d9",
-    },
-    { id: "light-sand", name: "Sand", primary: "#b45309", accent: "#92400e" },
-    {
-      id: "light-military",
-      name: "Military",
-      primary: "#4a5d23",
-      accent: "#3b4a1c",
-    },
-    { id: "light-ocean", name: "Ocean", primary: "#0284c7", accent: "#0369a1" },
+    { id: "light-daylight", name: "Daylight" },
+    { id: "light-cotton", name: "Cotton" },
+    { id: "light-sunrise", name: "Sunrise" },
+    { id: "light-mint", name: "Mint" },
+    { id: "light-sakura", name: "Sakura" },
+    { id: "light-lemon", name: "Lemon" },
+    { id: "light-lavender", name: "Lavender" },
+    { id: "light-sand", name: "Sand" },
+    { id: "light-military", name: "Military" },
+    { id: "light-ocean", name: "Ocean" },
   ];
 
   const allThemes = [...darkThemes, ...lightThemes];
@@ -96,8 +51,8 @@
       root.setAttribute("data-theme", theme.id);
       const computed = getComputedStyle(root);
       colors[theme.id] = {
-        primary: computed.getPropertyValue("--primary").trim() || theme.primary,
-        accent: computed.getPropertyValue("--accent").trim() || theme.accent,
+        primary: computed.getPropertyValue("--primary").trim(),
+        accent: computed.getPropertyValue("--accent").trim(),
       };
     }
 
@@ -172,8 +127,8 @@
           class="theme-row-btn"
           class:active={currentTheme === theme.id}
           style="--t-primary: {computedColors[theme.id]?.primary ||
-            theme.primary}; --t-accent: {computedColors[theme.id]?.accent ||
-            theme.accent};"
+            'transparent'}; --t-accent: {computedColors[theme.id]?.accent ||
+            'transparent'};"
           onclick={() => setTheme(theme.id)}
         >
           <div class="swatch-circle">
@@ -191,8 +146,8 @@
           class="theme-row-btn"
           class:active={currentTheme === theme.id}
           style="--t-primary: {computedColors[theme.id]?.primary ||
-            theme.primary}; --t-accent: {computedColors[theme.id]?.accent ||
-            theme.accent};"
+            'transparent'}; --t-accent: {computedColors[theme.id]?.accent ||
+            'transparent'};"
           onclick={() => setTheme(theme.id)}
         >
           <div class="swatch-circle">

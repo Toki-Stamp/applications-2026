@@ -11,6 +11,7 @@
   import { dict } from "./locales/ru.js";
   import { validateStepData, sanitizeFormData } from "./schema.js";
 
+  import Overlay from "./components/ui/Overlay.svelte";
   import Modal from "./components/ui/Modal.svelte";
   import Header from "./components/layout/Header.svelte";
   import Footer from "./components/layout/Footer.svelte";
@@ -36,7 +37,6 @@
       : false,
   );
 
-  // Compute initial step directly from localStorage to avoid capturing $state reference
   let currentStep = $state(
     typeof window !== "undefined" && !!localStorage.getItem(FORM_STORAGE_KEY)
       ? Number(localStorage.getItem(STEP_STORAGE_KEY)) || 1
@@ -181,7 +181,7 @@
     }
 
     if (currentStep < totalSteps) {
-      currentStep++;
+      currentStep = currentStep === 1 ? 7 : currentStep + 1;
       stepErrors = {};
       formStore.meta.touchedFields = new Set();
       scrollToTop();
@@ -267,12 +267,16 @@
   const hasErrors = $derived(Object.keys(stepErrors).length > 0);
 </script>
 
-<main id="app">
+<svelte:body class:cursor-wait={isSubmitting} />
+
+<main id="app" class:is-submitting={isSubmitting}>
+  {#if isSubmitting}
+    <Overlay variant="loading" absolute={true} zIndex={1000}>
+      <md-icon class="flipping large-icon text-primary">hourglass_empty</md-icon>
+      <p class="submit-text">{dict.common.submitting}</p>
+    </Overlay>
+  {/if}
   <div class="app-transition-wrapper">
-    {#if isSubmitted}
-      <!-- Success Screen -->
-      <Outro onreset={handleReset} />
-    {:else}
       <form
         class="app-form"
         novalidate
@@ -282,77 +286,87 @@
         }}
         transition:fade={{ duration: 300 }}
       >
-        <Header bind:headerHeight {currentStep} {totalSteps} />
+        {#if !isSubmitted}
+          <Header bind:headerHeight {currentStep} {totalSteps} />
+        {/if}
 
         <div class="app-body" style="--header-height: {headerHeight}px;">
           <!-- Wizard Steps Container -->
           <div class="step-container">
-            {#if currentStep === 1}
-              <div transition:fade={{ duration: 300 }} class="step-layer">
-                <div class="step-content">
-                  <Intro />
+            {#if !isSubmitted}
+              {#if currentStep === 1}
+                <div transition:fade={{ duration: 300 }} class="step-layer">
+                  <div class="step-content">
+                    <Intro />
+                  </div>
                 </div>
-              </div>
-            {:else if currentStep === 2}
-              <div transition:fade={{ duration: 300 }} class="step-layer">
-                <div class="step-content">
-                  <ApplicationType errors={stepErrors} />
+              {:else if currentStep === 2}
+                <div transition:fade={{ duration: 300 }} class="step-layer">
+                  <div class="step-content">
+                    <ApplicationType errors={stepErrors} />
+                  </div>
                 </div>
-              </div>
-            {:else if currentStep === 3}
-              <div transition:fade={{ duration: 300 }} class="step-layer">
-                <div class="step-content">
-                  <PersonalData errors={stepErrors} />
+              {:else if currentStep === 3}
+                <div transition:fade={{ duration: 300 }} class="step-layer">
+                  <div class="step-content">
+                    <PersonalData errors={stepErrors} />
+                  </div>
                 </div>
-              </div>
-            {:else if currentStep === 4}
-              <div transition:fade={{ duration: 300 }} class="step-layer">
-                <div class="step-content">
-                  <Transportation
-                    stepNumber={currentStep - 1}
-                    errors={stepErrors}
-                  />
+              {:else if currentStep === 4}
+                <div transition:fade={{ duration: 300 }} class="step-layer">
+                  <div class="step-content">
+                    <Transportation
+                      stepNumber={currentStep - 1}
+                      errors={stepErrors}
+                    />
+                  </div>
                 </div>
-              </div>
-            {:else if currentStep === 5}
-              <div transition:fade={{ duration: 300 }} class="step-layer">
-                <div class="step-content">
-                  <Provisions
-                    stepNumber={currentStep - 1}
-                    errors={stepErrors}
-                  />
+              {:else if currentStep === 5}
+                <div transition:fade={{ duration: 300 }} class="step-layer">
+                  <div class="step-content">
+                    <Provisions
+                      stepNumber={currentStep - 1}
+                      errors={stepErrors}
+                    />
+                  </div>
                 </div>
-              </div>
-            {:else if currentStep === 6}
-              <div transition:fade={{ duration: 300 }} class="step-layer">
-                <div class="step-content">
-                  <Accommodation errors={stepErrors} />
+              {:else if currentStep === 6}
+                <div transition:fade={{ duration: 300 }} class="step-layer">
+                  <div class="step-content">
+                    <Accommodation errors={stepErrors} />
+                  </div>
                 </div>
-              </div>
-            {:else if currentStep === 7}
+              {:else if currentStep === 7}
+                <div transition:fade={{ duration: 300 }} class="step-layer">
+                  <div class="step-content">
+                    <FreeMic errors={stepErrors} />
+                  </div>
+                </div>
+              {/if}
+            {:else}
               <div transition:fade={{ duration: 300 }} class="step-layer">
                 <div class="step-content">
-                  <FreeMic errors={stepErrors} />
+                  <Outro onreset={handleReset} />
                 </div>
               </div>
             {/if}
           </div>
+
+          <!-- Navigation Buttons -->
+          <Footer
+            {currentStep}
+            {totalSteps}
+            {hasErrors}
+            {isSubmitting}
+            {isSubmitted}
+            onprev={prevStep}
+            onnext={nextStep}
+            onclear={() => (showClearModal = true)}
+            onreset={handleReset}
+          />
         </div>
-
-        <!-- Navigation Buttons -->
-        <Footer
-          {currentStep}
-          {totalSteps}
-          {hasErrors}
-          {isSubmitting}
-          onprev={prevStep}
-          onnext={nextStep}
-          onclear={() => (showClearModal = true)}
-        />
       </form>
-    {/if}
   </div>
-
   {#if showClearModal}
     <Modal
       title={dict.modals.clear.title}
@@ -416,6 +430,28 @@
 </main>
 
 <style>
+  #app {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .large-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+  }
+
+  .submit-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text-primary);
+  }
+
   .app-form {
     display: flex;
     flex-direction: column;

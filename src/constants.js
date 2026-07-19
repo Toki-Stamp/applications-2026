@@ -135,10 +135,9 @@ export const freeSeatsOptions = [
   { label: dict.options.freeSeats[5], value: 5 },
 ];
 
-// URL веб-приложения Google Apps Script (замените на свой после деплоя скрипта)
+// URL веб-приложения Google Apps Script
 export const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec";
-
+  "https://script.google.com/macros/s/AKfycbyw44Ac6xChEsCZ14wVdcXZ9vybKVqtLIzKTYenp95fWxMAQK_TvENp4oPlXiro7TlYWw/exec";
 export const FORM_STORAGE_KEY = "zubr_form_draft_2026_v2";
 export const STEP_STORAGE_KEY = "zubr_step_draft_v2";
 

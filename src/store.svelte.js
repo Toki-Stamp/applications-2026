@@ -22,6 +22,7 @@ export const defaultAccommodation = () => ({
 
 const initialState = {
   _version: 2,
+  applicationId: null,
   applicationType: null,
   totalGroupSize: null,
   groupConditions: null,
@@ -48,6 +49,17 @@ const initialState = {
 
 import { FORM_STORAGE_KEY as STORAGE_KEY } from "./constants.js";
 
+function generateUUID() {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 export function createFormStore() {
   let initial = JSON.parse(JSON.stringify(initialState));
 
@@ -66,6 +78,10 @@ export function createFormStore() {
         localStorage.removeItem(STORAGE_KEY);
       }
     }
+  }
+
+  if (!initial.applicationId) {
+    initial.applicationId = generateUUID();
   }
 
   let data = $state(initial);
@@ -119,6 +135,7 @@ export function createFormStore() {
 
     reset() {
       data = JSON.parse(JSON.stringify(initialState));
+      data.applicationId = generateUUID();
       meta.touchedFields = new Set();
       if (typeof window !== "undefined") {
         localStorage.removeItem(STORAGE_KEY);

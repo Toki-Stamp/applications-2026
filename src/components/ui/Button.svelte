@@ -105,7 +105,7 @@
 
   /* Primary Variant */
   .btn-primary {
-    color: white;
+    color: var(--btn-primary-text);
     background: linear-gradient(135deg, var(--primary), var(--cyan));
     border: none;
     box-shadow: 0 4px 15px var(--primary-glow);
@@ -190,7 +190,7 @@
 
   /* Submit Variant */
   .btn-submit {
-    color: white;
+    color: var(--btn-primary-text);
     padding: calc(var(--element-py) * 1.125) var(--layout-px-base);
     font-size: var(--text-lg);
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);

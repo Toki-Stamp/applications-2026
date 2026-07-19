@@ -22,6 +22,7 @@
   /* Indigo 500 */
   --accent-glow: rgba(99, 102, 241, 0.6);
   --cyan: #06b6d4;
+  --btn-primary-text: #ffffff;
 
   /* Layout and Styling Basics */
   --border-color: rgba(255, 255, 255, 0.06);

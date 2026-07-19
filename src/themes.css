@@ -76,6 +76,7 @@
   --accent: #a1a1aa;
   --accent-glow: rgba(161, 161, 170, 0.4);
   --cyan: #fafafa;
+  --btn-primary-text: var(--bg-color);
 
   --bg-color: #09090b;
   --bg-color-accent: #18181b;
@@ -114,18 +115,18 @@
   --glass-bg: rgba(32, 18, 23, 0.5);
 }
 
-/* Theme: Lava */
-:root[data-theme="lava"] {
-  --primary-glow: rgba(239, 68, 68, 0.6);
-  --primary: #ef4444;
-  --primary-hover: #dc2626;
-  --accent: #f97316;
-  --accent-glow: rgba(249, 115, 22, 0.6);
-  --cyan: #ef4444;
+/* Theme: Mocha */
+:root[data-theme="mocha"] {
+  --primary-glow: rgba(176, 137, 104, 0.6);
+  --primary: #b08968;
+  --primary-hover: #9c7351;
+  --accent: #ddb892;
+  --accent-glow: rgba(221, 184, 146, 0.6);
+  --cyan: #b08968;
 
-  --bg-color: #130404;
-  --bg-color-accent: #200808;
-  --glass-bg: rgba(32, 8, 8, 0.5);
+  --bg-color: #1a1412;
+  --bg-color-accent: #261d1a;
+  --glass-bg: rgba(38, 29, 26, 0.5);
 }
 
 /* Theme: Galaxy */

@@ -16,9 +16,6 @@
         <p><RichText content={p} /></p>
       {/each}
     </div>
-    <Button variant="primary" class="mt-1" onclick={onreset}>
-      {dict.steps.outro.newForm}
-    </Button>
   </div>
 </div>
 
@@ -27,11 +24,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--layout-py-base) var(--layout-px-base);
-    max-width: 800px;
-    margin: 0 auto;
-    grid-area: 1 / 1;
     width: 100%;
+    flex: 1;
   }
 
   .success-screen {
@@ -83,12 +77,12 @@
   }
 
   .success-text {
-    font-family: monospace, var(--font-family);
     color: var(--text-primary);
     line-height: var(--line-height-relaxed);
     margin-bottom: 2.5rem;
-    max-width: 600px;
-    font-size: var(--text-lg);
+    /* max-width: var(--max-width); */
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-normal);
   }
 
   .success-text p {
@@ -96,8 +90,8 @@
   }
 
   @media (max-width: 600px) {
-    .success-container {
-      padding: var(--element-py) var(--element-px);
+    .success-screen {
+      padding: var(--layout-py-base) var(--layout-px-base);
     }
   }
 </style>

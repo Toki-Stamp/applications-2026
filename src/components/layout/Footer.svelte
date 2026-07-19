@@ -7,15 +7,23 @@
     totalSteps,
     hasErrors = false,
     isSubmitting = false,
+    isSubmitted = false,
     onprev,
     onnext,
     onclear,
+    onreset,
   } = $props();
 </script>
 
 <footer class="app-footer">
   <div class="footer-content">
-    {#if currentStep === 1}
+    {#if isSubmitted}
+      <div class="center-buttons intro-nav-wrapper">
+        <Button variant="primary" class="start-btn" onclick={onreset}>
+          {dict.steps.outro.newForm}
+        </Button>
+      </div>
+    {:else if currentStep === 1}
       <div class="center-buttons intro-nav-wrapper">
         <Button variant="primary" class="start-btn" onclick={onnext}>
           {dict.common.start}
@@ -81,11 +89,7 @@
                 locked={isSubmitting || hasErrors}
                 iconOnly={true}
               >
-                {#if isSubmitting}
-                  <md-icon class="flipping">hourglass_empty</md-icon>
-                {:else}
-                  <md-icon>{hasErrors ? "lock" : "rocket_launch"}</md-icon>
-                {/if}
+                <md-icon>{isSubmitting || hasErrors ? "lock" : "rocket_launch"}</md-icon>
               </Button>
             </Tooltip>
           {/if}
@@ -150,24 +154,5 @@
 
   :global(.start-btn) {
     flex-grow: 0 !important;
-  }
-
-  @keyframes flip {
-    0%,
-    15% {
-      transform: rotate(0deg);
-    }
-    45%,
-    65% {
-      transform: rotate(180deg);
-    }
-    95%,
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  .flipping {
-    animation: flip 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 </style>

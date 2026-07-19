@@ -1,6 +1,7 @@
 <script>
-  import { fade, scale } from "svelte/transition";
+  import { scale } from "svelte/transition";
   import Block from "../layout/Block.svelte";
+  import Overlay from "./Overlay.svelte";
 
   /** @type {{ title?: string, variant?: string, dismissible?: boolean, onclose?: () => void, children?: import('svelte').Snippet, actions?: import('svelte').Snippet }} */
   let {
@@ -22,14 +23,7 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div
-  class="modal-overlay"
-  transition:fade={{ duration: 200 }}
-  onclick={() => dismissible && onclose?.()}
-  role="presentation"
->
+<Overlay zIndex={9999} onclick={() => dismissible && onclose?.()}>
   <div
     class="modal-wrapper variant-{variant}"
     transition:scale={{ start: 0.95, duration: 200 }}
@@ -52,25 +46,9 @@
       {/if}
     </Block>
   </div>
-</div>
+</Overlay>
 
 <style>
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: color-mix(in srgb, var(--bg-color) 85%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--layout-py-sm) var(--layout-px-sm);
-  }
-
   .modal-wrapper {
     width: 100%;
     max-width: 450px;
