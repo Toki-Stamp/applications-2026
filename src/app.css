@@ -381,8 +381,3 @@ h1::after {
   animation: flip 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   display: inline-block;
 }
-
-body.cursor-wait,
-body.cursor-wait * {
-  cursor: wait !important;
-}

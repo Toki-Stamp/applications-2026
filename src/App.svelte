@@ -100,10 +100,6 @@
 
     const result = validateStepData(currentStep, dataSlice);
 
-    if (currentStep === 6) {
-      console.log("Accommodation Validation Errors:", result.errors);
-    }
-
     if (touchAll) {
       // Mark all fields from error keys as touched
       Object.keys(result.errors).forEach((path) => formStore.markTouched(path));
@@ -175,12 +171,11 @@
   function nextStep() {
     const isValid = validateCurrentStep(true);
     if (!isValid) {
-      console.log("Validation failed!", stepErrors);
       return;
     }
 
     if (currentStep < totalSteps) {
-      currentStep = currentStep === 1 ? 7 : currentStep + 1;
+      currentStep++;
       stepErrors = {};
       formStore.meta.touchedFields = new Set();
       scrollToTop();
@@ -224,8 +219,6 @@
     isSubmitting = true;
 
     try {
-      console.log("Submitting payload to Google Apps Script:", finalData);
-
       if (!GOOGLE_SCRIPT_URL) {
         throw new Error("GOOGLE_SCRIPT_URL не задан в constants.js");
       }
@@ -286,8 +279,6 @@
 
   const hasErrors = $derived(Object.keys(stepErrors).length > 0);
 </script>
-
-<svelte:body class:cursor-wait={isSubmitting} />
 
 <main id="app" class:is-submitting={isSubmitting}>
   {#if isSubmitting}

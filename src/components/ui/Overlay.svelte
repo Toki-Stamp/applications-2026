@@ -47,7 +47,6 @@
     background: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
-    cursor: wait;
   }
 
   .ui-overlay.absolute {

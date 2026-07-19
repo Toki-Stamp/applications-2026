@@ -24,7 +24,6 @@
   function handleChange(e) {
     const target = /** @type {any} */ (e.target);
     const rawVal = target.value;
-    console.log("handleChange fired! rawVal:", rawVal);
     // Find the matching option to get the original typed value (e.g. number instead of string)
     const match = options.find((opt) => {
       const v = opt.value !== undefined ? String(opt.value) : String(opt);

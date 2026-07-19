@@ -31,10 +31,11 @@ function doPost(e) {
       sheet.appendRow([
         "Время подачи",
         "Application ID",
+        "Group ID",
         "Status",
         "Роль",
         "Тип заявки",
-        "Условия питания",
+        "Условия группы",
         "Никнейм",
         "Имя",
         "Фамилия",
@@ -58,7 +59,7 @@ function doPost(e) {
         "Свободный микрофон",
       ]);
       sheet.appendRow([
-        "", "", "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "", "", "", "",
         "Метод",
         "Город выезда",
         "Свободные места",
@@ -84,7 +85,7 @@ function doPost(e) {
       ]);
       sheet.setFrozenRows(2); // Закрепляем шапку
       sheet
-        .getRange(1, 1, 2, 33)
+        .getRange(1, 1, 2, 34)
         .setFontWeight("bold")
         .setBackground("#f3f4f6");
     }
@@ -92,13 +93,14 @@ function doPost(e) {
     var timestamp = new Date();
 
     var applicationId = data.applicationId || "NO-ID";
+    var groupId = data.applicationType === "group" ? applicationId.split("-")[0].toUpperCase() : "";
     var currentStatus = "New";
 
     // Поиск старых строк и обновление статуса
     if (sheet.getLastRow() > 2) {
       var idRange = sheet.getRange(3, 2, sheet.getLastRow() - 2, 1);
       var idValues = idRange.getValues();
-      var statusRange = sheet.getRange(3, 3, sheet.getLastRow() - 2, 1);
+      var statusRange = sheet.getRange(3, 4, sheet.getLastRow() - 2, 1);
       var statusValues = statusRange.getValues();
       var changed = false;
 
@@ -124,6 +126,26 @@ function doPost(e) {
       return 0;
     }
 
+    function translateProvision(val) {
+      if (val === 'required') return 'Да';
+      if (val === 'none') return 'Нет';
+      return val || '';
+    }
+
+    function translateAccommodation(val) {
+      if (val === 'booking') return 'Бронь базы';
+      if (val === 'self') return 'Самостоятельно';
+      return val || '';
+    }
+
+    function translateTransport(val) {
+      if (val === 'driver') return 'Водитель';
+      if (val === 'passenger') return 'Пассажир';
+      if (val === 'bus') return 'Маршрутка';
+      if (val === 'self') return 'Свой ход';
+      return val || '';
+    }
+
     // Вспомогательная функция для создания строки для одного человека
     function createRow(person, role) {
       var appTypeRu = data.applicationType === "individual" ? "Индивидуальная" : (data.applicationType === "group" ? "Групповая" : "");
@@ -132,43 +154,44 @@ function doPost(e) {
       return [
         timestamp, // 1. Timestamp (Время подачи заявки)
         applicationId, // 2. Application ID
-        currentStatus, // 3. Status
-        role, // 4. Роль (Заявитель / Гость)
-        appTypeRu, // 5. Тип заявки (individual/group)
-        groupCondRu, // 6. Условия питания группы (unified/differential)
+        groupId, // 3. Group ID
+        currentStatus, // 4. Status
+        role, // 5. Роль (Заявитель / Гость)
+        appTypeRu, // 6. Тип заявки (individual/group)
+        groupCondRu, // 7. Условия питания группы (unified/differential)
 
         // Личные данные
-        person.nickname || "", // 7. Никнейм
-        person.firstName || "", // 8. Имя
-        person.lastName || "", // 9. Фамилия
-        person.phone || "", // 10. Телефон
+        person.nickname || "", // 8. Никнейм
+        person.firstName || "", // 9. Имя
+        person.lastName || "", // 10. Фамилия
+        person.phone || "", // 11. Телефон
 
         // Транспорт туда (дублируется для всей группы)
-        data.transportTo.method || "", // 11. Транспорт ТУДА
+        translateTransport(data.transportTo.method), // 11. Транспорт ТУДА
         data.transportTo.departureCity || "", // 12. Город выезда
         data.transportTo.freeSeats || "", // 13. Свободные места
         data.transportTo.day || "", // 14. День выезда
         data.transportTo.time || "", // 15. Время выезда
 
         // Транспорт обратно (дублируется для всей группы)
-        data.transportFrom.method || "", // 16. Транспорт ОБРАТНО
+        translateTransport(data.transportFrom.method), // 16. Транспорт ОБРАТНО
         data.transportFrom.day || "", // 17. День возвращения
         data.transportFrom.time || "", // 18. Время возвращения
         data.transportComment || "", // 19. Комментарий к транспорту
 
         // Питание (индивидуальное для каждого человека)
-        person.provisions.food || "", // 20. Еда (provided/none)
+        translateProvision(person.provisions.food), // 20. Еда (provided/none)
         calculatePeriodScore(person.provisions.foodPeriods, "fri"), // 21. Пт
         calculatePeriodScore(person.provisions.foodPeriods, "sat"), // 22. Сб
         calculatePeriodScore(person.provisions.foodPeriods, "sun"), // 23. Вс
-        person.provisions.alcohol || "", // 24. Алкоголь (provided/none)
+        translateProvision(person.provisions.alcohol), // 24. Алкоголь (provided/none)
         calculatePeriodScore(person.provisions.alcoholPeriods, "fri"), // 25. Пт
         calculatePeriodScore(person.provisions.alcoholPeriods, "sat"), // 26. Сб
         calculatePeriodScore(person.provisions.alcoholPeriods, "sun"), // 27. Вс
         person.provisions.comment || "", // 28. Комментарий к питанию
 
         // Проживание (индивидуальное для каждого человека в v2)
-        person.accommodation.type || "", // 29. Проживание (tent/booking/self)
+        translateAccommodation(person.accommodation.type), // 29. Проживание (booking/self)
         (person.accommodation.nights || []).includes("fri-sat") ? 1 : "", // 30. Пт-Сб
         (person.accommodation.nights || []).includes("sat-sun") ? 1 : "", // 31. Сб-Вс
         person.accommodation.comment || "", // 32. Комментарий к проживанию
