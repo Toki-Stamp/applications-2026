@@ -89,7 +89,11 @@ export function createFormStore() {
 
   function saveToLocalStorage() {
     if (typeof window !== "undefined") {
-      if (JSON.stringify(data) === JSON.stringify(initialState)) {
+      // Create copies without applicationId to compare meaningfully
+      const currentData = { ...data, applicationId: null };
+      const initData = { ...initialState, applicationId: null };
+      
+      if (JSON.stringify(currentData) === JSON.stringify(initData)) {
         localStorage.removeItem(STORAGE_KEY);
       } else {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));

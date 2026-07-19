@@ -46,8 +46,8 @@
   let headerHeight = $state(100);
 
   let showClearModal = $state(false);
-  /** @type {string | null} */
-  let submitErrorMessage = $state(null);
+  /** @type {{ title: string, body: string } | null} */
+  let submitErrorData = $state(null);
 
   // --- Zod-based validation ---
   /** @type {Record<string, string>} */
@@ -158,11 +158,10 @@
     }
   });
 
-  // Body overflow for modals
   $effect(() => {
     if (typeof document !== "undefined") {
       document.body.style.overflow =
-        showClearModal || submitErrorMessage || showDraftModal ? "hidden" : "";
+        showClearModal || submitErrorData || showDraftModal ? "hidden" : "";
     }
   });
 
@@ -258,7 +257,28 @@
     } catch (e) {
       const error = /** @type {Error} */ (e);
       console.error("Error submitting form:", error);
-      submitErrorMessage = error.message;
+      
+      let errorTitle = dict.modals.submitError.types.unknown.title;
+      let errorBody = dict.modals.submitError.types.unknown.bodyPrefix + error.message;
+
+      if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
+        errorTitle = dict.modals.submitError.types.network.title;
+        errorBody = dict.modals.submitError.types.network.body;
+      } else if (error.message.includes("Ошибка HTTP") || error.message.includes("500") || error.message.includes("404")) {
+        errorTitle = dict.modals.submitError.types.server.title;
+        errorBody = dict.modals.submitError.types.server.body;
+      } else if (error.message.includes("Неизвестная ошибка на стороне сервера") || error.message.includes("LogicError:")) {
+        errorTitle = dict.modals.submitError.types.logic.title;
+        errorBody = dict.modals.submitError.types.logic.bodyPrefix + error.message.replace("LogicError:", "");
+      } else if (error.message.includes("GOOGLE_SCRIPT_URL")) {
+        errorTitle = dict.modals.submitError.types.setup.title;
+        errorBody = dict.modals.submitError.types.setup.body;
+      }
+
+      submitErrorData = {
+        title: errorTitle,
+        body: errorBody
+      };
     } finally {
       isSubmitting = false;
     }
@@ -383,21 +403,17 @@
     </Modal>
   {/if}
 
-  {#if submitErrorMessage}
+  {#if submitErrorData}
     <Modal
-      title={dict.modals.submitError.title}
+      title={submitErrorData.title}
       variant="danger"
-      onclose={() => (submitErrorMessage = null)}
+      onclose={() => (submitErrorData = null)}
     >
       <p>
-        {dict.modals.submitError.reasonPrefix}
-        <strong class="error-text">{submitErrorMessage}</strong>
-      </p>
-      <p class="mt-1">
-        {dict.modals.submitError.hint}
+        {@html submitErrorData.body}
       </p>
       {#snippet actions()}
-        <Button variant="danger" onclick={() => (submitErrorMessage = null)}
+        <Button variant="danger" onclick={() => (submitErrorData = null)}
           >{dict.modals.submitError.gotIt}</Button
         >
       {/snippet}
@@ -481,14 +497,6 @@
 
   .app-body::-webkit-scrollbar-thumb:hover {
     background-color: var(--primary);
-  }
-
-  .error-text {
-    color: var(--error-color);
-  }
-
-  .mt-1 {
-    margin-top: 1rem;
   }
 
   .step-layer {

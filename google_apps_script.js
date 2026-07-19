@@ -53,6 +53,7 @@ function doPost(e) {
         "Коммент (Питание)",
         "Проживание",
         "Ночевки",
+        "",
         "Коммент (Проживание)",
         "Свободный микрофон",
       ]);
@@ -77,12 +78,13 @@ function doPost(e) {
         "Вс",
         "",
         "Тип",
-        "Дни",
+        "Пт-Сб",
+        "Сб-Вс",
         "", ""
       ]);
       sheet.setFrozenRows(2); // Закрепляем шапку
       sheet
-        .getRange(1, 1, 2, 32)
+        .getRange(1, 1, 2, 33)
         .setFontWeight("bold")
         .setBackground("#f3f4f6");
     }
@@ -167,11 +169,12 @@ function doPost(e) {
 
         // Проживание (индивидуальное для каждого человека в v2)
         person.accommodation.type || "", // 29. Проживание (tent/booking/self)
-        (person.accommodation.nights || []).join(", "), // 30. Ночевки
-        person.accommodation.comment || "", // 31. Комментарий к проживанию
+        (person.accommodation.nights || []).includes("fri-sat") ? 1 : "", // 30. Пт-Сб
+        (person.accommodation.nights || []).includes("sat-sun") ? 1 : "", // 31. Сб-Вс
+        person.accommodation.comment || "", // 32. Комментарий к проживанию
 
         // Свободный микрофон (дублируется для всей группы)
-        data.freeMic || "", // 32. Свободный микрофон
+        data.freeMic || "", // 33. Свободный микрофон
       ];
     }
 
