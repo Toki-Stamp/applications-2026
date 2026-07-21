@@ -418,7 +418,7 @@
 
 <style>
   .table-wrapper {
-    flex: 1;
+    flex: 0 1 auto;
     min-height: 0;
     width: 100%;
     display: flex;
