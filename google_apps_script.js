@@ -237,5 +237,60 @@ function doOptions(e) {
   };
   return ContentService.createTextOutput("")
     .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders(headers);
+    .setHeaders(headers); // Note: setHeaders работает только если GAS развернут определенным образом, но для OPTIONS обычно прощают
+}
+
+function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  try {
+    var lastRow = sheet.getLastRow();
+    if (lastRow <= 2) {
+      return ContentService.createTextOutput(JSON.stringify({ participants: [] }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Получаем все данные со 3-й строки
+    var dataRange = sheet.getRange(3, 1, lastRow - 2, 34);
+    var values = dataRange.getDisplayValues();
+    
+    var participants = [];
+    
+    for (var i = 0; i < values.length; i++) {
+      var row = values[i];
+      var status = row[3]; // Status (index 3)
+      
+      if (status === "Obsolete") {
+        continue;
+      }
+      
+      participants.push({
+        groupId: row[2] || "",
+        role: row[4] || "",
+        nickname: row[7] || "",
+        firstName: row[8] || "",
+        
+        transportTo: {
+          method: row[11] || "",
+          city: row[12] || "",
+          seats: row[13] || "",
+          day: row[14] || "",
+          time: row[15] || ""
+        },
+        
+        transportFrom: {
+          method: row[16] || "",
+          day: row[17] || "",
+          time: row[18] || ""
+        }
+      });
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ participants: participants }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ error: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }

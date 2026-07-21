@@ -46,6 +46,7 @@ export const dict = {
       4: "4 места",
       5: "5 и более",
     },
+    globalHint: "кликайте по иконкам транспорта и дням в шапке, чтобы фильтровать участников. Для выделения нескольких строк зажмите <kbd>Ctrl</kbd> / <kbd>Cmd</kbd> или <kbd>Shift</kbd>.",
   },
   errors: {
     radio: (label) => [
@@ -83,6 +84,7 @@ export const dict = {
     fillDataToContinue: "Заполните данные, чтобы продолжить",
     notEnoughData: "Недостаточно данных для отправки",
     next: "Далее",
+    loadingList: "Подождите, идёт загрузка",
   },
   modals: {
     clear: {

@@ -1,21 +1,33 @@
 <script>
+  import { slide } from "svelte/transition";
+
   let {
     type = "info", // "info" | "error"
     icon = null, // optional override
+    dismissible = false,
     children,
   } = $props();
+
+  let visible = $state(true);
 
   const computedIcon = $derived(
     icon || (type === "error" ? "touch_app" : "campaign"),
   );
 </script>
 
-<div class="hint-box" class:error={type === "error"}>
+{#if visible}
+<div class="hint-box" class:error={type === "error"} transition:slide={{ duration: 250 }}>
   <md-icon class="hint-icon">{computedIcon}</md-icon>
-  <span
-    >{#if children}{@render children()}{/if}</span
-  >
+  <span class="hint-content">
+    {#if children}{@render children()}{/if}
+  </span>
+  {#if dismissible}
+    <button type="button" class="close-btn" aria-label="Закрыть" onclick={() => visible = false}>
+      <md-icon>close</md-icon>
+    </button>
+  {/if}
 </div>
+{/if}
 
 <style>
   .hint-box {
@@ -69,5 +81,32 @@
 
   .hint-box.error .hint-icon {
     color: var(--error-color);
+  }
+
+  .hint-content {
+    flex: 1;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    margin-left: var(--gap-sm);
+    color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    flex-shrink: 0;
+  }
+
+  .close-btn:hover {
+    color: var(--text-primary, #fff);
+  }
+
+  .close-btn md-icon {
+    font-size: 1.2rem;
   }
 </style>

@@ -3,7 +3,7 @@
   import ProgressBar from "../ui/ProgressBar.svelte";
   import { dict } from "../../locales/ru.js";
 
-  let { currentStep, totalSteps, headerHeight = $bindable(0) } = $props();
+  let { currentStep = 0, totalSteps = 0, headerHeight = $bindable(0) } = $props();
 </script>
 
 <header class="app-header" bind:clientHeight={headerHeight}>
@@ -40,7 +40,7 @@
   }
 
   .header-content {
-    max-width: 800px;
+    max-width: var(--header-max-width, 800px);
     margin: 0 auto;
     padding: var(--gap-fields) var(--layout-px-base);
     position: relative;
