@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
+  import Tooltip from "./Tooltip.svelte";
 
   const darkThemes = [
     { id: "cyberpunk", name: "Cyberpunk" },
@@ -93,70 +94,59 @@
   }
 </script>
 
-<div
-  class="theme-switcher-wrapper"
-  role="presentation"
-  onmouseenter={() => (isHovered = true)}
-  onmouseleave={() => (isHovered = false)}
->
-  <button
-    type="button"
-    class="icon-btn"
-    onclick={() => (isOpen = !isOpen)}
-    aria-label="Выбрать тему оформления"
-  >
-    <md-icon>settings</md-icon>
-  </button>
-
-  {#if isHovered && !isOpen}
-    <div
-      class="custom-tooltip"
-      in:fade={{ duration: 150 }}
-      out:fade={{ duration: isOpen ? 0 : 150 }}
+<div class="theme-switcher-wrapper" role="presentation">
+  <Tooltip text="Настроить тему" pos="bottom-left" variant="neon" enabled={!isOpen}>
+    <button
+      type="button"
+      class="icon-btn"
+      onclick={() => (isOpen = !isOpen)}
+      aria-label="Выбрать тему оформления"
     >
-      Настроить тему
-    </div>
-  {/if}
+      <md-icon>settings</md-icon>
+    </button>
+  </Tooltip>
 
   {#if isOpen}
-    <div class="theme-popover" transition:fade={{ duration: 150 }}>
-      <div class="theme-category">Тёмные темы</div>
-      {#each darkThemes as theme}
-        <button
-          type="button"
-          class="theme-row-btn"
-          class:active={currentTheme === theme.id}
-          style="--t-primary: {computedColors[theme.id]?.primary ||
-            'transparent'}; --t-accent: {computedColors[theme.id]?.accent ||
-            'transparent'};"
-          onclick={() => setTheme(theme.id)}
-        >
-          <div class="swatch-circle">
-            <div class="color-half primary"></div>
-            <div class="color-half accent"></div>
-          </div>
-          <span class="theme-name">{theme.name}</span>
-        </button>
-      {/each}
+    <div class="theme-popover glass-panel" transition:fade={{ duration: 150 }}>
+      <div class="theme-popover-content">
+        <div class="theme-category">Тёмные темы</div>
+        {#each darkThemes as theme}
+          <button
+            type="button"
+            class="theme-row-btn"
+            class:active={currentTheme === theme.id}
+            style="--t-primary: {computedColors[theme.id]?.primary ||
+              'transparent'}; --t-accent: {computedColors[theme.id]?.accent ||
+              'transparent'};"
+            onclick={() => setTheme(theme.id)}
+          >
+            <div class="swatch-circle">
+              <div class="color-half primary"></div>
+              <div class="color-half accent"></div>
+            </div>
+            <span class="theme-name">{theme.name}</span>
+          </button>
+        {/each}
 
-      <div class="theme-category">Светлые темы</div>
-      {#each lightThemes as theme}
-        <button
-          type="button"
-          class="theme-row-btn"
-          class:active={currentTheme === theme.id}
-          style="--t-primary: {computedColors[theme.id]?.primary ||
-            'transparent'}; --t-accent: {computedColors[theme.id]?.accent ||
-            'transparent'};"
-          onclick={() => setTheme(theme.id)}
-        >
-          <div class="swatch-circle">
-            <div class="color-half primary"></div>
-            <div class="color-half accent"></div>
-          </div>
-          <span class="theme-name">{theme.name}</span>
-        </button>
-      {/each}
+        <div class="theme-category">Светлые темы</div>
+        {#each lightThemes as theme}
+          <button
+            type="button"
+            class="theme-row-btn"
+            class:active={currentTheme === theme.id}
+            style="--t-primary: {computedColors[theme.id]?.primary ||
+              'transparent'}; --t-accent: {computedColors[theme.id]?.accent ||
+              'transparent'};"
+            onclick={() => setTheme(theme.id)}
+          >
+            <div class="swatch-circle">
+              <div class="color-half primary"></div>
+              <div class="color-half accent"></div>
+            </div>
+            <span class="theme-name">{theme.name}</span>
+          </button>
+        {/each}
+      </div>
     </div>
   {/if}
 </div>
@@ -202,81 +192,70 @@
     position: absolute;
     top: calc(100% + 10px);
     left: 0;
-    background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--border-color);
+    width: 220px;
+    z-index: 100;
     border-radius: 12px;
-    padding: 0 0 var(--gap-sm) 0;
+  }
+
+  .theme-popover-content {
     display: flex;
     flex-direction: column;
     gap: var(--gap-xs);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-    width: 220px;
     max-height: 260px;
     overflow-y: auto;
-    z-index: 100;
+    padding: 0 0 var(--gap-sm) 0;
+    border-radius: inherit;
   }
 
-  .theme-popover::-webkit-scrollbar {
+  .theme-popover.glass-panel {
+    background: var(--bg-color-accent) !important;
+    border: 1px solid var(--glass-border-hover) !important;
+    box-shadow:
+      0 10px 40px -10px rgba(0, 0, 0, 0.5),
+      0 0 30px rgba(139, 92, 246, 0.2) !important;
+  }
+
+  .theme-popover.glass-panel::before {
+    opacity: 1 !important;
+    background: linear-gradient(
+      135deg,
+      var(--primary) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      var(--accent) 100%
+    ) !important;
+  }
+
+  .theme-popover-content::-webkit-scrollbar {
     width: 6px;
   }
 
-  .theme-popover::-webkit-scrollbar-track {
+  .theme-popover-content::-webkit-scrollbar-track {
     background: transparent;
+    margin-top: 12px;
+    margin-bottom: 12px;
   }
 
-  .theme-popover::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--text-primary) 20%, transparent);
+  .theme-popover-content::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--primary) 30%, var(--text-primary) 10%);
     border-radius: 3px;
   }
 
-  .theme-popover::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--text-primary) 30%, transparent);
+  .theme-popover-content::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--primary) 50%, var(--text-primary) 20%);
   }
 
   .theme-category {
     position: sticky;
     top: 0;
     z-index: 10;
-    background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    font-size: var(--text-xs);
+    background: var(--bg-color-accent);
+    font-size: 0.65rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: var(--font-weight-bold);
-    color: var(--text-secondary);
-    padding: 0.75rem var(--element-px) var(--gap-xs) var(--element-px);
-    border-bottom: 1px solid
-      color-mix(in srgb, var(--text-primary) 10%, transparent);
-  }
-
-  .custom-tooltip {
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 0;
-    background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
-    color: var(--text-primary) !important;
-    padding: calc(var(--gap-sm) * 1.2) calc(var(--gap-fields) * 0.8);
-    border-radius: 8px;
-    font-size: var(--text-sm);
-    font-weight: var(--font-weight-normal);
-    font-family: var(--font-family);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    white-space: nowrap;
-    border: 1px solid color-mix(in srgb, var(--primary-color, var(--primary)) 40%, var(--border-color));
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-    z-index: 1000;
-    pointer-events: none;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    letter-spacing: 0.02em;
+    font-weight: 700;
+    color: var(--primary);
+    padding: 0.75rem var(--element-px) 0.5rem var(--element-px);
+    border-bottom: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
   }
 
   .theme-row-btn {
@@ -290,18 +269,30 @@
     align-items: center;
     gap: 0.75rem;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s ease-out;
     color: var(--text-primary);
     text-align: left;
   }
 
   .theme-row-btn:hover {
-    background: color-mix(in srgb, var(--text-primary) 5%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--t-primary) 15%,
+      color-mix(in srgb, var(--text-primary) 5%, transparent)
+    );
+    color: var(--text-primary);
+    transform: translateX(4px);
   }
 
   .theme-row-btn.active {
-    background: color-mix(in srgb, var(--text-primary) 10%, transparent);
-    font-weight: var(--font-weight-semibold);
+    background: color-mix(
+      in srgb,
+      var(--t-primary) 20%,
+      color-mix(in srgb, var(--text-primary) 8%, transparent)
+    );
+    color: var(--text-primary);
+    font-weight: 800;
+    letter-spacing: 0.02em;
   }
 
   .swatch-circle {

@@ -173,8 +173,7 @@
     flex: 1;
     min-height: 0;
     width: 100%;
-    padding: var(--gap-layout) calc(var(--gap-layout) - var(--scrollbar-width))
-      var(--gap-layout) var(--gap-layout);
+    padding: var(--gap-layout);
     display: flex;
     flex-direction: column;
   }

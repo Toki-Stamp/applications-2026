@@ -70,6 +70,14 @@
   }
 
   // Interactivity for Headers
+  /** @type {Array<{key: string, icon: string, id: 'driver' | 'passenger' | 'bus' | 'self'}>} */
+  const transportMethods = [
+    { key: "Водитель", icon: "directions_car", id: "driver" },
+    { key: "Пассажир", icon: "hail", id: "passenger" },
+    { key: "Маршрутка", icon: "directions_bus", id: "bus" },
+    { key: "Свой ход", icon: "directions_walk", id: "self" },
+  ];
+
   /** @type {string | null} */
   let hoveredFilter = $state(null);
   /** @type {string | null} */
@@ -188,6 +196,34 @@
   }
 </script>
 
+
+{#snippet filterHeader(/** @type {string} */ filterKey, /** @type {string} */ tooltipText, /** @type {string} */ content, isIcon = false, tooltipPos = "top")}
+  <th
+    class="icon-th interactive-th {isIcon ? '' : 'fw-bold'}"
+    class:active-filter={fixedFilter === filterKey}
+    onmouseenter={() => (hoveredFilter = filterKey)}
+    onmouseleave={() => (hoveredFilter = null)}
+    onclick={() => handleHeaderClick(filterKey)}
+  >
+    <Tooltip pos={tooltipPos} text={tooltipText}>
+      {#if isIcon}
+        <md-icon>{content}</md-icon>
+      {:else}
+        {content}
+      {/if}
+    </Tooltip>
+  </th>
+{/snippet}
+
+{#snippet statusCell(/** @type {string} */ filterKey, /** @type {{ active: boolean, icon: string }} */ status)}
+  <td
+    class="text-center"
+    class:highlighted-col={activeFilter === filterKey}
+  >
+    <md-icon class="status-icon {status.active ? 'active' : ''}">{status.icon}</md-icon>
+  </td>
+{/snippet}
+
 <svelte:window onclick={handleWindowClick} />
 
 <div class="table-wrapper glass-panel">
@@ -227,223 +263,24 @@
         <!-- ROW 3 -->
         <tr>
           <!-- Туда Способ -->
-          <th
-            class="icon-th interactive-th"
-            class:active-filter={fixedFilter === "to_Водитель"}
-            onmouseenter={() => (hoveredFilter = "to_Водитель")}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick("to_Водитель")}
-          >
-            <Tooltip
-              text="{dict.options.transportMethodsTo.driver}: {methodCounts.to[
-                'Водитель'
-              ] || 0}"
-            >
-              <md-icon>directions_car</md-icon>
-            </Tooltip>
-          </th>
-          <th
-            class="icon-th interactive-th"
-            class:active-filter={fixedFilter === "to_Пассажир"}
-            onmouseenter={() => (hoveredFilter = "to_Пассажир")}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick("to_Пассажир")}
-          >
-            <Tooltip
-              text="{dict.options.transportMethodsTo.passenger}: {methodCounts
-                .to['Пассажир'] || 0}"
-            >
-              <md-icon>hail</md-icon>
-            </Tooltip>
-          </th>
-          <th
-            class="icon-th interactive-th"
-            class:active-filter={fixedFilter === "to_Маршрутка"}
-            onmouseenter={() => (hoveredFilter = "to_Маршрутка")}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick("to_Маршрутка")}
-          >
-            <Tooltip
-              text="{dict.options.transportMethodsTo.bus}: {methodCounts.to[
-                'Маршрутка'
-              ] || 0}"
-            >
-              <md-icon>directions_bus</md-icon>
-            </Tooltip>
-          </th>
-          <th
-            class="icon-th interactive-th"
-            class:active-filter={fixedFilter === "to_Свой ход"}
-            onmouseenter={() => (hoveredFilter = "to_Свой ход")}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick("to_Свой ход")}
-          >
-            <Tooltip
-              text="{dict.options.transportMethodsTo.self}: {methodCounts.to[
-                'Свой ход'
-              ] || 0}"
-            >
-              <md-icon>directions_walk</md-icon>
-            </Tooltip>
-          </th>
+          {#each transportMethods as tm}
+            {@render filterHeader(`to_${tm.key}`, `${dict.options.transportMethodsTo[tm.id]}: ${methodCounts.to[tm.key] || 0}`, tm.icon, true)}
+          {/each}
 
           <!-- Туда День -->
-          <th
-            class="icon-th fw-bold interactive-th"
-            class:active-filter={fixedFilter ===
-              `toDay_${dict.options.days[0]}`}
-            onmouseenter={() =>
-              (hoveredFilter = `toDay_${dict.options.days[0]}`)}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick(`toDay_${dict.options.days[0]}`)}
-          >
-            <Tooltip
-              text="{dict.options.days[0]}: {methodCounts.toDay[
-                dict.options.days[0]
-              ] || 0}">Пт</Tooltip
-            >
-          </th>
-          <th
-            class="icon-th fw-bold interactive-th"
-            class:active-filter={fixedFilter ===
-              `toDay_${dict.options.days[1]}`}
-            onmouseenter={() =>
-              (hoveredFilter = `toDay_${dict.options.days[1]}`)}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick(`toDay_${dict.options.days[1]}`)}
-          >
-            <Tooltip
-              text="{dict.options.days[1]}: {methodCounts.toDay[
-                dict.options.days[1]
-              ] || 0}">Сб</Tooltip
-            >
-          </th>
-          <th
-            class="icon-th fw-bold interactive-th"
-            class:active-filter={fixedFilter ===
-              `toDay_${dict.options.days[2]}`}
-            onmouseenter={() =>
-              (hoveredFilter = `toDay_${dict.options.days[2]}`)}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick(`toDay_${dict.options.days[2]}`)}
-          >
-            <Tooltip
-              text="{dict.options.days[2]}: {methodCounts.toDay[
-                dict.options.days[2]
-              ] || 0}">Вс</Tooltip
-            >
-          </th>
+          {#each [0, 1, 2] as i}
+            {@render filterHeader(`toDay_${dict.options.days[i]}`, `${dict.options.days[i]}: ${methodCounts.toDay[dict.options.days[i]] || 0}`, ["Пт", "Сб", "Вс"][i], false)}
+          {/each}
 
           <!-- Обратно Способ -->
-          <th
-            class="icon-th interactive-th"
-            class:active-filter={fixedFilter === "from_Водитель"}
-            onmouseenter={() => (hoveredFilter = "from_Водитель")}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick("from_Водитель")}
-          >
-            <Tooltip
-              text="{dict.options.transportMethodsTo.driver}: {methodCounts
-                .from['Водитель'] || 0}"
-            >
-              <md-icon>directions_car</md-icon>
-            </Tooltip>
-          </th>
-          <th
-            class="icon-th interactive-th"
-            class:active-filter={fixedFilter === "from_Пассажир"}
-            onmouseenter={() => (hoveredFilter = "from_Пассажир")}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick("from_Пассажир")}
-          >
-            <Tooltip
-              text="{dict.options.transportMethodsTo.passenger}: {methodCounts
-                .from['Пассажир'] || 0}"
-            >
-              <md-icon>hail</md-icon>
-            </Tooltip>
-          </th>
-          <th
-            class="icon-th interactive-th"
-            class:active-filter={fixedFilter === "from_Маршрутка"}
-            onmouseenter={() => (hoveredFilter = "from_Маршрутка")}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick("from_Маршрутка")}
-          >
-            <Tooltip
-              text="{dict.options.transportMethodsTo.bus}: {methodCounts.from[
-                'Маршрутка'
-              ] || 0}"
-            >
-              <md-icon>directions_bus</md-icon>
-            </Tooltip>
-          </th>
-          <th
-            class="icon-th interactive-th"
-            class:active-filter={fixedFilter === "from_Свой ход"}
-            onmouseenter={() => (hoveredFilter = "from_Свой ход")}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick("from_Свой ход")}
-          >
-            <Tooltip
-              pos="right"
-              text="{dict.options.transportMethodsTo.self}: {methodCounts.from[
-                'Свой ход'
-              ] || 0}"
-            >
-              <md-icon>directions_walk</md-icon>
-            </Tooltip>
-          </th>
+          {#each transportMethods as tm}
+            {@render filterHeader(`from_${tm.key}`, `${dict.options.transportMethodsTo[tm.id]}: ${methodCounts.from[tm.key] || 0}`, tm.icon, true, tm.key === 'Свой ход' ? 'right' : 'top')}
+          {/each}
 
           <!-- Обратно День -->
-          <th
-            class="icon-th fw-bold interactive-th"
-            class:active-filter={fixedFilter ===
-              `fromDay_${dict.options.days[0]}`}
-            onmouseenter={() =>
-              (hoveredFilter = `fromDay_${dict.options.days[0]}`)}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick(`fromDay_${dict.options.days[0]}`)}
-          >
-            <Tooltip
-              pos="right"
-              text="{dict.options.days[0]}: {methodCounts.fromDay[
-                dict.options.days[0]
-              ] || 0}">Пт</Tooltip
-            >
-          </th>
-          <th
-            class="icon-th fw-bold interactive-th"
-            class:active-filter={fixedFilter ===
-              `fromDay_${dict.options.days[1]}`}
-            onmouseenter={() =>
-              (hoveredFilter = `fromDay_${dict.options.days[1]}`)}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick(`fromDay_${dict.options.days[1]}`)}
-          >
-            <Tooltip
-              pos="right"
-              text="{dict.options.days[1]}: {methodCounts.fromDay[
-                dict.options.days[1]
-              ] || 0}">Сб</Tooltip
-            >
-          </th>
-          <th
-            class="icon-th fw-bold interactive-th"
-            class:active-filter={fixedFilter ===
-              `fromDay_${dict.options.days[2]}`}
-            onmouseenter={() =>
-              (hoveredFilter = `fromDay_${dict.options.days[2]}`)}
-            onmouseleave={() => (hoveredFilter = null)}
-            onclick={() => handleHeaderClick(`fromDay_${dict.options.days[2]}`)}
-          >
-            <Tooltip
-              pos="right"
-              text="{dict.options.days[2]}: {methodCounts.fromDay[
-                dict.options.days[2]
-              ] || 0}">Вс</Tooltip
-            >
-          </th>
+          {#each [0, 1, 2] as i}
+            {@render filterHeader(`fromDay_${dict.options.days[i]}`, `${dict.options.days[i]}: ${methodCounts.fromDay[dict.options.days[i]] || 0}`, ["Пт", "Сб", "Вс"][i], false, 'right')}
+          {/each}
         </tr>
       </thead>
 
@@ -533,34 +370,9 @@
             </td>
 
             <!-- ТУДА: В, П, М, С -->
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter === "to_Водитель"}
-              ><md-icon class="status-icon {tToV.active ? 'active' : ''}"
-                >{tToV.icon}</md-icon
-              ></td
-            >
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter === "to_Пассажир"}
-              ><md-icon class="status-icon {tToP.active ? 'active' : ''}"
-                >{tToP.icon}</md-icon
-              ></td
-            >
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter === "to_Маршрутка"}
-              ><md-icon class="status-icon {tToM.active ? 'active' : ''}"
-                >{tToM.icon}</md-icon
-              ></td
-            >
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter === "to_Свой ход"}
-              ><md-icon class="status-icon {tToC.active ? 'active' : ''}"
-                >{tToC.icon}</md-icon
-              ></td
-            >
+            {#each transportMethods as tm}
+              {@render statusCell(`to_${tm.key}`, getMethodStatus(p.transportTo.method, tm.key))}
+            {/each}
 
             <!-- ТУДА: Места, Город -->
             <td class="text-center">
@@ -578,88 +390,22 @@
             <td>{p.transportTo.city || "-"}</td>
 
             <!-- ТУДА: День -->
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter ===
-                `toDay_${dict.options.days[0]}`}
-              ><md-icon class="status-icon {dToFri.active ? 'active' : ''}"
-                >{dToFri.icon}</md-icon
-              ></td
-            >
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter ===
-                `toDay_${dict.options.days[1]}`}
-              ><md-icon class="status-icon {dToSat.active ? 'active' : ''}"
-                >{dToSat.icon}</md-icon
-              ></td
-            >
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter ===
-                `toDay_${dict.options.days[2]}`}
-              ><md-icon class="status-icon {dToSun.active ? 'active' : ''}"
-                >{dToSun.icon}</md-icon
-              ></td
-            >
+            {#each [0, 1, 2] as i}
+              {@render statusCell(`toDay_${dict.options.days[i]}`, getDayStatus(p.transportTo.day, dict.options.days[i]))}
+            {/each}
 
+            <!-- ТУДА: Время -->
             <td class="text-center time-cell">{p.transportTo.time || "-"}</td>
 
             <!-- ОБРАТНО: В, П, М, С -->
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter === "from_Водитель"}
-              ><md-icon class="status-icon {tFromV.active ? 'active' : ''}"
-                >{tFromV.icon}</md-icon
-              ></td
-            >
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter === "from_Пассажир"}
-              ><md-icon class="status-icon {tFromP.active ? 'active' : ''}"
-                >{tFromP.icon}</md-icon
-              ></td
-            >
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter === "from_Маршрутка"}
-              ><md-icon class="status-icon {tFromM.active ? 'active' : ''}"
-                >{tFromM.icon}</md-icon
-              ></td
-            >
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter === "from_Свой ход"}
-              ><md-icon class="status-icon {tFromC.active ? 'active' : ''}"
-                >{tFromC.icon}</md-icon
-              ></td
-            >
+            {#each transportMethods as tm}
+              {@render statusCell(`from_${tm.key}`, getMethodStatus(p.transportFrom.method, tm.key))}
+            {/each}
 
             <!-- ОБРАТНО: День -->
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter ===
-                `fromDay_${dict.options.days[0]}`}
-              ><md-icon class="status-icon {dFromFri.active ? 'active' : ''}"
-                >{dFromFri.icon}</md-icon
-              ></td
-            >
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter ===
-                `fromDay_${dict.options.days[1]}`}
-              ><md-icon class="status-icon {dFromSat.active ? 'active' : ''}"
-                >{dFromSat.icon}</md-icon
-              ></td
-            >
-            <td
-              class="text-center"
-              class:highlighted-col={activeFilter ===
-                `fromDay_${dict.options.days[2]}`}
-              ><md-icon class="status-icon {dFromSun.active ? 'active' : ''}"
-                >{dFromSun.icon}</md-icon
-              ></td
-            >
+            {#each [0, 1, 2] as i}
+              {@render statusCell(`fromDay_${dict.options.days[i]}`, getDayStatus(p.transportFrom.day, dict.options.days[i]))}
+            {/each}
 
             <!-- ОБРАТНО: Время -->
             <td class="text-center time-cell">{p.transportFrom.time || "-"}</td>

@@ -1,11 +1,11 @@
 <script>
-  let { text = "", pos = "bottom", onlyIfTruncated = false, caps = true, children } = $props();
+  let { text = "", pos = "top", onlyIfTruncated = false, caps = true, variant = "default", enabled = true, children } = $props();
 
   let isTruncated = $state(false);
 
   /** @param {Event} e */
   function checkTruncation(e) {
-    if (!onlyIfTruncated) return;
+    if (!onlyIfTruncated || !enabled) return;
     const target = /** @type {HTMLElement} */ (e.currentTarget);
     const child = target.firstElementChild;
     if (child) {
@@ -18,13 +18,18 @@
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div 
     class="tooltip-wrapper" 
-    class:hover-enabled={!onlyIfTruncated || isTruncated}
+    class:hover-enabled={(!onlyIfTruncated || isTruncated) && enabled}
     class:caps={caps}
-    data-tooltip={text} 
     data-tooltip-pos={pos}
+    data-tooltip={text}
     onmouseenter={checkTruncation}
   >
     {@render children()}
+    {#if enabled}
+      <div class="tooltip-content {variant === 'neon' ? 'glass-panel neon' : ''}">
+        {text}
+      </div>
+    {/if}
   </div>
 {:else}
   {@render children()}
@@ -35,11 +40,9 @@
     position: relative;
     overflow: visible !important;
     display: inline-flex;
-    /* Removed flex: inherit to prevent layout bugs */
   }
 
-  .tooltip-wrapper::after {
-    content: attr(data-tooltip);
+  .tooltip-content {
     position: absolute;
     bottom: calc(100% + 10px);
     left: 50%;
@@ -74,37 +77,99 @@
     z-index: 1000;
   }
 
-  .tooltip-wrapper.caps::after {
+  .tooltip-wrapper.caps .tooltip-content {
     text-transform: uppercase;
     letter-spacing: 1px;
   }
 
-  .tooltip-wrapper.hover-enabled:hover::after {
+  .tooltip-wrapper.hover-enabled:hover .tooltip-content {
     opacity: 1;
     visibility: visible;
     transform: translateX(-50%) scale(1);
   }
 
-  .tooltip-wrapper[data-tooltip-pos="left"]::after {
+  .tooltip-wrapper[data-tooltip-pos="left"] .tooltip-content {
     left: 0;
     transform: translateX(0) scale(0.9);
   }
 
-  .tooltip-wrapper[data-tooltip-pos="left"].hover-enabled:hover::after {
+  .tooltip-wrapper[data-tooltip-pos="left"].hover-enabled:hover .tooltip-content {
     opacity: 1;
     visibility: visible;
     transform: translateX(0) scale(1);
   }
 
-  .tooltip-wrapper[data-tooltip-pos="right"]::after {
+  .tooltip-wrapper[data-tooltip-pos="right"] .tooltip-content {
     left: auto;
     right: 0;
     transform: translateX(0) scale(0.9);
   }
 
-  .tooltip-wrapper[data-tooltip-pos="right"].hover-enabled:hover::after {
+  .tooltip-wrapper[data-tooltip-pos="right"].hover-enabled:hover .tooltip-content {
     opacity: 1;
     visibility: visible;
     transform: translateX(0) scale(1);
+  }
+
+  .tooltip-wrapper[data-tooltip-pos="bottom"] .tooltip-content {
+    bottom: auto;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+  }
+
+  .tooltip-wrapper[data-tooltip-pos="bottom"].hover-enabled:hover .tooltip-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+  }
+
+  .tooltip-wrapper[data-tooltip-pos="bottom-left"] .tooltip-content {
+    bottom: auto;
+    top: calc(100% + 10px);
+    left: 0;
+    transform: translateX(0) scale(0.9);
+  }
+
+  .tooltip-wrapper[data-tooltip-pos="bottom-left"].hover-enabled:hover .tooltip-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0) scale(1);
+  }
+
+  .tooltip-wrapper[data-tooltip-pos="bottom-right"] .tooltip-content {
+    bottom: auto;
+    top: calc(100% + 10px);
+    left: auto;
+    right: 0;
+    transform: translateX(0) scale(0.9);
+  }
+
+  .tooltip-wrapper[data-tooltip-pos="bottom-right"].hover-enabled:hover .tooltip-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0) scale(1);
+  }
+
+  /* Neon variant */
+  .tooltip-content.neon {
+    border: 1px solid var(--glass-border-hover) !important;
+    box-shadow:
+      0 10px 40px -10px rgba(0, 0, 0, 0.5),
+      0 0 30px rgba(139, 92, 246, 0.2) !important;
+    background: var(--bg-color-accent) !important;
+  }
+  
+  .tooltip-content.neon::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 9px;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(135deg,
+        var(--primary) 0%,
+        rgba(255, 255, 255, 0) 50%,
+        var(--accent) 100%) !important;
   }
 </style>

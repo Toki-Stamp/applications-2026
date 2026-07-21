@@ -126,24 +126,19 @@ function doPost(e) {
       return 0;
     }
 
+    var DICT_PROVISION = { 'required': 'Да', 'none': 'Нет' };
     function translateProvision(val) {
-      if (val === 'required') return 'Да';
-      if (val === 'none') return 'Нет';
-      return val || '';
+      return DICT_PROVISION[val] || val || '';
     }
 
+    var DICT_ACCOMMODATION = { 'booking': 'Бронь базы', 'self': 'Самостоятельно' };
     function translateAccommodation(val) {
-      if (val === 'booking') return 'Бронь базы';
-      if (val === 'self') return 'Самостоятельно';
-      return val || '';
+      return DICT_ACCOMMODATION[val] || val || '';
     }
 
+    var DICT_TRANSPORT = { 'driver': 'Водитель', 'passenger': 'Пассажир', 'bus': 'Маршрутка', 'self': 'Свой ход' };
     function translateTransport(val) {
-      if (val === 'driver') return 'Водитель';
-      if (val === 'passenger') return 'Пассажир';
-      if (val === 'bus') return 'Маршрутка';
-      if (val === 'self') return 'Свой ход';
-      return val || '';
+      return DICT_TRANSPORT[val] || val || '';
     }
 
     // Вспомогательная функция для создания строки для одного человека

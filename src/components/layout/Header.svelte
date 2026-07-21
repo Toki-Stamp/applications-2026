@@ -1,19 +1,18 @@
 <script>
   import ThemeSwitcher from "../ui/ThemeSwitcher.svelte";
   import ProgressBar from "../ui/ProgressBar.svelte";
-  import Overlay from "../ui/Overlay.svelte";
+  import Tooltip from "../ui/Tooltip.svelte";
   import { dict } from "../../locales/ru.js";
-  import { scale, fade } from "svelte/transition";
+  import { scale } from "svelte/transition";
 
   let {
     currentStep = 0,
     totalSteps = 0,
     headerHeight = $bindable(0),
-    helpPanel,
+    helpPanel = null,
   } = $props();
 
   let showHelp = $state(false);
-  let isHovered = $state(false);
   let headerWidth = $state(0);
 </script>
 
@@ -38,31 +37,28 @@
 
       {#if helpPanel}
         <div class="help-container">
-          <button
-            class="icon-btn"
-            onclick={() => (showHelp = !showHelp)}
-            onmouseenter={() => (isHovered = true)}
-            onmouseleave={() => (isHovered = false)}
-            class:active={showHelp}
-            aria-label="Справка"
+          <Tooltip
+            text="Справка"
+            pos="bottom-right"
+            variant="neon"
+            enabled={!showHelp}
           >
-            <md-icon>live_help</md-icon>
-          </button>
-
-          {#if isHovered && !showHelp}
-            <div
-              class="custom-tooltip"
-              in:fade={{ duration: 150 }}
-              out:fade={{ duration: showHelp ? 0 : 150 }}
+            <button
+              class="icon-btn"
+              onclick={() => (showHelp = !showHelp)}
+              class:active={showHelp}
+              aria-label="Справка"
             >
-              Справка
-            </div>
-          {/if}
+              <md-icon>live_help</md-icon>
+            </button>
+          </Tooltip>
 
           {#if showHelp}
             <div
               class="help-popover"
-              style="width: {headerWidth > 600 ? (headerWidth * 0.5) + 'px' : ''};"
+              style="width: {headerWidth > 600
+                ? headerWidth * 0.5 + 'px'
+                : ''};"
               transition:scale={{ start: 0.95, duration: 200 }}
             >
               {@render helpPanel()}
@@ -221,39 +217,6 @@
     animation: wiggle 0.5s ease-in-out;
   }
 
-  .custom-tooltip {
-    position: absolute;
-    top: calc(100% + 10px);
-    right: 0;
-    background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
-    color: var(--text-primary) !important;
-    padding: calc(var(--gap-sm) * 1.2) calc(var(--gap-fields) * 0.8);
-    border-radius: 8px;
-    font-size: var(--text-sm);
-    font-weight: var(--font-weight-normal);
-    font-family: var(--font-family);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    white-space: nowrap;
-    border: 1px solid
-      color-mix(
-        in srgb,
-        var(--primary-color, var(--primary)) 40%,
-        var(--border-color)
-      );
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-    z-index: 1000;
-    pointer-events: none;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-  }
-
-
   .help-popover {
     position: absolute;
     top: calc(100% + 10px); /* Exactly matching custom-tooltip top */
@@ -273,10 +236,12 @@
 
   .help-popover :global(.block-card)::before {
     opacity: 1 !important;
-    background: linear-gradient(135deg,
-        var(--primary) 0%,
-        rgba(255, 255, 255, 0) 50%,
-        var(--accent) 100%) !important;
+    background: linear-gradient(
+      135deg,
+      var(--primary) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      var(--accent) 100%
+    ) !important;
   }
 
   .help-popover :global(.block-content) {

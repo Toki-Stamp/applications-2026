@@ -216,6 +216,7 @@
     if (!isValid) return;
 
     const finalData = sanitizeFormData(formStore.data);
+    console.log("Submitting payload to Google Apps Script:", finalData);
     isSubmitting = true;
 
     try {
@@ -250,19 +251,32 @@
     } catch (e) {
       const error = /** @type {Error} */ (e);
       console.error("Error submitting form:", error);
-      
-      let errorTitle = dict.modals.submitError.types.unknown.title;
-      let errorBody = dict.modals.submitError.types.unknown.bodyPrefix + error.message;
 
-      if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
+      let errorTitle = dict.modals.submitError.types.unknown.title;
+      let errorBody =
+        dict.modals.submitError.types.unknown.bodyPrefix + error.message;
+
+      if (
+        error.message.includes("Failed to fetch") ||
+        error.message.includes("NetworkError")
+      ) {
         errorTitle = dict.modals.submitError.types.network.title;
         errorBody = dict.modals.submitError.types.network.body;
-      } else if (error.message.includes("Ошибка HTTP") || error.message.includes("500") || error.message.includes("404")) {
+      } else if (
+        error.message.includes("Ошибка HTTP") ||
+        error.message.includes("500") ||
+        error.message.includes("404")
+      ) {
         errorTitle = dict.modals.submitError.types.server.title;
         errorBody = dict.modals.submitError.types.server.body;
-      } else if (error.message.includes("Неизвестная ошибка на стороне сервера") || error.message.includes("LogicError:")) {
+      } else if (
+        error.message.includes("Неизвестная ошибка на стороне сервера") ||
+        error.message.includes("LogicError:")
+      ) {
         errorTitle = dict.modals.submitError.types.logic.title;
-        errorBody = dict.modals.submitError.types.logic.bodyPrefix + error.message.replace("LogicError:", "");
+        errorBody =
+          dict.modals.submitError.types.logic.bodyPrefix +
+          error.message.replace("LogicError:", "");
       } else if (error.message.includes("GOOGLE_SCRIPT_URL")) {
         errorTitle = dict.modals.submitError.types.setup.title;
         errorBody = dict.modals.submitError.types.setup.body;
@@ -270,7 +284,7 @@
 
       submitErrorData = {
         title: errorTitle,
-        body: errorBody
+        body: errorBody,
       };
     } finally {
       isSubmitting = false;
@@ -283,100 +297,101 @@
 <main id="app" class:is-submitting={isSubmitting}>
   {#if isSubmitting}
     <Overlay variant="loading" absolute={true} zIndex={1000}>
-      <md-icon class="flipping large-icon text-primary">hourglass_empty</md-icon>
+      <md-icon class="flipping large-icon text-primary">hourglass_empty</md-icon
+      >
       <p class="submit-text">{dict.common.submitting}</p>
     </Overlay>
   {/if}
   <div class="app-transition-wrapper">
-      <form
-        class="app-form"
-        novalidate
-        onsubmit={(e) => {
-          e.preventDefault();
-          submitForm();
-        }}
-        transition:fade={{ duration: 300 }}
-      >
-        {#if !isSubmitted}
-          <Header bind:headerHeight {currentStep} {totalSteps} />
-        {/if}
+    <form
+      class="app-form"
+      novalidate
+      onsubmit={(e) => {
+        e.preventDefault();
+        submitForm();
+      }}
+      transition:fade={{ duration: 300 }}
+    >
+      {#if !isSubmitted}
+        <Header bind:headerHeight {currentStep} {totalSteps} />
+      {/if}
 
-        <div class="app-body" style="--header-height: {headerHeight}px;">
-          <!-- Wizard Steps Container -->
-          <div class="step-container">
-            {#if !isSubmitted}
-              {#if currentStep === 1}
-                <div transition:fade={{ duration: 300 }} class="step-layer">
-                  <div class="step-content">
-                    <Intro />
-                  </div>
-                </div>
-              {:else if currentStep === 2}
-                <div transition:fade={{ duration: 300 }} class="step-layer">
-                  <div class="step-content">
-                    <ApplicationType errors={stepErrors} />
-                  </div>
-                </div>
-              {:else if currentStep === 3}
-                <div transition:fade={{ duration: 300 }} class="step-layer">
-                  <div class="step-content">
-                    <PersonalData errors={stepErrors} />
-                  </div>
-                </div>
-              {:else if currentStep === 4}
-                <div transition:fade={{ duration: 300 }} class="step-layer">
-                  <div class="step-content">
-                    <Transportation
-                      stepNumber={currentStep - 1}
-                      errors={stepErrors}
-                    />
-                  </div>
-                </div>
-              {:else if currentStep === 5}
-                <div transition:fade={{ duration: 300 }} class="step-layer">
-                  <div class="step-content">
-                    <Provisions
-                      stepNumber={currentStep - 1}
-                      errors={stepErrors}
-                    />
-                  </div>
-                </div>
-              {:else if currentStep === 6}
-                <div transition:fade={{ duration: 300 }} class="step-layer">
-                  <div class="step-content">
-                    <Accommodation errors={stepErrors} />
-                  </div>
-                </div>
-              {:else if currentStep === 7}
-                <div transition:fade={{ duration: 300 }} class="step-layer">
-                  <div class="step-content">
-                    <FreeMic errors={stepErrors} />
-                  </div>
-                </div>
-              {/if}
-            {:else}
+      <div class="app-body" style="--header-height: {headerHeight}px;">
+        <!-- Wizard Steps Container -->
+        <div class="step-container">
+          {#if isSubmitted}
+            <div transition:fade={{ duration: 300 }} class="step-layer">
+              <div class="step-content">
+                <Outro onreset={handleReset} />
+              </div>
+            </div>
+          {:else}
+            {#if currentStep === 1}
               <div transition:fade={{ duration: 300 }} class="step-layer">
                 <div class="step-content">
-                  <Outro onreset={handleReset} />
+                  <Intro />
+                </div>
+              </div>
+            {:else if currentStep === 2}
+              <div transition:fade={{ duration: 300 }} class="step-layer">
+                <div class="step-content">
+                  <ApplicationType errors={stepErrors} />
+                </div>
+              </div>
+            {:else if currentStep === 3}
+              <div transition:fade={{ duration: 300 }} class="step-layer">
+                <div class="step-content">
+                  <PersonalData errors={stepErrors} />
+                </div>
+              </div>
+            {:else if currentStep === 4}
+              <div transition:fade={{ duration: 300 }} class="step-layer">
+                <div class="step-content">
+                  <Transportation
+                    stepNumber={currentStep - 1}
+                    errors={stepErrors}
+                  />
+                </div>
+              </div>
+            {:else if currentStep === 5}
+              <div transition:fade={{ duration: 300 }} class="step-layer">
+                <div class="step-content">
+                  <Provisions
+                    stepNumber={currentStep - 1}
+                    errors={stepErrors}
+                  />
+                </div>
+              </div>
+            {:else if currentStep === 6}
+              <div transition:fade={{ duration: 300 }} class="step-layer">
+                <div class="step-content">
+                  <Accommodation errors={stepErrors} />
+                </div>
+              </div>
+            {:else if currentStep === 7}
+              <div transition:fade={{ duration: 300 }} class="step-layer">
+                <div class="step-content">
+                  <FreeMic errors={stepErrors} />
                 </div>
               </div>
             {/if}
-          </div>
-
-          <!-- Navigation Buttons -->
-          <Footer
-            {currentStep}
-            {totalSteps}
-            {hasErrors}
-            {isSubmitting}
-            {isSubmitted}
-            onprev={prevStep}
-            onnext={nextStep}
-            onclear={() => (showClearModal = true)}
-            onreset={handleReset}
-          />
+          {/if}
         </div>
-      </form>
+
+        <!-- Navigation Buttons -->
+        <Footer
+          {currentStep}
+          {totalSteps}
+          {hasErrors}
+          {isSubmitting}
+          {isSubmitted}
+          onprev={prevStep}
+          onnext={nextStep}
+          onclear={() => (showClearModal = true)}
+          onreset={handleReset}
+        />
+      </div>
+    </form>
   </div>
   {#if showClearModal}
     <Modal
@@ -449,7 +464,7 @@
     width: 64px;
     height: 64px;
     margin-bottom: 1rem;
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
   }
 
   .submit-text {
@@ -503,7 +518,8 @@
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
-    padding: var(--gap-layout) calc(var(--gap-layout) - var(--scrollbar-width)) var(--gap-layout) var(--gap-layout);
+    padding: var(--gap-layout) calc(var(--gap-layout) - var(--scrollbar-width))
+      var(--gap-layout) var(--gap-layout);
   }
 
   .app-transition-wrapper {
