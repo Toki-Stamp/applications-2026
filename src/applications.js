@@ -6,9 +6,9 @@ import "@fontsource/jetbrains-mono/800.css";
 import "material-symbols/outlined.css";
 import "@material/web/icon/icon.js";
 import "./app.css";
-import DashboardApp from "./DashboardApp.svelte";
+import ApplicationsApp from "./ApplicationsApp.svelte";
 
-const app = mount(DashboardApp, {
+const app = mount(ApplicationsApp, {
   target: document.getElementById("app"),
 });
 

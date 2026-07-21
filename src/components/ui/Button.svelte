@@ -5,9 +5,10 @@
    * @property {"primary" | "secondary" | "danger" | "submit" | "clear"} [variant]
    * @property {boolean} [iconOnly]
    * @property {boolean} [locked]
-   * @property {Function} [onclick]
+   * @property {import('svelte/elements').MouseEventHandler<HTMLButtonElement>} [onclick]
    * @property {import('svelte').Snippet} [children]
    * @property {string} [class]
+   * @property {string} [aria-label]
    */
 
   /** @type {Props} */
@@ -43,7 +44,7 @@
   .btn-secondary,
   .btn-danger,
   .btn-submit {
-    padding: calc(var(--element-py) * 0.8) var(--layout-px-sm);
+    padding: var(--element-py) var(--element-px);
     font-size: var(--text-base);
     font-weight: var(--font-weight-bold);
     font-family: var(--font-family);
@@ -191,7 +192,7 @@
   /* Submit Variant */
   .btn-submit {
     color: var(--btn-primary-text);
-    padding: calc(var(--element-py) * 1.125) var(--layout-px-base);
+    padding: calc(var(--element-py) * 1.125) calc(var(--element-px) * 1.5);
     font-size: var(--text-lg);
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     box-shadow: 0 4px 15px var(--primary-glow);

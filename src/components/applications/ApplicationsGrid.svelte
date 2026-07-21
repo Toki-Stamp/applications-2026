@@ -190,13 +190,6 @@
 
 <svelte:window onclick={handleWindowClick} />
 
-<div class="grid-hint">
-  <HintBox dismissible={true}>
-    <strong>Подсказка:</strong>
-    {@html dict.options.globalHint}
-  </HintBox>
-</div>
-
 <div class="table-wrapper glass-panel">
   <div class="table-container" style="--header-height: {headerHeight}px">
     <table class="participants-table">
@@ -979,8 +972,10 @@
     cursor: pointer;
     transition: all 0.2s;
     padding: 0;
-    /* Subtle underline to hint interactivity */
-    box-shadow: inset 0 -2px 0 0 rgba(255, 255, 255, 0.1);
+    /* Preserve standard bottom border + Subtle underline to hint interactivity */
+    box-shadow: 
+      0 1px 0 0 color-mix(in srgb, var(--text-primary) 15%, var(--bg-color)),
+      inset 0 -2px 0 0 rgba(255, 255, 255, 0.1);
   }
 
   .interactive-th.active-filter {
@@ -989,7 +984,9 @@
       var(--primary-color, var(--primary)) 45%,
       var(--bg-color)
     );
-    box-shadow: inset 0 -2px 0 0 var(--primary-color, var(--primary));
+    box-shadow: 
+      0 1px 0 0 color-mix(in srgb, var(--text-primary) 15%, var(--bg-color)),
+      inset 0 -2px 0 0 var(--primary-color, var(--primary));
   }
 
   @media (hover: hover) {
@@ -999,7 +996,9 @@
         var(--primary-color, var(--primary)) 20%,
         var(--bg-color)
       );
-      box-shadow: inset 0 -2px 0 0 var(--primary-color, var(--primary));
+      box-shadow: 
+        0 1px 0 0 color-mix(in srgb, var(--text-primary) 15%, var(--bg-color)),
+        inset 0 -2px 0 0 var(--primary-color, var(--primary));
     }
 
     tbody tr:hover {
@@ -1186,15 +1185,5 @@
     font-family: var(--font-family);
     font-variant-numeric: tabular-nums;
     text-align: right;
-  }
-
-  .grid-hint :global(kbd) {
-    background: rgba(128, 128, 128, 0.15);
-    border: 1px solid rgba(128, 128, 128, 0.3);
-    border-radius: 3px;
-    padding: 0.1rem 0.3rem;
-    font-size: 0.8rem;
-    font-family: monospace;
-    color: var(--text-primary);
   }
 </style>

@@ -1,5 +1,6 @@
 <script>
   import { slide } from "svelte/transition";
+  import Button from "./Button.svelte";
 
   let {
     type = "info", // "info" | "error"
@@ -16,15 +17,17 @@
 </script>
 
 {#if visible}
-<div class="hint-box" class:error={type === "error"} transition:slide={{ duration: 250 }}>
+<div class="hint-box" class:error={type === "error"} class:dismissible={dismissible} transition:slide={{ duration: 250 }}>
   <md-icon class="hint-icon">{computedIcon}</md-icon>
   <span class="hint-content">
     {#if children}{@render children()}{/if}
   </span>
   {#if dismissible}
-    <button type="button" class="close-btn" aria-label="Закрыть" onclick={() => visible = false}>
-      <md-icon>close</md-icon>
-    </button>
+    <div class="close-btn-wrapper">
+      <Button variant="clear" aria-label="Закрыть" onclick={() => visible = false}>
+        <md-icon>close</md-icon>
+      </Button>
+    </div>
   {/if}
 </div>
 {/if}
@@ -33,7 +36,9 @@
   .hint-box {
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: color-mix(in srgb, var(--bg-color-accent) 90%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
     border-left: 4px solid var(--primary);
     border-radius: 8px;
@@ -41,7 +46,11 @@
     gap: var(--gap-sm);
     color: var(--text-primary);
     font-size: var(--text-base);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  .hint-box.dismissible {
+    padding-right: var(--gap-sm);
   }
 
   .hint-icon {
@@ -87,26 +96,11 @@
     flex: 1;
   }
 
-  .close-btn {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
+  .close-btn-wrapper {
     margin-left: var(--gap-sm);
-    color: var(--text-secondary, rgba(255, 255, 255, 0.6));
-    cursor: pointer;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.2s;
-    flex-shrink: 0;
-  }
-
-  .close-btn:hover {
-    color: var(--text-primary, #fff);
-  }
-
-  .close-btn md-icon {
-    font-size: 1.2rem;
   }
 </style>
