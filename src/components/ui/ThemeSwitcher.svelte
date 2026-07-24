@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  import { fade } from "svelte/transition";
   import Tooltip from "./Tooltip.svelte";
+  import Popover from "./Popover.svelte";
 
   const darkThemes = [
     { id: "cyberpunk", name: "Cyberpunk" },
@@ -33,7 +33,6 @@
 
   let currentTheme = $state("cyberpunk");
   let isOpen = $state(false);
-  let isHovered = $state(false);
 
   // Store computed colors to dynamically match themes.css
   /** @type {Record<string, {primary: string, accent: string}>} */
@@ -41,8 +40,6 @@
 
   onMount(() => {
     // Dynamically fetch actual CSS variables for each theme
-    // by temporarily applying them to the root. Since it's synchronous,
-    // the browser won't paint the intermediate states.
     const root = document.documentElement;
     const originalTheme = root.getAttribute("data-theme");
     /** @type {Record<string, {primary: string, accent: string}>} */
@@ -71,18 +68,6 @@
     } else {
       setTheme("cyberpunk");
     }
-
-    /** @param {MouseEvent} e */
-    const closeListener = (e) => {
-      if (
-        e.target instanceof Element &&
-        !e.target.closest(".theme-switcher-wrapper")
-      ) {
-        isOpen = false;
-      }
-    };
-    document.addEventListener("click", closeListener);
-    return () => document.removeEventListener("click", closeListener);
   });
 
   /** @param {string} id */
@@ -93,6 +78,24 @@
     isOpen = false;
   }
 </script>
+
+{#snippet themeButton(/** @type {{id: string, name: string}} */ theme)}
+  <button
+    type="button"
+    class="theme-row-btn"
+    class:active={currentTheme === theme.id}
+    style="--t-primary: {computedColors[theme.id]?.primary ||
+      'transparent'}; --t-accent: {computedColors[theme.id]?.accent ||
+      'transparent'};"
+    onclick={() => setTheme(theme.id)}
+  >
+    <div class="swatch-circle">
+      <div class="color-half primary"></div>
+      <div class="color-half accent"></div>
+    </div>
+    <span class="theme-name">{theme.name}</span>
+  </button>
+{/snippet}
 
 <div class="theme-switcher-wrapper" role="presentation">
   <Tooltip text="Настроить тему" pos="bottom-left" variant="neon" enabled={!isOpen}>
@@ -106,49 +109,19 @@
     </button>
   </Tooltip>
 
-  {#if isOpen}
-    <div class="theme-popover glass-panel" transition:fade={{ duration: 150 }}>
-      <div class="theme-popover-content">
-        <div class="theme-category">Тёмные темы</div>
-        {#each darkThemes as theme}
-          <button
-            type="button"
-            class="theme-row-btn"
-            class:active={currentTheme === theme.id}
-            style="--t-primary: {computedColors[theme.id]?.primary ||
-              'transparent'}; --t-accent: {computedColors[theme.id]?.accent ||
-              'transparent'};"
-            onclick={() => setTheme(theme.id)}
-          >
-            <div class="swatch-circle">
-              <div class="color-half primary"></div>
-              <div class="color-half accent"></div>
-            </div>
-            <span class="theme-name">{theme.name}</span>
-          </button>
-        {/each}
+  <Popover {isOpen} onclose={() => isOpen = false} pos="bottom-left" backdrop={true} width="220px">
+    <div class="theme-popover-content">
+      <div class="theme-category">Тёмные темы</div>
+      {#each darkThemes as theme}
+        {@render themeButton(theme)}
+      {/each}
 
-        <div class="theme-category">Светлые темы</div>
-        {#each lightThemes as theme}
-          <button
-            type="button"
-            class="theme-row-btn"
-            class:active={currentTheme === theme.id}
-            style="--t-primary: {computedColors[theme.id]?.primary ||
-              'transparent'}; --t-accent: {computedColors[theme.id]?.accent ||
-              'transparent'};"
-            onclick={() => setTheme(theme.id)}
-          >
-            <div class="swatch-circle">
-              <div class="color-half primary"></div>
-              <div class="color-half accent"></div>
-            </div>
-            <span class="theme-name">{theme.name}</span>
-          </button>
-        {/each}
-      </div>
+      <div class="theme-category">Светлые темы</div>
+      {#each lightThemes as theme}
+        {@render themeButton(theme)}
+      {/each}
     </div>
-  {/if}
+  </Popover>
 </div>
 
 <style>
@@ -188,15 +161,6 @@
     transform: rotate(90deg);
   }
 
-  .theme-popover {
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 0;
-    width: 220px;
-    z-index: 100;
-    border-radius: 12px;
-  }
-
   .theme-popover-content {
     display: flex;
     flex-direction: column;
@@ -205,24 +169,6 @@
     overflow-y: auto;
     padding: 0 0 var(--gap-sm) 0;
     border-radius: inherit;
-  }
-
-  .theme-popover.glass-panel {
-    background: var(--bg-color-accent) !important;
-    border: 1px solid var(--glass-border-hover) !important;
-    box-shadow:
-      0 10px 40px -10px rgba(0, 0, 0, 0.5),
-      0 0 30px rgba(139, 92, 246, 0.2) !important;
-  }
-
-  .theme-popover.glass-panel::before {
-    opacity: 1 !important;
-    background: linear-gradient(
-      135deg,
-      var(--primary) 0%,
-      rgba(255, 255, 255, 0) 50%,
-      var(--accent) 100%
-    ) !important;
   }
 
   .theme-popover-content::-webkit-scrollbar {
@@ -248,7 +194,9 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    background: var(--bg-color-accent);
+    background: color-mix(in srgb, var(--bg-color-accent) 85%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.02em;

@@ -36,6 +36,7 @@
   .hint-box {
     display: flex;
     align-items: center;
+    text-align: left;
     background: color-mix(in srgb, var(--bg-color-accent) 90%, transparent);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);

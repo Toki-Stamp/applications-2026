@@ -3,17 +3,15 @@
   import "./app.css";
   import { fade } from "svelte/transition";
   import { formStore } from "./store.svelte.js";
-  import {
-    GOOGLE_SCRIPT_URL,
-    FORM_STORAGE_KEY,
-    STEP_STORAGE_KEY,
-  } from "./constants.js";
+  import { GOOGLE_SCRIPT_URL, FORM_STORAGE_KEY, STEP_STORAGE_KEY } from "./constants.js";
   import { dict } from "./locales/ru.js";
   import { validateStepData, sanitizeFormData } from "./schema.js";
+  import { parseApiError } from "./utils/errors.js";
 
   import Overlay from "./components/ui/Overlay.svelte";
   import Modal from "./components/ui/Modal.svelte";
   import Header from "./components/layout/Header.svelte";
+  import ThemeSwitcher from "./components/ui/ThemeSwitcher.svelte";
   import Footer from "./components/layout/Footer.svelte";
   import Button from "./components/ui/Button.svelte";
 
@@ -49,6 +47,58 @@
   /** @type {{ title: string, body: string } | null} */
   let submitErrorData = $state(null);
 
+  // --- Steps Config ---
+  /** @type {Array<{component: any, getSlice: (data: any) => any}>} */
+  const stepsConfig = [
+    { component: Intro, getSlice: () => ({}) },
+    {
+      component: ApplicationType,
+      getSlice: (data) => ({
+        applicationType: data.applicationType,
+        totalGroupSize: data.totalGroupSize,
+        groupConditions: data.groupConditions,
+      }),
+    },
+    {
+      component: PersonalData,
+      getSlice: (data) => ({
+        applicationType: data.applicationType,
+        applicant: data.applicant,
+        guests: data.guests,
+      }),
+    },
+    {
+      component: Transportation,
+      getSlice: (data) => ({
+        transportTo: data.transportTo,
+        transportFrom: data.transportFrom,
+        transportComment: data.transportComment,
+      }),
+    },
+    {
+      component: Provisions,
+      getSlice: (data) => ({
+        applicationType: data.applicationType,
+        groupConditions: data.groupConditions,
+        applicant: data.applicant,
+        guests: data.guests,
+      }),
+    },
+    {
+      component: Accommodation,
+      getSlice: (data) => ({
+        applicationType: data.applicationType,
+        groupConditions: data.groupConditions,
+        applicant: data.applicant,
+        guests: data.guests,
+      }),
+    },
+    {
+      component: FreeMic,
+      getSlice: (data) => ({ freeMic: data.freeMic }),
+    },
+  ];
+
   // --- Zod-based validation ---
   /** @type {Record<string, string>} */
   let stepErrors = $state({});
@@ -60,43 +110,9 @@
    */
   function validateCurrentStep(touchAll = false) {
     const data = formStore.data;
-    let dataSlice = {};
+    const dataSlice = stepsConfig[currentStep - 1].getSlice(data);
 
-    if (currentStep === 2) {
-      dataSlice = {
-        applicationType: data.applicationType,
-        totalGroupSize: data.totalGroupSize,
-        groupConditions: data.groupConditions,
-      };
-    } else if (currentStep === 3) {
-      dataSlice = {
-        applicationType: data.applicationType,
-        applicant: data.applicant,
-        guests: data.guests,
-      };
-    } else if (currentStep === 4) {
-      dataSlice = {
-        transportTo: data.transportTo,
-        transportFrom: data.transportFrom,
-        transportComment: data.transportComment,
-      };
-    } else if (currentStep === 5) {
-      dataSlice = {
-        applicationType: data.applicationType,
-        groupConditions: data.groupConditions,
-        applicant: data.applicant,
-        guests: data.guests,
-      };
-    } else if (currentStep === 6) {
-      dataSlice = {
-        applicationType: data.applicationType,
-        groupConditions: data.groupConditions,
-        applicant: data.applicant,
-        guests: data.guests,
-      };
-    } else if (currentStep === 7) {
-      dataSlice = { freeMic: data.freeMic };
-    }
+    // The dataSlice logic is handled by stepsConfig
 
     const result = validateStepData(currentStep, dataSlice);
 
@@ -249,43 +265,8 @@
       currentStep = 1;
       showDraftModal = false;
     } catch (e) {
-      const error = /** @type {Error} */ (e);
-      console.error("Error submitting form:", error);
-
-      let errorTitle = dict.modals.submitError.types.unknown.title;
-      let errorBody =
-        dict.modals.submitError.types.unknown.bodyPrefix + error.message;
-
-      if (
-        error.message.includes("Failed to fetch") ||
-        error.message.includes("NetworkError")
-      ) {
-        errorTitle = dict.modals.submitError.types.network.title;
-        errorBody = dict.modals.submitError.types.network.body;
-      } else if (
-        error.message.includes("Ошибка HTTP") ||
-        error.message.includes("500") ||
-        error.message.includes("404")
-      ) {
-        errorTitle = dict.modals.submitError.types.server.title;
-        errorBody = dict.modals.submitError.types.server.body;
-      } else if (
-        error.message.includes("Неизвестная ошибка на стороне сервера") ||
-        error.message.includes("LogicError:")
-      ) {
-        errorTitle = dict.modals.submitError.types.logic.title;
-        errorBody =
-          dict.modals.submitError.types.logic.bodyPrefix +
-          error.message.replace("LogicError:", "");
-      } else if (error.message.includes("GOOGLE_SCRIPT_URL")) {
-        errorTitle = dict.modals.submitError.types.setup.title;
-        errorBody = dict.modals.submitError.types.setup.body;
-      }
-
-      submitErrorData = {
-        title: errorTitle,
-        body: errorBody,
-      };
+      console.error("Error submitting form:", e);
+      submitErrorData = parseApiError(e);
     } finally {
       isSubmitting = false;
     }
@@ -313,7 +294,11 @@
       transition:fade={{ duration: 300 }}
     >
       {#if !isSubmitted}
-        <Header bind:headerHeight {currentStep} {totalSteps} />
+        <Header bind:headerHeight {currentStep} {totalSteps}>
+          {#snippet leftAction()}
+            <ThemeSwitcher />
+          {/snippet}
+        </Header>
       {/if}
 
       <div class="app-body" style="--header-height: {headerHeight}px;">
@@ -326,55 +311,15 @@
               </div>
             </div>
           {:else}
-            {#if currentStep === 1}
-              <div transition:fade={{ duration: 300 }} class="step-layer">
-                <div class="step-content">
-                  <Intro />
-                </div>
+            {@const StepComponent = stepsConfig[currentStep - 1].component}
+            <div transition:fade={{ duration: 300 }} class="step-layer">
+              <div class="step-content">
+                <StepComponent 
+                  stepNumber={currentStep - 1}
+                  errors={stepErrors} 
+                />
               </div>
-            {:else if currentStep === 2}
-              <div transition:fade={{ duration: 300 }} class="step-layer">
-                <div class="step-content">
-                  <ApplicationType errors={stepErrors} />
-                </div>
-              </div>
-            {:else if currentStep === 3}
-              <div transition:fade={{ duration: 300 }} class="step-layer">
-                <div class="step-content">
-                  <PersonalData errors={stepErrors} />
-                </div>
-              </div>
-            {:else if currentStep === 4}
-              <div transition:fade={{ duration: 300 }} class="step-layer">
-                <div class="step-content">
-                  <Transportation
-                    stepNumber={currentStep - 1}
-                    errors={stepErrors}
-                  />
-                </div>
-              </div>
-            {:else if currentStep === 5}
-              <div transition:fade={{ duration: 300 }} class="step-layer">
-                <div class="step-content">
-                  <Provisions
-                    stepNumber={currentStep - 1}
-                    errors={stepErrors}
-                  />
-                </div>
-              </div>
-            {:else if currentStep === 6}
-              <div transition:fade={{ duration: 300 }} class="step-layer">
-                <div class="step-content">
-                  <Accommodation errors={stepErrors} />
-                </div>
-              </div>
-            {:else if currentStep === 7}
-              <div transition:fade={{ duration: 300 }} class="step-layer">
-                <div class="step-content">
-                  <FreeMic errors={stepErrors} />
-                </div>
-              </div>
-            {/if}
+            </div>
           {/if}
         </div>
 
