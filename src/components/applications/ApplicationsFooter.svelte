@@ -143,11 +143,11 @@
     bottom: 0;
     z-index: 50;
     margin-top: auto;
-    background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: color-mix(in srgb, var(--bg-color) 70%, transparent);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border-top: 1px solid var(--border-color);
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.2);
   }
 
   .footer-content {
