@@ -1266,7 +1266,7 @@
   .user-meta {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--gap-sm);
     min-width: 0;
   }
 
@@ -1337,7 +1337,7 @@
   .header-icon-wrapper {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--gap-xs);
   }
   .header-icon-wrapper md-icon {
     font-size: 1.1rem;

@@ -48,7 +48,7 @@ export const dict = {
     },
     globalHints: {
       filterPrefix: "Нажимайте на иконки (",
-      filterSuffix: ") и дни в шапке, чтобы отфильтровать список",
+      filterSuffix: ") и дни в шапке таблицы, чтобы отфильтровать список",
       activeFilters: "Активные фильтры и кнопка сброса находятся на панели внизу",
       filterModePrefix: "Нажимайте на иконку ",
       filterModeSuffix: " на панели внизу, чтобы скрыть лишние строки",

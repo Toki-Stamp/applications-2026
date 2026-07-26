@@ -378,11 +378,11 @@
 
   @media (max-width: 600px) {
     .footer-content {
-      padding: 0.5rem var(--layout-px-sm);
-      gap: 0.25rem;
+      padding: var(--gap-sm) var(--layout-px-sm);
+      gap: var(--gap-xs);
     }
     .left-container {
-      gap: 0.25rem;
+      gap: var(--gap-xs);
     }
     .scroll-indicator {
       width: 12px;
@@ -392,13 +392,13 @@
       --md-icon-size: 1.75rem;
     }
     .left-buttons {
-      gap: 0.25rem;
+      gap: var(--gap-xs);
     }
     .filter-groups {
-      gap: 0.25rem;
+      gap: var(--gap-xs);
     }
     .right-buttons {
-      gap: 0.5rem;
+      gap: var(--gap-sm);
     }
     .intersection-count .count-label {
       display: none;
@@ -407,7 +407,7 @@
       font-size: 1.25rem;
     }
     .group-header {
-      padding: 0 0.25rem;
+      padding: 0 var(--gap-xs);
       height: 22px;
     }
     .group-title {
