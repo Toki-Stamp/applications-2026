@@ -2,14 +2,74 @@
   let { text = "", pos = "top", onlyIfTruncated = false, caps = true, variant = "default", enabled = true, children } = $props();
 
   let isTruncated = $state(false);
+  
+  /** @type {string} */
+  let computedPos = $state("");
+  
+  /** @type {HTMLElement | null} */
+  let wrapperNode = $state(null);
+  
+  /** @type {HTMLElement | null} */
+  let contentNode = $state(null);
+
+  $effect(() => {
+    // Reset to prop pos whenever prop pos changes
+    computedPos = pos;
+  });
 
   /** @param {Event} e */
-  function checkTruncation(e) {
-    if (!onlyIfTruncated || !enabled) return;
-    const target = /** @type {HTMLElement} */ (e.currentTarget);
-    const child = target.firstElementChild;
-    if (child) {
-      isTruncated = child.scrollWidth > child.clientWidth;
+  function handleMouseEnter(e) {
+    if (!enabled) return;
+
+    // 1. Check truncation
+    if (onlyIfTruncated) {
+      const target = /** @type {HTMLElement} */ (e.currentTarget);
+      const child = target.firstElementChild;
+      if (child) {
+        isTruncated = child.scrollWidth > child.clientWidth;
+      }
+    }
+
+    // 2. Smart positioning
+    if ((!onlyIfTruncated || isTruncated) && wrapperNode && contentNode) {
+      const rect = wrapperNode.getBoundingClientRect();
+      const tooltipWidth = contentNode.offsetWidth || 150;
+      const tooltipHeight = contentNode.offsetHeight || 40;
+
+      let newPos = pos;
+
+      // Vertical Check
+      const boundary = wrapperNode.closest('.table-wrapper') || document.body;
+      const boundaryRect = boundary.getBoundingClientRect();
+
+      const spaceAbove = rect.top - boundaryRect.top;
+      const spaceBelow = boundaryRect.bottom - rect.bottom;
+      const isTopRequested = newPos === 'top' || newPos === 'left' || newPos === 'right';
+
+      if (isTopRequested && spaceAbove < tooltipHeight + 10 && spaceBelow >= tooltipHeight + 10) {
+        if (newPos === 'top') newPos = 'bottom';
+        else if (newPos === 'left') newPos = 'bottom-left';
+        else if (newPos === 'right') newPos = 'bottom-right';
+      } else if (!isTopRequested && spaceBelow < tooltipHeight + 10 && spaceAbove >= tooltipHeight + 10) {
+        if (newPos === 'bottom') newPos = 'top';
+        else if (newPos === 'bottom-left') newPos = 'left';
+        else if (newPos === 'bottom-right') newPos = 'right';
+      }
+
+      // Horizontal Check
+      const spaceLeft = (rect.left + rect.width / 2) - boundaryRect.left;
+      const spaceRight = boundaryRect.right - (rect.right - rect.width / 2);
+      const safeMargin = 12;
+
+      if (newPos === 'top' || newPos === 'bottom') {
+        if (spaceLeft < tooltipWidth / 2 + safeMargin) {
+          newPos = newPos === 'top' ? 'left' : 'bottom-left';
+        } else if (spaceRight < tooltipWidth / 2 + safeMargin) {
+          newPos = newPos === 'top' ? 'right' : 'bottom-right';
+        }
+      }
+
+      computedPos = newPos;
     }
   }
 </script>
@@ -20,13 +80,17 @@
     class="tooltip-wrapper" 
     class:hover-enabled={(!onlyIfTruncated || isTruncated) && enabled}
     class:caps={caps}
-    data-tooltip-pos={pos}
+    data-tooltip-pos={computedPos}
     data-tooltip={text}
-    onmouseenter={checkTruncation}
+    onmouseenter={handleMouseEnter}
+    bind:this={wrapperNode}
   >
     {@render children()}
     {#if enabled}
-      <div class="tooltip-content {variant === 'neon' ? 'glass-panel neon' : ''}">
+      <div 
+        class="tooltip-content {variant === 'neon' ? 'glass-panel neon' : ''}"
+        bind:this={contentNode}
+      >
         {text}
       </div>
     {/if}

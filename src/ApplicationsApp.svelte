@@ -5,10 +5,14 @@
   import { parseApiError } from "./utils/errors.js";
   import Overlay from "./components/ui/Overlay.svelte";
   import Header from "./components/layout/Header.svelte";
+  import Tooltip from "./components/ui/Tooltip.svelte";
+  import Button from "./components/ui/Button.svelte";
+  import { slide } from "svelte/transition";
   import ThemeSwitcher from "./components/ui/ThemeSwitcher.svelte";
   import HelpButton from "./components/ui/HelpButton.svelte";
   import ApplicationsHelp from "./components/applications/ApplicationsHelp.svelte";
   import ApplicationsGrid from "./components/applications/ApplicationsGrid.svelte";
+  import ApplicationsFooter from "./components/applications/ApplicationsFooter.svelte";
 
   let isLoading = $state(true);
   /** @type {{title: string, body: string} | null} */
@@ -16,6 +20,17 @@
 
   /** @type {any[]} */
   let participants = $state([]);
+
+  /** @type {Record<string, { value: string, details?: { catText: string, catIcon?: string, hideCatText?: boolean, valText: string, valIcon?: string, hideValText?: boolean } | null }>} */
+  let activeFilters = $state({});
+  let intersectionCount = $state(0);
+  let filterMode = $state(false);
+
+  $effect(() => {
+    if (Object.keys(activeFilters).length === 0) {
+      filterMode = false;
+    }
+  });
 
   onMount(async () => {
     try {
@@ -64,10 +79,21 @@
         </div>
       {:else}
         <div class="content-wrapper">
-          <ApplicationsGrid {participants} />
+          <ApplicationsGrid 
+            {participants} 
+            bind:activeFilters
+            bind:intersectionCount
+            {filterMode}
+          />
         </div>
       {/if}
     </div>
+
+    <ApplicationsFooter
+      bind:activeFilters
+      bind:filterMode
+      {intersectionCount}
+    />
   </div>
 </div>
 
@@ -163,4 +189,6 @@
     margin: 0;
     text-align: center;
   }
+
+  /* Footer styles have been moved to ApplicationsFooter.svelte */
 </style>

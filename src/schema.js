@@ -356,6 +356,29 @@ export function validateStepData(step, data) {
 export function sanitizeFormData(data) {
   const payload = JSON.parse(JSON.stringify(data));
 
+  const sanitizeText = (str) => {
+    if (typeof str === "string") {
+      return str.trim().replace(/\s+/g, " ");
+    }
+    return str;
+  };
+
+  if (payload.applicant) {
+    if (payload.applicant.nickname) payload.applicant.nickname = sanitizeText(payload.applicant.nickname);
+    if (payload.applicant.firstName) payload.applicant.firstName = sanitizeText(payload.applicant.firstName);
+  }
+
+  if (payload.guests && Array.isArray(payload.guests)) {
+    payload.guests.forEach((guest) => {
+      if (guest.nickname) guest.nickname = sanitizeText(guest.nickname);
+      if (guest.firstName) guest.firstName = sanitizeText(guest.firstName);
+    });
+  }
+
+  if (payload.transportTo?.city) {
+    payload.transportTo.city = sanitizeText(payload.transportTo.city);
+  }
+
   if (payload.applicationType === APPLICATION_TYPE.INDIVIDUAL) {
     payload.additionalGuestsCount = 0;
     payload.guests = [];

@@ -14,17 +14,22 @@
         <span>{dict.options.globalHints.filterPrefix}<md-icon class="inline-icon">directions_car</md-icon>|<md-icon class="inline-icon">hail</md-icon>|<md-icon class="inline-icon">directions_bus</md-icon>|<md-icon class="inline-icon">directions_walk</md-icon>{dict.options.globalHints.filterSuffix}</span>
       </HintBox>
       <HintBox>
+        <RichText content={dict.options.globalHints.activeFilters} />
+      </HintBox>
+      <HintBox>
+        <!-- prettier-ignore -->
+        <span>{dict.options.globalHints.filterModePrefix}<md-icon class="inline-icon">visibility</md-icon>{dict.options.globalHints.filterModeSuffix}</span>
+      </HintBox>
+      <HintBox>
+        <!-- prettier-ignore -->
+        <span>{dict.options.globalHints.pinPrefix}<md-icon class="inline-icon" style="transform: rotate(45deg); font-size: 1.2em;">push_pin</md-icon>{dict.options.globalHints.pinSuffix}</span>
+      </HintBox>
+      <HintBox>
         <RichText content={dict.options.globalHints.select} />
       </HintBox>
       <div class="desktop-only">
         <HintBox>
-          {dict.options.globalHints.multiSelectPrefix}<Kbd>Ctrl</Kbd> /
-          <Kbd>Cmd</Kbd>{dict.options.globalHints.multiSelectSuffix}
-        </HintBox>
-      </div>
-      <div class="desktop-only">
-        <HintBox>
-          {dict.options.globalHints.rangeSelectPrefix}<Kbd variant="accent">Shift</Kbd>{dict.options.globalHints.rangeSelectSuffix}
+          {dict.options.globalHints.hotkeysPrefix}<Kbd>Ctrl</Kbd> / <Kbd>Cmd</Kbd>{dict.options.globalHints.hotkeysMiddle}<Kbd variant="accent">Shift</Kbd>{dict.options.globalHints.hotkeysSuffix}
         </HintBox>
       </div>
     </div>

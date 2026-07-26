@@ -3,12 +3,20 @@
   import HintBox from "../ui/HintBox.svelte";
   import { dict } from "../../locales/ru.js";
 
-  let { participants } = $props();
+  let { 
+    participants,
+    activeFilters = $bindable({}),
+    intersectionCount = $bindable(0),
+    filterMode = false
+  } = $props();
 
   let headerHeight = $state(0);
   /** @type {Set<number>} */
   let selectedRowIndices = $state(new Set());
   let lastSelectedIndex = $state(-1);
+
+  /** @type {string | null} */
+  let hoveredFilter = $state(null);
 
   // Group helpers
   let groupSizes = $derived(
@@ -78,12 +86,7 @@
     { key: "Свой ход", icon: "directions_walk", id: "self" },
   ];
 
-  /** @type {string | null} */
-  let hoveredFilter = $state(null);
-  /** @type {string | null} */
-  let fixedFilter = $state(null);
-
-  let activeFilter = $derived(fixedFilter || hoveredFilter);
+  // activeFilter is derived above
 
   /**
    * @param {MouseEvent} event
@@ -120,37 +123,33 @@
 
   /** @param {string} key */
   function handleHeaderClick(key) {
-    selectedRowIndices = new Set(); // clear selected rows when clicking a filter
+    selectedRowIndices = new Set();
     lastSelectedIndex = -1;
-    if (fixedFilter === key) {
-      fixedFilter = null;
+    const [group, value] = key.split("_");
+    if (activeFilters[group]?.value === value) {
+      const newFilters = { ...activeFilters };
+      delete newFilters[group];
+      activeFilters = newFilters;
     } else {
-      fixedFilter = key;
+      activeFilters = {
+        ...activeFilters,
+        [group]: { value, details: getFilterDetails(key) }
+      };
     }
   }
 
-  /** @param {MouseEvent} event */
-  function handleWindowClick(event) {
-    if (fixedFilter) {
-      const target = /** @type {HTMLElement} */ (event.target);
-      if (
-        !target.closest(".interactive-th") &&
-        !target.closest(".highlighted")
-      ) {
-        fixedFilter = null;
-      }
-    }
-  }
+
 
   // Compute counts for methods
   let methodCounts = $derived.by(() => {
-    /** @type {{ to: Record<string, number>, from: Record<string, number>, toDay: Record<string, number>, fromDay: Record<string, number>, toSeats: number }} */
+    /** @type {{ to: Record<string, number>, from: Record<string, number>, toDay: Record<string, number>, fromDay: Record<string, number>, toSeats: number, toCity: Record<string, number> }} */
     let counts = {
       to: { Водитель: 0, Пассажир: 0, Маршрутка: 0, "Свой ход": 0 },
       from: { Водитель: 0, Пассажир: 0, Маршрутка: 0, "Свой ход": 0 },
       toDay: {},
       fromDay: {},
       toSeats: 0,
+      toCity: {},
     };
     for (const p of participants) {
       if (p.transportTo?.method) {
@@ -172,9 +171,98 @@
       if (p.transportTo?.method === "Водитель" && p.transportTo?.seats) {
         counts.toSeats++;
       }
+      if (p.transportTo?.city) {
+        const cityKey = p.transportTo.city.trim().toLowerCase();
+        counts.toCity[cityKey] = (counts.toCity[cityKey] || 0) + 1;
+      }
     }
     return counts;
   });
+
+  /**
+   * @param {any} p
+   */
+    function isRowActiveOrHovered(p) {
+    if (Object.keys(activeFilters).length === 0 && !hoveredFilter) return false;
+    
+    if (Object.keys(activeFilters).length > 0) {
+      for (const [group, filter] of Object.entries(activeFilters)) {
+        if (!isRowHighlighted(p, `${group}_${filter.value}`)) return false;
+      }
+    }
+    
+    if (hoveredFilter) {
+      if (!isRowHighlighted(p, hoveredFilter)) return false;
+    } else if (filterMode) {
+      return false;
+    }
+    
+    return true;
+  }
+
+  /**
+   * @param {any} p
+   */
+  function isRowHighlightedAll(p) {
+    if (Object.keys(activeFilters).length === 0) return false;
+    for (const [group, filter] of Object.entries(activeFilters)) {
+      if (!isRowHighlighted(p, `${group}_${filter.value}`)) return false;
+    }
+    return true;
+  }
+
+  $effect(() => {
+    let count = 0;
+    if (Object.keys(activeFilters).length > 0) {
+      for (const p of participants) {
+        if (isRowHighlightedAll(p)) count++;
+      }
+    }
+    intersectionCount = count;
+  });
+
+  /**
+   * @param {string | null} filterKey
+   * @returns {{ catText: string, catIcon?: string, hideCatText?: boolean, valText: string, valIcon?: string, hideValText?: boolean, sortOrder?: number } | null}
+   */
+  function getFilterDetails(filterKey) {
+    if (!filterKey) return null;
+    const [direction, value] = filterKey.split("_");
+    
+    if (direction === "toCity") return { catText: "ТУДА", hideCatText: true, valText: value.charAt(0).toUpperCase() + value.slice(1), sortOrder: 2 };
+    if (direction === "firstName") return { catText: "Имя", hideCatText: true, valText: value.charAt(0).toUpperCase() + value.slice(1), sortOrder: 99 };
+
+    const dirStr = direction.startsWith("to") ? "ТУДА" : "ОБРАТНО";
+    
+    let typeStr = "Способ";
+    let sortOrder = 1;
+    if (direction.includes("Day")) { typeStr = "День"; sortOrder = 3; }
+    if (direction.includes("Time")) { typeStr = "Время"; sortOrder = 4; }
+    
+    let displayValue = value;
+    /** @type {string | undefined} */
+    let valIcon = undefined;
+    if (typeStr === "Способ") {
+      const match = transportMethods.find(tm => tm.key === value);
+      if (match) {
+        displayValue = dict.options.transportMethodsTo[match.id];
+        valIcon = match.icon;
+      }
+    } else if (typeStr === "День") {
+      /** @type {Record<string, string>} */
+      const dayMap = { "Пятница": "ПТ", "Суббота": "СБ", "Воскресенье": "ВС" };
+      displayValue = dayMap[value] || value;
+    }
+    
+    return {
+      catText: dirStr,
+      hideCatText: true,
+      valText: displayValue,
+      valIcon: valIcon,
+      hideValText: typeStr === "Способ",
+      sortOrder
+    };
+  }
 
   /**
    * @param {any} p
@@ -184,8 +272,12 @@
     if (!filterKey) return false;
     const [dir, val] = filterKey.split("_");
 
+    if (dir === "toCity") return p.transportTo?.city?.trim().toLowerCase() === val;
+    if (dir === "firstName") return p.firstName?.trim().toLowerCase() === val;
     if (dir === "toDay") return p.transportTo?.day === val;
     if (dir === "fromDay") return p.transportFrom?.day === val;
+    if (dir === "toTime") return p.transportTo?.time === val;
+    if (dir === "fromTime") return p.transportFrom?.time === val;
     if (dir === "toSeats")
       return p.transportTo?.method === "Водитель" && !!p.transportTo?.seats;
 
@@ -194,47 +286,148 @@
     if (val === "Маршрутка" && actualMethod === "Трансфер") return true;
     return actualMethod === val;
   }
+
+  // --- Pinning & Highlighting State ---
+  let isNumPinned = $state(true);
+  let isNicknamePinned = $state(false);
+  let isNamePinned = $state(false);
+  
+  let widthNum = $state(0);
+  let widthNickname = $state(0);
+  let widthName = $state(0);
+
+  /** @param {string} filterKey */
+  function isFilterActive(filterKey) {
+    if (!filterKey) return false;
+    const [group, value] = filterKey.split("_");
+    return activeFilters[group]?.value === value;
+  }
+
+  /** @param {string} filterKey */
+  function isFilterHoveredOrActive(filterKey) {
+    if (hoveredFilter === filterKey) return true;
+    return isFilterActive(filterKey);
+  }
+
+  // --- Scroll State for Dynamic Shadows ---
+  let isScrolledX = $state(false);
+  let isScrolledY = $state(false);
+
+  const lastPinnedCol = $derived(
+    isNamePinned ? 'name' : (isNicknamePinned ? 'nickname' : (isNumPinned ? 'num' : null))
+  );
 </script>
 
 
-{#snippet filterHeader(/** @type {string} */ filterKey, /** @type {string} */ tooltipText, /** @type {string} */ content, isIcon = false, tooltipPos = "top")}
+{#snippet filterHeader(/** @type {string} */ filterKey, /** @type {string} */ content, isIcon = false)}
   <th
     class="icon-th interactive-th {isIcon ? '' : 'fw-bold'}"
-    class:active-filter={fixedFilter === filterKey}
+    class:active-filter={isFilterActive(filterKey)}
     onmouseenter={() => (hoveredFilter = filterKey)}
     onmouseleave={() => (hoveredFilter = null)}
     onclick={() => handleHeaderClick(filterKey)}
   >
-    <Tooltip pos={tooltipPos} text={tooltipText}>
-      {#if isIcon}
-        <md-icon>{content}</md-icon>
-      {:else}
-        {content}
-      {/if}
-    </Tooltip>
+    {#if isIcon}
+      <Tooltip 
+        pos="top" 
+        text={getFilterDetails(filterKey)?.valText || ""} 
+        caps={false}
+      >
+        <div class="header-icon-wrapper">
+          <md-icon>{content}</md-icon>
+        </div>
+      </Tooltip>
+    {:else}
+      {content}
+    {/if}
   </th>
 {/snippet}
 
 {#snippet statusCell(/** @type {string} */ filterKey, /** @type {{ active: boolean, icon: string }} */ status)}
   <td
     class="text-center"
-    class:highlighted-col={activeFilter === filterKey}
+    class:highlighted-col={isFilterHoveredOrActive(filterKey)}
   >
     <md-icon class="status-icon {status.active ? 'active' : ''}">{status.icon}</md-icon>
   </td>
 {/snippet}
 
-<svelte:window onclick={handleWindowClick} />
+
 
 <div class="table-wrapper glass-panel">
-  <div class="table-container" style="--header-height: {headerHeight}px">
-    <table class="participants-table">
+
+  <div 
+    class="table-container" 
+    style="--header-height: {headerHeight}px"
+    onscroll={(e) => {
+      isScrolledX = e.currentTarget.scrollLeft > 0;
+      isScrolledY = e.currentTarget.scrollTop > 0;
+    }}
+  >
+    <table 
+      class="participants-table"
+      class:is-scrolled-x={isScrolledX}
+      class:is-scrolled-y={isScrolledY}
+    >
       <thead bind:clientHeight={headerHeight}>
         <!-- ROW 1 -->
         <tr>
-          <th rowspan="3" class="sticky-col sticky-num">№</th>
-          <th rowspan="3" class="col-name">Никнейм</th>
-          <th rowspan="3" class="col-real-name">Имя</th>
+          <th 
+            rowspan="3" 
+            class="sticky-num" 
+            class:sticky-col={isNumPinned} 
+            class:last-pinned={lastPinnedCol === 'num'} 
+            bind:clientWidth={widthNum}
+          >
+            <div class="th-content-pin">
+              №
+              <div class="pin-wrapper">
+                <Tooltip pos="top" text={isNumPinned ? "Открепить колонку" : "Закрепить колонку"} caps={false}>
+                  <button class="pin-btn" class:active={isNumPinned} onclick={() => isNumPinned = !isNumPinned} aria-label="Закрепить колонку №">
+                    <md-icon>push_pin</md-icon>
+                  </button>
+                </Tooltip>
+              </div>
+            </div>
+          </th>
+          <th 
+            rowspan="3" 
+            class="col-name" 
+            class:sticky-col={isNicknamePinned}
+            class:last-pinned={lastPinnedCol === 'nickname'}
+            style:left="{isNicknamePinned ? (isNumPinned ? widthNum : 0) + 'px' : ''}"
+            bind:clientWidth={widthNickname}
+          >
+            <div class="th-content-pin">
+              Никнейм
+              <div class="pin-wrapper">
+                <Tooltip pos="left" text={isNicknamePinned ? "Открепить колонку" : "Закрепить колонку"} caps={false}>
+                  <button class="pin-btn" class:active={isNicknamePinned} onclick={() => isNicknamePinned = !isNicknamePinned} aria-label="Закрепить колонку Никнейм">
+                    <md-icon>push_pin</md-icon>
+                  </button>
+                </Tooltip>
+              </div>
+            </div>
+          </th>
+          <th 
+            rowspan="3" 
+            class="col-real-name"
+            class:sticky-col={isNamePinned}
+            class:last-pinned={lastPinnedCol === 'name'}
+            style:left="{isNamePinned ? (isNumPinned ? widthNum : 0) + (isNicknamePinned ? widthNickname : 0) + 'px' : ''}"
+            bind:clientWidth={widthName}
+          >
+            <div class="th-content-pin">
+              Имя
+              <div class="pin-wrapper">
+                <Tooltip pos="left" text={isNamePinned ? "Открепить колонку" : "Закрепить колонку"} caps={false}>
+                  <button class="pin-btn" class:active={isNamePinned} onclick={() => isNamePinned = !isNamePinned} aria-label="Закрепить колонку Имя">
+                    <md-icon>push_pin</md-icon>
+                  </button>
+                </Tooltip>
+              </div>
+            </div>
+          </th>
           <th colspan="10" class="group-header">ТУДА</th>
           <th colspan="8" class="group-header">ОБРАТНО</th>
         </tr>
@@ -264,22 +457,22 @@
         <tr>
           <!-- Туда Способ -->
           {#each transportMethods as tm}
-            {@render filterHeader(`to_${tm.key}`, `${dict.options.transportMethodsTo[tm.id]}: ${methodCounts.to[tm.key] || 0}`, tm.icon, true)}
+            {@render filterHeader(`to_${tm.key}`, tm.icon, true)}
           {/each}
 
           <!-- Туда День -->
           {#each [0, 1, 2] as i}
-            {@render filterHeader(`toDay_${dict.options.days[i]}`, `${dict.options.days[i]}: ${methodCounts.toDay[dict.options.days[i]] || 0}`, ["Пт", "Сб", "Вс"][i], false)}
+            {@render filterHeader(`toDay_${dict.options.days[i]}`, ["Пт", "Сб", "Вс"][i], false)}
           {/each}
 
           <!-- Обратно Способ -->
           {#each transportMethods as tm}
-            {@render filterHeader(`from_${tm.key}`, `${dict.options.transportMethodsTo[tm.id]}: ${methodCounts.from[tm.key] || 0}`, tm.icon, true, tm.key === 'Свой ход' ? 'right' : 'top')}
+            {@render filterHeader(`from_${tm.key}`, tm.icon, true)}
           {/each}
 
           <!-- Обратно День -->
           {#each [0, 1, 2] as i}
-            {@render filterHeader(`fromDay_${dict.options.days[i]}`, `${dict.options.days[i]}: ${methodCounts.fromDay[dict.options.days[i]] || 0}`, ["Пт", "Сб", "Вс"][i], false, 'right')}
+            {@render filterHeader(`fromDay_${dict.options.days[i]}`, ["Пт", "Сб", "Вс"][i], false)}
           {/each}
         </tr>
       </thead>
@@ -321,23 +514,32 @@
             p.transportFrom.day,
             dict.options.days[2],
           )}
-          {@const activeFilter = fixedFilter || hoveredFilter}
           <!-- svelte-ignore a11y_click_events_have_key_events -->
           <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
           <tr
+            class:hidden-row={filterMode && Object.keys(activeFilters).length > 0 && !isRowHighlightedAll(p)}
             class:selected={selectedRowIndices.has(i)}
-            class:highlighted={isRowHighlighted(p, activeFilter)}
+            class:highlighted={isRowActiveOrHovered(p)}
             onclick={(e) => handleRowClick(e, i)}
             onmousedown={(e) => e.shiftKey && e.preventDefault()}
           >
             <!-- № -->
-            <td class="sticky-col sticky-num text-center"
-              ><span>{i + 1}</span></td
+            <td 
+              class="sticky-num text-center"
+              class:sticky-col={isNumPinned}
+              class:last-pinned={lastPinnedCol === 'num'}
             >
+              <span>{i + 1}</span>
+            </td>
 
             <!-- Никнейм / Команда -->
             <!-- Никнейм -->
-            <td class="col-name">
+            <td 
+              class="col-name"
+              class:sticky-col={isNicknamePinned}
+              class:last-pinned={lastPinnedCol === 'nickname'}
+              style:left="{isNicknamePinned ? (isNumPinned ? widthNum : 0) + 'px' : ''}"
+            >
               <div class="user-meta">
                 <div class="user-details">
                   <div class="name-with-icon">
@@ -354,7 +556,12 @@
             </td>
 
             <!-- Имя -->
-            <td class="col-real-name">
+            <td 
+              class="col-real-name"
+              class:sticky-col={isNamePinned}
+              class:last-pinned={lastPinnedCol === 'name'}
+              style:left="{isNamePinned ? (isNumPinned ? widthNum : 0) + (isNicknamePinned ? widthNickname : 0) + 'px' : ''}"
+            >
               <div class="name-with-icon">
                 {#if isMember}
                   <md-icon class="group-icon member">group</md-icon>
@@ -387,7 +594,26 @@
                 <span class="opacity-30">-</span>
               {/if}
             </td>
-            <td>{p.transportTo.city || "-"}</td>
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <td 
+              class="interactive-city-cell" 
+              class:highlighted-col={isFilterHoveredOrActive('toCity_' + (p.transportTo?.city?.trim().toLowerCase() || ''))}
+              onclick={(e) => { 
+                e.stopPropagation(); 
+                if (p.transportTo?.city) {
+                  const clickedCity = p.transportTo.city.trim().toLowerCase();
+                  handleHeaderClick("toCity_" + clickedCity);
+                }
+              }}
+              onmouseenter={() => hoveredFilter = p.transportTo?.city ? `toCity_${p.transportTo.city.trim().toLowerCase()}` : null}
+              onmouseleave={() => hoveredFilter = null}
+            >
+              {#if p.transportTo?.city}
+                {p.transportTo.city}
+              {:else}
+                <span class="opacity-30">-</span>
+              {/if}
+            </td>
 
             <!-- ТУДА: День -->
             {#each [0, 1, 2] as i}
@@ -395,7 +621,22 @@
             {/each}
 
             <!-- ТУДА: Время -->
-            <td class="text-center time-cell">{p.transportTo.time || "-"}</td>
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <td 
+              class="text-center time-cell interactive-time-cell"
+              class:highlighted-col={isFilterHoveredOrActive(`toTime_${p.transportTo?.time}`)}
+              onclick={(e) => {
+                e.stopPropagation();
+                if (p.transportTo?.time) {
+                  const key = `toTime_${p.transportTo.time}`;
+                  handleHeaderClick(key);
+                }
+              }}
+              onmouseenter={() => hoveredFilter = p.transportTo?.time ? `toTime_${p.transportTo.time}` : null}
+              onmouseleave={() => hoveredFilter = null}
+            >
+              {p.transportTo.time || "-"}
+            </td>
 
             <!-- ОБРАТНО: В, П, М, С -->
             {#each transportMethods as tm}
@@ -408,7 +649,22 @@
             {/each}
 
             <!-- ОБРАТНО: Время -->
-            <td class="text-center time-cell">{p.transportFrom.time || "-"}</td>
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <td 
+              class="text-center time-cell interactive-time-cell"
+              class:highlighted-col={isFilterHoveredOrActive(`fromTime_${p.transportFrom?.time}`)}
+              onclick={(e) => {
+                e.stopPropagation();
+                if (p.transportFrom?.time) {
+                  const key = `fromTime_${p.transportFrom.time}`;
+                  handleHeaderClick(key);
+                }
+              }}
+              onmouseenter={() => hoveredFilter = p.transportFrom?.time ? `fromTime_${p.transportFrom.time}` : null}
+              onmouseleave={() => hoveredFilter = null}
+            >
+              {p.transportFrom.time || "-"}
+            </td>
           </tr>
         {/each}
       </tbody>
@@ -418,6 +674,7 @@
 
 <style>
   .table-wrapper {
+    position: relative;
     flex: 0 1 auto;
     min-height: 0;
     width: 100%;
@@ -426,6 +683,8 @@
     overflow: hidden;
     transition: var(--transition);
   }
+
+
 
   .table-wrapper:hover {
     border-color: var(--glass-border-hover);
@@ -516,6 +775,25 @@
     z-index: 10;
   }
 
+  /* Drop shadow for the sticky header */
+  thead::after {
+    content: "";
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    width: 100%;
+    height: 12px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.15) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  
+  table.is-scrolled-y thead::after {
+    opacity: 1;
+  }
+
   .participants-table {
     width: 100%;
     border-collapse: separate;
@@ -538,14 +816,15 @@
   /* Fix subpixel gap bleeding in sticky tables */
   thead th {
     font-size: 0.9rem;
+    position: relative; /* Prevent absolute positioned children (like pins) from escaping when not sticky */
     background: var(--bg-color-accent);
     background:
       linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)),
-      color-mix(
-        in srgb,
-        var(--primary-color, var(--primary)) 4%,
-        var(--bg-color-accent)
-      );
+      linear-gradient(
+        color-mix(in srgb, var(--primary-color, var(--primary)) 4%, var(--bg-color-accent)),
+        color-mix(in srgb, var(--primary-color, var(--primary)) 4%, var(--bg-color-accent))
+      ),
+      var(--bg-color);
     box-shadow: 0 1px 0 0
       color-mix(in srgb, var(--text-primary) 15%, var(--bg-color));
     cursor: default;
@@ -566,34 +845,41 @@
 
   /* Zebra striping for rows */
   tbody tr:nth-child(even) td:not(.sticky-col) {
-    background: color-mix(in srgb, var(--text-primary) 3%, transparent);
+    background-image: linear-gradient(
+      color-mix(in srgb, var(--text-primary) 3%, transparent),
+      color-mix(in srgb, var(--text-primary) 3%, transparent)
+    );
   }
 
   tbody tr:nth-child(even) td.sticky-col {
-    background: var(--bg-color-accent);
-    background:
-      linear-gradient(rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.06)),
-      color-mix(
-        in srgb,
-        var(--primary-color, var(--primary)) 4%,
-        var(--bg-color-accent)
-      );
+    background-color: color-mix(in srgb, var(--primary-color, var(--primary)) 4%, var(--bg-color-accent));
+    background-image: linear-gradient(rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.06));
   }
 
   /* Sticky Left Columns */
   .sticky-col {
     position: sticky;
+    transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s, background-color 0.2s;
   }
+  
+  /* Decreasing z-index from left to right prevents subpixel border overlap bugs in Chromium */
+  .sticky-num.sticky-col { z-index: 7; }
+  .col-name.sticky-col { z-index: 6; }
+  .col-real-name.sticky-col { z-index: 5; }
 
   td.sticky-col {
-    background: var(--bg-color-accent);
-    background:
-      linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)),
-      color-mix(
-        in srgb,
-        var(--primary-color, var(--primary)) 4%,
-        var(--bg-color-accent)
-      );
+    background-color: color-mix(in srgb, var(--primary-color, var(--primary)) 4%, var(--bg-color-accent));
+    background-image: linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04));
+  }
+
+  /* Elevate hovered sticky columns so their tooltips don't get clipped by adjacent sticky columns with higher z-index */
+  thead th.sticky-num.sticky-col:hover,
+  thead th.col-name.sticky-col:hover,
+  thead th.col-real-name.sticky-col:hover,
+  tbody td.sticky-num.sticky-col:hover,
+  tbody td.col-name.sticky-col:hover,
+  tbody td.col-real-name.sticky-col:hover {
+    z-index: 30 !important;
   }
 
   .sticky-num {
@@ -609,22 +895,89 @@
   }
 
   .col-name {
-    width: 140px;
-    min-width: 140px;
-    max-width: 140px;
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
     box-sizing: border-box;
   }
 
   .col-real-name {
-    width: 140px;
-    min-width: 140px;
-    max-width: 140px;
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
     box-sizing: border-box;
   }
 
   /* Header sticky corner intersections */
-  thead th.sticky-col {
-    z-index: 20;
+  thead th.sticky-num.sticky-col { z-index: 22; }
+  thead th.col-name.sticky-col { z-index: 21; }
+  thead th.col-real-name.sticky-col { z-index: 20; }
+
+  /* Drop shadow for the last pinned column */
+  .last-pinned::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -10px;
+    width: 10px;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  
+  table.is-scrolled-x .last-pinned::after {
+    opacity: 1;
+  }
+
+  /* Pin Toggle UI */
+  .th-content-pin {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .pin-wrapper {
+    position: absolute;
+    bottom: 0.35rem; /* Match the th padding to sit on the bottom axis */
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .pin-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    opacity: 0.3;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  .pin-btn:hover {
+    opacity: 0.8;
+    background: color-mix(in srgb, var(--text-primary) 10%, transparent);
+  }
+  .pin-btn.active {
+    opacity: 1;
+    color: var(--primary-color, var(--primary));
+  }
+  .pin-btn md-icon {
+    font-size: 1.1rem;
+    --md-icon-size: 1.1rem;
+  }
+
+  /* Interactive City Cell */
+  .interactive-city-cell {
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
   }
 
   /* Mobile: Specific layout overrides */
@@ -659,6 +1012,13 @@
     .mobile-rotate-th {
       text-align: center;
       padding: 0.15rem 0.2rem;
+    }
+
+    .col-name,
+    .col-real-name {
+      width: 100px;
+      min-width: 100px;
+      max-width: 100px;
     }
   }
 
@@ -718,18 +1078,28 @@
     cursor: pointer;
     transition: all 0.2s;
     padding: 0;
-    /* Preserve standard bottom border + Subtle underline to hint interactivity */
-    box-shadow: 
-      0 1px 0 0 color-mix(in srgb, var(--text-primary) 15%, var(--bg-color)),
-      inset 0 -2px 0 0 rgba(255, 255, 255, 0.1);
+    /* Preserve standard bottom border */
+    box-shadow: 0 1px 0 0 color-mix(in srgb, var(--text-primary) 15%, var(--bg-color));
+  }
+
+  .header-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0.15rem 0.2rem;
+    box-sizing: border-box;
   }
 
   .interactive-th.active-filter {
-    background: color-mix(
-      in srgb,
-      var(--primary-color, var(--primary)) 45%,
-      var(--bg-color)
-    );
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)),
+      linear-gradient(
+        color-mix(in srgb, var(--primary-color, var(--primary)) 45%, var(--bg-color)),
+        color-mix(in srgb, var(--primary-color, var(--primary)) 45%, var(--bg-color))
+      ),
+      var(--bg-color);
     box-shadow: 
       0 1px 0 0 color-mix(in srgb, var(--text-primary) 15%, var(--bg-color)),
       inset 0 -2px 0 0 var(--primary-color, var(--primary));
@@ -737,11 +1107,13 @@
 
   @media (hover: hover) {
     .interactive-th:hover {
-      background: color-mix(
-        in srgb,
-        var(--primary-color, var(--primary)) 20%,
-        var(--bg-color)
-      );
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04)),
+        linear-gradient(
+          color-mix(in srgb, var(--primary-color, var(--primary)) 20%, var(--bg-color)),
+          color-mix(in srgb, var(--primary-color, var(--primary)) 20%, var(--bg-color))
+        ),
+        var(--bg-color);
       box-shadow: 
         0 1px 0 0 color-mix(in srgb, var(--text-primary) 15%, var(--bg-color)),
         inset 0 -2px 0 0 var(--primary-color, var(--primary));
@@ -757,10 +1129,17 @@
 
     /* Fix row hover effect hiding under sticky columns */
     tbody tr:hover td.sticky-col {
-      background: color-mix(
+      background-color: color-mix(
         in srgb,
         var(--primary-color, var(--primary)) 12%,
-        var(--bg-color)
+        var(--bg-color-accent)
+      );
+    }
+    tbody tr:nth-child(even):hover td.sticky-col {
+      background-color: color-mix(
+        in srgb,
+        var(--primary-color, var(--primary)) 12%,
+        var(--bg-color-accent)
       );
     }
   }
@@ -795,30 +1174,39 @@
   }
 
   tbody tr.highlighted td.sticky-col {
-    background: color-mix(
+    background-color: color-mix(
       in srgb,
       var(--primary-color, var(--primary)) 18%,
-      var(--bg-color)
+      var(--bg-color-accent)
+    ) !important;
+  }
+  tbody tr:nth-child(even).highlighted td.sticky-col {
+    background-color: color-mix(
+      in srgb,
+      var(--primary-color, var(--primary)) 18%,
+      var(--bg-color-accent)
     ) !important;
   }
 
   /* Highlighted Column */
   td.highlighted-col {
-    background: color-mix(
+    background-color: color-mix(
       in srgb,
       var(--primary-color, var(--primary)) 12%,
       transparent
     ) !important;
   }
 
+
   /* Crosshair Intersection */
   tbody tr.highlighted td.highlighted-col {
-    background: color-mix(
+    background-color: color-mix(
       in srgb,
       var(--primary-color, var(--primary)) 25%,
       transparent
     ) !important;
   }
+
 
   /* Selected Row (All devices) */
   tbody tr.selected {
@@ -830,10 +1218,17 @@
   }
 
   tbody tr.selected td.sticky-col {
-    background: color-mix(
+    background-color: color-mix(
       in srgb,
       var(--primary-color, var(--primary)) 18%,
-      var(--bg-color)
+      var(--bg-color-accent)
+    ) !important;
+  }
+  tbody tr:nth-child(even).selected td.sticky-col {
+    background-color: color-mix(
+      in srgb,
+      var(--primary-color, var(--primary)) 18%,
+      var(--bg-color-accent)
     ) !important;
   }
 
@@ -931,5 +1326,26 @@
     font-family: var(--font-family);
     font-variant-numeric: tabular-nums;
     text-align: right;
+  }
+
+  .interactive-city-cell,
+  .interactive-time-cell {
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .header-icon-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .header-icon-wrapper md-icon {
+    font-size: 1.1rem;
+    --md-icon-size: 1.1rem;
+    color: inherit;
+  }
+  
+  .hidden-row {
+    display: none !important;
   }
 </style>
