@@ -20,10 +20,20 @@
       }
       groups[catText].filters.push({ key, filter });
     }
+    /** @type {Record<string, number>} */
+    const keyOrder = {
+      to: 1, toCity: 2, toDay: 3, toTime: 4, toSeats: 5,
+      from: 1, fromCity: 2, fromDay: 3, fromTime: 4, fromSeats: 5
+    };
+
+    for (let group of Object.values(groups)) {
+      group.filters.sort((a, b) => (keyOrder[a.key] || 99) - (keyOrder[b.key] || 99));
+    }
+
     return Object.values(groups).sort((a, b) => {
-      if (a.catText === "ТУДА") return -1;
-      if (b.catText === "ТУДА") return 1;
-      return 0;
+      const orderA = a.catText === "ТУДА" ? 1 : a.catText === "ОБРАТНО" ? 2 : 3;
+      const orderB = b.catText === "ТУДА" ? 1 : b.catText === "ОБРАТНО" ? 2 : 3;
+      return orderA - orderB;
     });
   });
 

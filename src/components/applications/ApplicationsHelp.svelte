@@ -25,6 +25,9 @@
         <span>{dict.options.globalHints.pinPrefix}<md-icon class="inline-icon" style="transform: rotate(45deg); font-size: 1.2em;">push_pin</md-icon>{dict.options.globalHints.pinSuffix}</span>
       </HintBox>
       <HintBox>
+        <RichText content={dict.options.globalHints.cellFilter} />
+      </HintBox>
+      <HintBox>
         <RichText content={dict.options.globalHints.select} />
       </HintBox>
       <div class="desktop-only">
@@ -42,10 +45,39 @@
     --help-padding: var(--gap-section);
   }
 
+  .hints-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--help-gap);
+    max-height: 40vh; /* Roughly half the table height */
+    overflow-y: auto;
+    /* Компенсация: 6px скроллбар + 2px отступ block-content = 8px */
+    padding-top: var(--help-padding);
+    padding-bottom: var(--help-padding);
+    padding-left: var(--help-padding);
+    padding-right: calc(var(--help-padding) - 8px);
+  }
+  
+  .hints-container::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .hints-container::-webkit-scrollbar-track {
+    background: transparent;
+    margin-bottom: 6px; /* Половина радиуса скругления (12px / 2) */
+  }
+  .hints-container::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+  }
+
   @media (max-width: 600px) {
     .applications-help {
       --help-gap: var(--gap-sm);
       --help-padding: var(--gap-fields);
+    }
+    .hints-container {
+      max-height: 50dvh; /* Ровно половина экрана */
     }
   }
 
@@ -61,7 +93,8 @@
   }
 
   .applications-help :global(.block-content) {
-    padding: var(--help-padding) !important;
+    padding: 0 !important;
+    padding-right: 2px !important; /* tiny gap so scrollbar doesn't clip border radius perfectly */
   }
 
   /* Reset Block background since Popover provides glass panel */

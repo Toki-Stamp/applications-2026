@@ -50,7 +50,7 @@
     background: color-mix(in srgb, var(--bg-color) 70%, transparent);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    z-index: 50;
+    z-index: 60;
     border-bottom: 1px solid var(--border-color);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
   }
