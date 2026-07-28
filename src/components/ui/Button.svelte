@@ -48,7 +48,7 @@
     font-size: var(--text-base);
     font-weight: var(--font-weight-bold);
     font-family: var(--font-family);
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     cursor: pointer;
     transition: all 0.3s ease;
     text-transform: uppercase;

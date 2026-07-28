@@ -42,7 +42,7 @@
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid color-mix(in srgb, var(--primary) 25%, transparent);
     border-left: 4px solid var(--primary);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: calc(var(--element-py) * 0.75) var(--element-px);
     gap: var(--gap-sm);
     color: var(--text-primary);

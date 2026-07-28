@@ -15,7 +15,7 @@
     background: color-mix(in srgb, var(--primary) 10%, transparent);
     border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
     border-bottom: 2px solid color-mix(in srgb, var(--primary) 60%, transparent);
-    border-radius: 4px;
+    border-radius: var(--radius-xs);
     padding: 0.15rem 0.4rem;
     font-size: 0.75rem;
     font-family: var(--font-family);

@@ -151,7 +151,7 @@
   }
 
   .footer-content {
-    max-width: 1200px;
+    max-width: var(--table-max-width);
     margin: 0 auto;
     padding: 0.75rem var(--gap-layout);
     display: flex;

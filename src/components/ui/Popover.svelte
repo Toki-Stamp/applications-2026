@@ -65,7 +65,7 @@
     box-shadow:
       0 10px 40px -10px rgba(0, 0, 0, 0.5),
       0 0 30px color-mix(in srgb, var(--primary) 20%, transparent);
-    border-radius: 12px;
+    border-radius: var(--border-radius);
     position: relative;
     /* allow scrolling inside if needed, but child should handle it */
     overflow: hidden; 

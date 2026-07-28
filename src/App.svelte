@@ -453,7 +453,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 800px;
+    max-width: var(--form-max-width);
     margin: 0 auto;
     padding: var(--gap-layout) calc(var(--gap-layout) - var(--scrollbar-width))
       var(--gap-layout) var(--gap-layout);

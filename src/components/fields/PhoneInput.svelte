@@ -357,7 +357,7 @@
     height: 56px;
     background: transparent;
     border: 1px solid var(--input-border-color);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -407,8 +407,8 @@
     width: 100%;
     background-color: var(--bg-color-accent);
     border: 1px solid var(--glass-border);
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
     z-index: 1000;
     display: flex;
     flex-direction: column;

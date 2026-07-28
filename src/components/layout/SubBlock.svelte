@@ -23,7 +23,7 @@
     background-color: rgba(255, 255, 255, 0.02);
     border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
     border-left: 4px solid var(--accent);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     box-shadow: var(--shadow-sm);
     position: relative;
   }
@@ -46,7 +46,7 @@
     align-items: center;
     gap: 0.5rem;
 
-    border-radius: 8px 8px 0 0;
+    border-radius: calc(var(--radius-sm) - 1px) calc(var(--radius-sm) - 1px) 0 0;
     position: sticky;
     z-index: 20;
   }

@@ -33,8 +33,17 @@
   /* Typography */
   --font-family: "JetBrains Mono", monospace;
   /* Layout Dimensions */
-  --max-width: 700px;
-  --border-radius: 16px;
+  --form-max-width: 800px;
+  --table-max-width: 1200px;
+
+  /* Border Radius System */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  --border-radius: var(--radius-lg);
+
   --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   --sticky-block-offset: 67px;
   --sticky-section-offset: 116px;

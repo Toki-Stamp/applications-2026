@@ -122,7 +122,7 @@
     caret-color: var(--primary);
     background-color: transparent;
     border: 1px solid var(--input-border-color);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     resize: none;
     outline: none;
     overflow: hidden; /* Hide scrollbar since it grows infinitely */

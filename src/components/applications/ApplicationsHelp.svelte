@@ -64,7 +64,8 @@
   }
   .hints-container::-webkit-scrollbar-track {
     background: transparent;
-    margin-bottom: 6px; /* Половина радиуса скругления (12px / 2) */
+    margin-top: 8px;
+    margin-bottom: 8px; /* Половина радиуса скругления */
   }
   .hints-container::-webkit-scrollbar-thumb {
     background: var(--primary);
@@ -90,6 +91,7 @@
   .applications-help :global(.block-title) {
     padding-left: var(--help-padding);
     padding-right: var(--help-padding);
+    border-radius: calc(var(--border-radius) - 1px) calc(var(--border-radius) - 1px) 0 0;
   }
 
   .applications-help :global(.block-content) {

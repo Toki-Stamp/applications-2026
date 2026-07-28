@@ -113,7 +113,7 @@
   }
 
   .footer-content {
-    max-width: 800px;
+    max-width: var(--form-max-width);
     margin: 0 auto;
     padding: var(--gap-fields) var(--layout-px-base);
   }

@@ -111,7 +111,7 @@
     flex: 1;
     width: 100%;
     min-height: 0;
-    --header-max-width: 1200px;
+    --header-max-width: var(--table-max-width);
   }
 
   .applications-body {
@@ -135,7 +135,7 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    max-width: 1200px;
+    max-width: var(--table-max-width);
     width: 100%;
     margin: 0 auto;
   }
