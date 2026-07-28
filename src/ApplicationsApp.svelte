@@ -13,6 +13,7 @@
   import ApplicationsHelp from "./components/applications/ApplicationsHelp.svelte";
   import ApplicationsGrid from "./components/applications/ApplicationsGrid.svelte";
   import ApplicationsFooter from "./components/applications/ApplicationsFooter.svelte";
+  import HourglassLoader from "./components/ui/HourglassLoader.svelte";
 
   let isLoading = $state(true);
   /** @type {{title: string, body: string} | null} */
@@ -66,9 +67,7 @@
     <div class="app-body applications-body">
       {#if isLoading}
         <Overlay variant="loading" absolute={true} zIndex={100}>
-          <md-icon class="flipping large-icon text-primary"
-            >hourglass_empty</md-icon
-          >
+          <HourglassLoader size="64px" class="text-primary large-icon" />
           <p class="loading-text">{dict.common.loadingList}</p>
         </Overlay>
       {:else if error}
@@ -189,6 +188,4 @@
     margin: 0;
     text-align: center;
   }
-
-  /* Footer styles have been moved to ApplicationsFooter.svelte */
 </style>

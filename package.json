@@ -7,6 +7,8 @@
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
+    "fetch-icon": "node scripts/fetch-icon.js",
+    "clean-icons": "node scripts/fetch-icon.js --clean",
     "format": "prettier --write ."
   },
   "devDependencies": {

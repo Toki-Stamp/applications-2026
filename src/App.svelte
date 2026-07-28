@@ -14,6 +14,7 @@
   import ThemeSwitcher from "./components/ui/ThemeSwitcher.svelte";
   import Footer from "./components/layout/Footer.svelte";
   import Button from "./components/ui/Button.svelte";
+  import HourglassLoader from "./components/ui/HourglassLoader.svelte";
 
   import {
     Intro,
@@ -278,8 +279,7 @@
 <main id="app" class:is-submitting={isSubmitting}>
   {#if isSubmitting}
     <Overlay variant="loading" absolute={true} zIndex={1000}>
-      <md-icon class="flipping large-icon text-primary">hourglass_empty</md-icon
-      >
+      <HourglassLoader size="64px" class="text-primary large-icon" />
       <p class="submit-text">{dict.common.submitting}</p>
     </Overlay>
   {/if}

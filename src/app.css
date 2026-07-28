@@ -2,6 +2,27 @@
 
 @import "./design-tokens.css";
 
+md-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+  contain: content;
+  font-style: normal;
+  line-height: 1;
+}
+
+md-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  display: block;
+}
+
+
 md-outlined-text-field {
   --md-outlined-text-field-outline-color: var(--input-border-color);
   --md-outlined-text-field-hover-outline-color: var(--primary-hover);
