@@ -24,7 +24,7 @@
     border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
     border-left: 4px solid var(--accent);
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
     position: relative;
   }
 

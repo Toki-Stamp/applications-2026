@@ -22,6 +22,7 @@
     position: relative;
     z-index: 10;
     overflow: visible;
+    box-shadow: var(--shadow-md);
     transition: var(--transition);
   }
 
@@ -34,9 +35,7 @@
 
   .block-card:hover {
     border-color: var(--glass-border-hover);
-    box-shadow:
-      0 10px 40px -10px rgba(0, 0, 0, 0.3),
-      0 0 20px rgba(139, 92, 246, 0.1);
+    box-shadow: var(--shadow-lg), var(--shadow-glow-primary);
   }
 
   .block-title {
@@ -76,9 +75,7 @@
   @media (max-width: 600px) {
     .block-card {
       border-color: var(--glass-border-hover);
-      box-shadow:
-        0 10px 40px -10px rgba(0, 0, 0, 0.3),
-        0 0 20px rgba(139, 92, 246, 0.1);
+      box-shadow: var(--shadow-md);
     }
 
     .block-title {

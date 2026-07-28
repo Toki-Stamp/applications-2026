@@ -50,6 +50,13 @@
   --z-modals: 100;
   --z-tooltips: 1000;
 
+  /* Elevation & Shadow Tokens (Unified System) */
+  --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.15), 0 1px 4px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 8px 24px -6px rgba(0, 0, 0, 0.25), 0 4px 12px -4px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 16px 40px -8px rgba(0, 0, 0, 0.35), 0 8px 20px -6px rgba(0, 0, 0, 0.2);
+  --shadow-glow-primary: 0 0 20px -2px var(--primary-glow);
+  --shadow-glow-accent: 0 0 20px -2px var(--accent-glow);
+
   /* Typography Scale */
   --text-xs: 0.75rem;    /* 12px */
   --text-sm: 0.85rem;    /* ~14px */

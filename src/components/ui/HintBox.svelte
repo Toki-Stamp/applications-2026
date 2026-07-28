@@ -47,7 +47,7 @@
     gap: var(--gap-sm);
     color: var(--text-primary);
     font-size: var(--text-base);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--shadow-sm);
   }
 
   .hint-box.dismissible {
