@@ -286,8 +286,14 @@ h1::after {
     color-mix(in srgb, var(--bg-color-accent) 85%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid transparent;
+  transition: box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+}
+
+.glass-header.is-stuck {
   box-shadow: var(--shadow-header);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom-color: var(--border-color);
 }
 
 .glass-header-primary {

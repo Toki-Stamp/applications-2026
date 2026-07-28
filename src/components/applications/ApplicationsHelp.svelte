@@ -4,11 +4,17 @@
   import RichText from "../ui/RichText.svelte";
   import Kbd from "../ui/Kbd.svelte";
   import { dict } from "../../locales/ru.js";
+
+  let isScrolled = $state(false);
+
+  function handleScroll(e) {
+    isScrolled = e.currentTarget.scrollTop > 2;
+  }
 </script>
 
-<div class="applications-help">
+<div class="applications-help" class:is-scrolled={isScrolled}>
   <Block title="Справка" icon="live_help">
-    <div class="hints-container">
+    <div class="hints-container" onscroll={handleScroll}>
       <HintBox>
         <!-- prettier-ignore -->
         <span>{dict.options.globalHints.filterPrefix}<md-icon class="inline-icon">directions_car</md-icon>|<md-icon class="inline-icon">hail</md-icon>|<md-icon class="inline-icon">directions_bus</md-icon>|<md-icon class="inline-icon">directions_walk</md-icon>{dict.options.globalHints.filterSuffix}</span>
@@ -92,6 +98,11 @@
     padding-left: var(--help-padding);
     padding-right: var(--help-padding);
     border-radius: calc(var(--border-radius) - 1px) calc(var(--border-radius) - 1px) 0 0;
+  }
+
+  .applications-help.is-scrolled :global(.block-title) {
+    box-shadow: var(--shadow-header) !important;
+    border-bottom-color: var(--border-color) !important;
   }
 
   .applications-help :global(.block-content) {

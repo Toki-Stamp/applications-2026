@@ -1,10 +1,29 @@
 <script>
+  import { onMount } from "svelte";
+
   let { title = "", isFirst = false, gap = "1rem", children } = $props();
+
+  /** @type {HTMLDivElement | null} */
+  let sentinelEl = $state(null);
+  let isStuck = $state(false);
+
+  onMount(() => {
+    if (!sentinelEl) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isStuck = !entry.isIntersecting;
+      },
+      { threshold: [1.0] }
+    );
+    observer.observe(sentinelEl);
+    return () => observer.disconnect();
+  });
 </script>
 
 <div class="section-container" class:first-section={isFirst}>
   {#if title}
-    <h3 class="section-title glass-header glass-header-accent">{title}</h3>
+    <div bind:this={sentinelEl} class="sticky-sentinel"></div>
+    <h3 class="section-title glass-header glass-header-accent" class:is-stuck={isStuck}>{title}</h3>
   {/if}
   <div class="section-content" style="--section-gap: {gap};">
     {@render children?.()}
@@ -12,6 +31,15 @@
 </div>
 
 <style>
+  .sticky-sentinel {
+    position: relative;
+    top: -1px;
+    height: 1px;
+    margin-bottom: -1px;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
   .section-container {
     display: flex;
     flex-direction: column;

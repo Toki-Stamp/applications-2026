@@ -1,14 +1,33 @@
 <script>
+  import { onMount } from "svelte";
+
   let {
     title = "",
     stickyLevel = 3, // 2 = stick under main block title, 3 = stick under section title
     children,
   } = $props();
+
+  /** @type {HTMLDivElement | null} */
+  let sentinelEl = $state(null);
+  let isStuck = $state(false);
+
+  onMount(() => {
+    if (!sentinelEl) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isStuck = !entry.isIntersecting;
+      },
+      { threshold: [1.0] }
+    );
+    observer.observe(sentinelEl);
+    return () => observer.disconnect();
+  });
 </script>
 
 <div class="sub-block-card level-{stickyLevel}">
   {#if title}
-    <h3 class="sub-block-title glass-header glass-header-accent">
+    <div bind:this={sentinelEl} class="sticky-sentinel"></div>
+    <h3 class="sub-block-title glass-header glass-header-accent" class:is-stuck={isStuck}>
       {@html title}
     </h3>
   {/if}
@@ -19,6 +38,14 @@
 </div>
 
 <style>
+  .sticky-sentinel {
+    position: relative;
+    top: -1px;
+    height: 1px;
+    margin-bottom: -1px;
+    pointer-events: none;
+    visibility: hidden;
+  }
   .sub-block-card {
     background-color: rgba(255, 255, 255, 0.02);
     border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);

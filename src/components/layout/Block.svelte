@@ -1,10 +1,32 @@
 <script>
+  import { onMount } from "svelte";
+
   let { title = "", icon = "", align = "left", children } = $props();
+
+  /** @type {HTMLDivElement | null} */
+  let sentinelEl = $state(null);
+  let isStuck = $state(false);
+
+  onMount(() => {
+    if (!sentinelEl) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isStuck = !entry.isIntersecting;
+      },
+      { threshold: [1.0] }
+    );
+    observer.observe(sentinelEl);
+    return () => observer.disconnect();
+  });
 </script>
 
 <div class="block-card glass-panel">
   {#if title}
-    <h2 class="block-title glass-header glass-header-primary align-{align}">
+    <div bind:this={sentinelEl} class="sticky-sentinel"></div>
+    <h2
+      class="block-title glass-header glass-header-primary align-{align}"
+      class:is-stuck={isStuck}
+    >
       {#if icon}
         <md-icon class="title-icon">{icon}</md-icon>
       {/if}
@@ -17,6 +39,16 @@
 </div>
 
 <style>
+  .sticky-sentinel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
   /* Glassmorphism Cards */
   .block-card {
     position: relative;
