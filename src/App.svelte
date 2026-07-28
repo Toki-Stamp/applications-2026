@@ -404,14 +404,6 @@
     flex-direction: column;
   }
 
-  .large-icon {
-    font-size: 64px;
-    width: 64px;
-    height: 64px;
-    margin-bottom: 1rem;
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
-  }
-
   .submit-text {
     font-size: 1.25rem;
     font-weight: 600;

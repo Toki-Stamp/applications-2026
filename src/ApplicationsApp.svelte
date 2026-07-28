@@ -171,15 +171,6 @@
     margin-bottom: 1rem;
   }
 
-  .large-icon {
-    --md-icon-size: 64px;
-    width: 64px;
-    height: 64px;
-    font-size: 64px;
-    margin-bottom: 1rem;
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
-  }
-
   .loading-text {
     font-size: 1.25rem;
     font-weight: 600;
