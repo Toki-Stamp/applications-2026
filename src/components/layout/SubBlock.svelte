@@ -26,8 +26,8 @@
 
 <div class="sub-block-card level-{stickyLevel}">
   {#if title}
-    <div bind:this={sentinelEl} class="sticky-sentinel"></div>
     <h3 class="sub-block-title glass-header glass-header-accent" class:is-stuck={isStuck}>
+      <div bind:this={sentinelEl} class="sticky-sentinel"></div>
       {@html title}
     </h3>
   {/if}
@@ -39,10 +39,11 @@
 
 <style>
   .sticky-sentinel {
-    position: relative;
+    position: absolute;
     top: -1px;
+    left: 0;
+    width: 100%;
     height: 1px;
-    margin-bottom: -1px;
     pointer-events: none;
     visibility: hidden;
   }

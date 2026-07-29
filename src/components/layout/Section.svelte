@@ -22,8 +22,10 @@
 
 <div class="section-container" class:first-section={isFirst}>
   {#if title}
-    <div bind:this={sentinelEl} class="sticky-sentinel"></div>
-    <h3 class="section-title glass-header glass-header-accent" class:is-stuck={isStuck}>{title}</h3>
+    <h3 class="section-title glass-header glass-header-accent" class:is-stuck={isStuck}>
+      <div bind:this={sentinelEl} class="sticky-sentinel"></div>
+      {title}
+    </h3>
   {/if}
   <div class="section-content" style="--section-gap: {gap};">
     {@render children?.()}
@@ -32,10 +34,11 @@
 
 <style>
   .sticky-sentinel {
-    position: relative;
+    position: absolute;
     top: -1px;
+    left: 0;
+    width: 100%;
     height: 1px;
-    margin-bottom: -1px;
     pointer-events: none;
     visibility: hidden;
   }

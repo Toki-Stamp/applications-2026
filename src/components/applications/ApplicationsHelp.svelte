@@ -7,6 +7,7 @@
 
   let isScrolled = $state(false);
 
+  /** @param {UIEvent & { currentTarget: HTMLElement }} e */
   function handleScroll(e) {
     isScrolled = e.currentTarget.scrollTop > 2;
   }

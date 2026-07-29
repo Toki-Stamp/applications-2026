@@ -22,11 +22,11 @@
 
 <div class="block-card glass-panel">
   {#if title}
-    <div bind:this={sentinelEl} class="sticky-sentinel"></div>
     <h2
       class="block-title glass-header glass-header-primary align-{align}"
       class:is-stuck={isStuck}
     >
+      <div bind:this={sentinelEl} class="sticky-sentinel"></div>
       {#if icon}
         <md-icon class="title-icon">{icon}</md-icon>
       {/if}
