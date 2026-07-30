@@ -2,7 +2,7 @@
 
 Учет задач по улучшению, оптимизации, рефакторингу и новым фичам проекта **Google Antigravity Applications-2026**.
 
-<details open>
+<details>
 <summary><b>⚡ P0 — Критические оптимизации (High Priority / Performance)</b></summary>
 
 - [x] **[P0-1] Оптимизация шрифта Material Symbols**
@@ -13,11 +13,11 @@
 <details>
 <summary><b>🛡️ P1 — Безопасность и инфраструктура (Security & Infrastructure)</b></summary>
 
-- [ ] **[P1-1] Блокировка транзакций в GAS (`LockService`)**
+- [x] **[P1-1] Блокировка транзакций в GAS (`LockService`)**
   Исключить гонку данных при одновременной отправке заявок при смене статуса `Obsolete` и записи в Google Sheets через `LockService.getScriptLock().waitLock(30000)`.
-- [ ] **[P1-2] Разделение тестов Vitest (Unit) и Playwright (E2E)**
+- [x] **[P1-2] Разделение тестов Vitest (Unit) и Playwright (E2E)**
   Изолировать юнит-тесты (`src/**/*.test.js` для `schema.js`, `utils.js`) от E2E-тестов (`tests/`) в конфигах `vitest.config.js` и `playwright.config.js`.
-- [ ] **[P1-3] Исправление static type-checking (`npx svelte-check`)**
+- [x] **[P1-3] Исправление static type-checking (`npx svelte-check`)**
   Устранить ошибки совместимости типов при выполнении `npx svelte-check` (обновить зависимости или скорректировать `tsconfig.json` / `jsconfig.json`).
 
 </details>
@@ -55,13 +55,5 @@
   Учёт личных расходов закупщиков, вычисление сальдо (возврат / доплата) и автоматическое вычитание из их итогового чека.
 - [ ] **[P3-4] Расширение матрицы таблицы**
   Возможность переключения сетки таблицы не только для Транспорта, но и для Питания, Проживания или Сводного вида.
-
-</details>
-
-<details>
-<summary><b>📝 Журнал выполненных задач (Change Log)</b></summary>
-
-- [x] **[P-INIT] Комплексный аудит проекта и проверка E2E-тестов** (28.07.2026)
-  Полный анализ архитектуры, схем данных, UX и прохождение 46/46 E2E-тестов Playwright.
 
 </details>

@@ -19,10 +19,20 @@ function wipeData() {
 }
 
 function doPost(e) {
-  // Настройка: ID вашей таблицы (если скрипт привязан к таблице, можно оставить SpreadsheetApp.getActiveSpreadsheet())
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  // Инициализируем блокировку для предотвращения race conditions
+  var lock = LockService.getScriptLock();
+  try {
+    // Ждем до 30 секунд, пока другой процесс освободит блокировку
+    lock.waitLock(30000);
+  } catch (err) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ error: "Сервер сейчас перегружен. Пожалуйста, попробуйте отправить заявку еще раз." })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
 
   try {
+    // Настройка: ID вашей таблицы (если скрипт привязан к таблице, можно оставить SpreadsheetApp.getActiveSpreadsheet())
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     // Парсим входящие данные из формы (JSON)
     var data = JSON.parse(e.postData.contents);
 
@@ -219,6 +229,9 @@ function doPost(e) {
     return ContentService.createTextOutput(
       JSON.stringify({ error: error.toString() }),
     ).setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    // Гарантированно снимаем блокировку после завершения работы (или при ошибке)
+    lock.releaseLock();
   }
 }
 
