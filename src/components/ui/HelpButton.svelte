@@ -4,23 +4,25 @@
   
   let { children } = $props();
   let showHelp = $state(false);
-  let containerWidth = $state(0);
+  let anchorNode = $state();
 </script>
 
-<div class="help-container" bind:clientWidth={containerWidth}>
-  <Tooltip text="Справка" pos="bottom-right" variant="neon" enabled={!showHelp}>
-    <button
-      class="icon-btn"
-      onclick={() => (showHelp = !showHelp)}
-      class:active={showHelp}
-      aria-label="Справка"
-    >
-      <md-icon>live_help</md-icon>
-    </button>
-  </Tooltip>
+<div class="help-container">
+  <div class="help-button-wrapper" bind:this={anchorNode}>
+    <Tooltip text="Справка" pos="bottom-right" variant="neon" enabled={!showHelp}>
+      <button
+        type="button"
+        class="icon-btn"
+        onclick={() => (showHelp = !showHelp)}
+        class:active={showHelp}
+        aria-label="Справка"
+      >
+        <md-icon>live_help</md-icon>
+      </button>
+    </Tooltip>
+  </div>
 
-  <!-- We use CSS custom property for responsive width -->
-  <Popover isOpen={showHelp} onclose={() => showHelp = false} backdrop={true} width="var(--popover-width, calc(var(--header-content-width, 800px) * 0.5))">
+  <Popover isOpen={showHelp} onclose={() => showHelp = false} backdrop={true} width="min(var(--popover-width-lg), calc(100vw - calc(var(--gap-fields) * 2)))" referenceNode={anchorNode}>
     <div class="help-content">
       {#if children}{@render children()}{/if}
     </div>
@@ -41,8 +43,8 @@
     --md-icon-size: var(--text-2xl);
     cursor: pointer;
     border-radius: 50%;
-    width: 48px;
-    height: 48px;
+    width: var(--icon-btn-size);
+    height: var(--icon-btn-size);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -75,9 +77,5 @@
     animation: wiggle 0.5s ease-in-out;
   }
 
-  @media (max-width: 600px) {
-    .help-container {
-      --popover-width: calc(100vw - var(--gap-fields) * 2);
-    }
-  }
+
 </style>

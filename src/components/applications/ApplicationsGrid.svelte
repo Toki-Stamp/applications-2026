@@ -330,8 +330,7 @@
     {#if isIcon}
       <Tooltip 
         pos="top" 
-        text={getFilterDetails(filterKey)?.valText || ""} 
-        caps={false}
+        text={getFilterDetails(filterKey)?.valText || ""}
       >
         <div class="header-icon-wrapper">
           <md-icon>{content}</md-icon>
@@ -382,7 +381,7 @@
             <div class="th-content-pin">
               №
               <div class="pin-wrapper">
-                <Tooltip pos="top" text={isNumPinned ? "Открепить колонку" : "Закрепить колонку"} caps={false}>
+                <Tooltip pos="top" text={isNumPinned ? "Открепить колонку" : "Закрепить колонку"}>
                   <button class="pin-btn" class:active={isNumPinned} onclick={() => isNumPinned = !isNumPinned} aria-label="Закрепить колонку №">
                     <md-icon>push_pin</md-icon>
                   </button>
@@ -401,7 +400,7 @@
             <div class="th-content-pin">
               Никнейм
               <div class="pin-wrapper">
-                <Tooltip pos="left" text={isNicknamePinned ? "Открепить колонку" : "Закрепить колонку"} caps={false}>
+                <Tooltip pos="left" text={isNicknamePinned ? "Открепить колонку" : "Закрепить колонку"}>
                   <button class="pin-btn" class:active={isNicknamePinned} onclick={() => isNicknamePinned = !isNicknamePinned} aria-label="Закрепить колонку Никнейм">
                     <md-icon>push_pin</md-icon>
                   </button>
@@ -420,7 +419,7 @@
             <div class="th-content-pin">
               Имя
               <div class="pin-wrapper">
-                <Tooltip pos="left" text={isNamePinned ? "Открепить колонку" : "Закрепить колонку"} caps={false}>
+                <Tooltip pos="left" text={isNamePinned ? "Открепить колонку" : "Закрепить колонку"}>
                   <button class="pin-btn" class:active={isNamePinned} onclick={() => isNamePinned = !isNamePinned} aria-label="Закрепить колонку Имя">
                     <md-icon>push_pin</md-icon>
                   </button>
@@ -546,7 +545,6 @@
                     <Tooltip
                       text={p.nickname || ""}
                       onlyIfTruncated={true}
-                      caps={false}
                     >
                       <span class="ellipsis-text">{p.nickname || ""}</span>
                     </Tooltip>
@@ -569,7 +567,6 @@
                 <Tooltip
                   text={p.firstName || ""}
                   onlyIfTruncated={true}
-                  caps={false}
                 >
                   <span class="ellipsis-text">{p.firstName || ""}</span>
                 </Tooltip>

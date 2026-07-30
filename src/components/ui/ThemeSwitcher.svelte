@@ -34,6 +34,9 @@
   let currentTheme = $state("cyberpunk");
   let isOpen = $state(false);
 
+  /** @type {HTMLElement | null} */
+  let anchorNode = $state(null);
+
   // Store computed colors to dynamically match themes.css
   /** @type {Record<string, {primary: string, accent: string}>} */
   let computedColors = $state({});
@@ -72,10 +75,16 @@
 
   /** @param {string} id */
   function setTheme(id) {
+    document.documentElement.classList.add('theme-switching');
     currentTheme = id;
     document.documentElement.setAttribute("data-theme", id);
     localStorage.setItem("app-theme", id);
     isOpen = false;
+    
+    // Remove class after browser has painted the new theme
+    setTimeout(() => {
+      document.documentElement.classList.remove('theme-switching');
+    }, 50);
   }
 </script>
 
@@ -94,29 +103,35 @@
       <div class="color-half accent"></div>
     </div>
     <span class="theme-name">{theme.name}</span>
+    {#if currentTheme === theme.id}
+      <md-icon class="active-icon">check</md-icon>
+    {/if}
   </button>
 {/snippet}
 
 <div class="theme-switcher-wrapper" role="presentation">
-  <Tooltip text="Настроить тему" pos="bottom-left" variant="neon" enabled={!isOpen}>
-    <button
-      type="button"
-      class="icon-btn"
-      onclick={() => (isOpen = !isOpen)}
-      aria-label="Выбрать тему оформления"
-    >
-      <md-icon>settings</md-icon>
-    </button>
-  </Tooltip>
+  <div class="theme-switcher" bind:this={anchorNode}>
+    <Tooltip text="Настроить тему" pos="bottom-left" variant="neon" enabled={!isOpen}>
+      <button
+        type="button"
+        class="icon-btn"
+        class:active={isOpen}
+        onclick={() => (isOpen = !isOpen)}
+        aria-label="Настроить тему"
+      >
+        <md-icon>settings</md-icon>
+      </button>
+    </Tooltip>
+  </div>
 
-  <Popover {isOpen} onclose={() => isOpen = false} pos="bottom-left" backdrop={true} width="220px">
+  <Popover {isOpen} onclose={() => isOpen = false} pos="bottom-left" backdrop={true} width="min(var(--popover-width-sm), calc(100vw - calc(var(--gap-fields) * 2)))" referenceNode={anchorNode}>
     <div class="theme-popover-content">
-      <div class="theme-category">Тёмные темы</div>
+      <div class="theme-category glass-header glass-header-primary">Тёмные темы</div>
       {#each darkThemes as theme}
         {@render themeButton(theme)}
       {/each}
 
-      <div class="theme-category">Светлые темы</div>
+      <div class="theme-category glass-header glass-header-primary">Светлые темы</div>
       {#each lightThemes as theme}
         {@render themeButton(theme)}
       {/each}
@@ -138,8 +153,8 @@
     --md-icon-size: var(--text-2xl);
     cursor: pointer;
     border-radius: 50%;
-    width: 48px;
-    height: 48px;
+    width: var(--icon-btn-size);
+    height: var(--icon-btn-size);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -165,25 +180,27 @@
     display: flex;
     flex-direction: column;
     gap: var(--gap-xs);
-    max-height: 260px;
+    max-height: var(--popover-max-height);
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 0 0 var(--gap-sm) 0;
     border-radius: inherit;
   }
 
   .theme-popover-content::-webkit-scrollbar {
-    width: 6px;
+    width: var(--scrollbar-width-sm);
   }
 
   .theme-popover-content::-webkit-scrollbar-track {
     background: transparent;
-    margin-top: 12px;
-    margin-bottom: 12px;
+    /* Хаком сдвигаем трек скроллбара вниз на высоту прилипающего заголовка (около 42px) */
+    margin-top: 42px;
+    margin-bottom: var(--radius-xs);
   }
 
   .theme-popover-content::-webkit-scrollbar-thumb {
     background: color-mix(in srgb, var(--primary) 30%, var(--text-primary) 10%);
-    border-radius: 3px;
+    border-radius: var(--scrollbar-radius-sm);
   }
 
   .theme-popover-content::-webkit-scrollbar-thumb:hover {
@@ -194,16 +211,31 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    background: color-mix(in srgb, var(--bg-color-accent) 85%, transparent);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    font-size: 0.65rem;
+    font-size: var(--text-xs);
     text-transform: uppercase;
-    letter-spacing: 0.02em;
-    font-weight: 700;
+    letter-spacing: 0.05em;
+    font-weight: var(--font-weight-bold);
     color: var(--primary);
-    padding: 0.75rem var(--element-px) 0.5rem var(--element-px);
-    border-bottom: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+    padding: var(--title-py-sm) calc(var(--gap-sm) * 2 + var(--scrollbar-width-sm)) var(--title-py-sm) calc(var(--gap-sm) * 2);
+    /* Хак: растягиваем заголовок вправо на ширину скроллбара, чтобы не было дырки в углу */
+    margin-right: calc(var(--scrollbar-width-sm) * -1);
+  }
+
+  .theme-category:not(:first-child) {
+    margin-top: var(--gap-sm);
+  }
+
+  /* Плавное растворение правого края без маски (маска ломает backdrop-filter) */
+  .theme-category::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: -1px;
+    width: 24px;
+    background: linear-gradient(to right, transparent, var(--bg-color-accent));
+    pointer-events: none;
+    border-radius: 0 var(--border-radius) 0 0;
   }
 
   .theme-row-btn {
@@ -211,47 +243,64 @@
     width: calc(100% - calc(var(--gap-sm) * 2));
     background: transparent;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: var(--gap-sm);
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--gap-md);
     cursor: pointer;
     transition: all 0.2s ease-out;
     color: var(--text-primary);
     text-align: left;
   }
 
+  .theme-name {
+    flex: 1;
+  }
+
+  .active-icon {
+    font-size: 1.2em;
+    color: var(--primary);
+  }
+
   .theme-row-btn:hover {
-    background: color-mix(
-      in srgb,
-      var(--t-primary) 15%,
-      color-mix(in srgb, var(--text-primary) 5%, transparent)
-    );
+    background: color-mix(in srgb, var(--primary) 8%, transparent);
     color: var(--text-primary);
-    transform: translateX(4px);
+    box-shadow: 
+      0 0 0 1px color-mix(in srgb, var(--primary) 50%, transparent),
+      0 4px 12px color-mix(in srgb, var(--primary) 20%, transparent);
+  }
+
+  .theme-row-btn:hover .swatch-circle {
+    transform: scale(1.15);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--t-primary) 40%, transparent);
   }
 
   .theme-row-btn.active {
-    background: color-mix(
-      in srgb,
-      var(--t-primary) 20%,
-      color-mix(in srgb, var(--text-primary) 8%, transparent)
-    );
+    background: color-mix(in srgb, var(--primary) 20%, transparent);
     color: var(--text-primary);
-    font-weight: 800;
+    font-weight: var(--font-weight-extrabold);
     letter-spacing: 0.02em;
+    box-shadow: 
+      0 0 0 1px color-mix(in srgb, var(--primary) 50%, transparent),
+      0 4px 12px color-mix(in srgb, var(--primary) 20%, transparent);
+  }
+
+  .theme-row-btn.active .swatch-circle {
+    transform: scale(1.15);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--t-primary) 40%, transparent);
   }
 
   .swatch-circle {
     width: 24px;
     height: 24px;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    border: 2px solid color-mix(in srgb, var(--text-primary) 15%, transparent);
+    border: 2px solid color-mix(in srgb, var(--t-primary) 50%, transparent);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
   }
 
   .color-half {
@@ -267,7 +316,7 @@
   }
 
   .theme-name {
-    font-size: var(--text-base);
+    font-size: var(--text-sm);
     font-family: var(--font-family);
   }
 </style>

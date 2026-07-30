@@ -1,5 +1,7 @@
 <script>
   import { scale, fade } from "svelte/transition";
+  import { portal } from '../../utils/portal.js';
+  import { floating } from '../../actions/floating.js';
 
   let {
     isOpen = false,
@@ -7,21 +9,23 @@
     pos = "bottom-right", // 'bottom-right' | 'bottom-left'
     width = "auto",
     backdrop = false,
+    referenceNode, // REQUIRED
     children,
   } = $props();
 </script>
 
-{#if isOpen}
+{#if isOpen && referenceNode}
   {#if backdrop}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div class="popover-backdrop" onclick={() => onclose && onclose()} transition:fade={{ duration: 150 }}></div>
+    <div class="popover-backdrop" use:portal onclick={() => onclose && onclose()} transition:fade={{ duration: 150 }}></div>
   {/if}
 
   <div
     class="popover-wrapper"
-    data-pos={pos}
     style:width={width}
+    use:portal
+    use:floating={{ referenceNode, placement: pos }}
     transition:scale={{ start: 0.95, duration: 150 }}
   >
     <div class="popover-content glass-panel">
@@ -43,20 +47,8 @@
   }
 
   .popover-wrapper {
-    position: absolute;
+    position: fixed;
     z-index: 100;
-  }
-
-  .popover-wrapper[data-pos="bottom-right"] {
-    top: calc(100% + 10px);
-    right: 0;
-    transform-origin: top right;
-  }
-
-  .popover-wrapper[data-pos="bottom-left"] {
-    top: calc(100% + 10px);
-    left: 0;
-    transform-origin: top left;
   }
 
   .popover-content.glass-panel {
@@ -68,7 +60,10 @@
     border-radius: var(--border-radius);
     position: relative;
     /* allow scrolling inside if needed, but child should handle it */
-    overflow: hidden; 
+    overflow: hidden;
+    max-height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
   }
 
   .popover-content.glass-panel::before {

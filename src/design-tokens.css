@@ -44,6 +44,12 @@
   --radius-full: 9999px;
   --border-radius: var(--radius-lg);
 
+  /* UI Component Sizes */
+  --icon-btn-size: 48px;
+  --popover-width-sm: 220px;
+  --popover-width-lg: 600px;
+  --popover-max-height: 260px;
+
   --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   --sticky-block-offset: 67px;
   --sticky-section-offset: 116px;
@@ -100,6 +106,7 @@
   --gap-layout: 2rem;
   --gap-section: 1.5rem;
   --gap-fields: 1rem;
+  --gap-md: 0.75rem;
   --gap-sm: 0.5rem;
   --gap-xs: 0.25rem;
 
@@ -109,6 +116,8 @@
 
   /* Config */
   --scrollbar-width: 10px;
+  --scrollbar-width-sm: 6px;
+  --scrollbar-radius-sm: 3px;
 
   --h1-gradient-start: #fff;
   --h1-gradient-end: #a1a1aa;
@@ -144,4 +153,15 @@
     --gap-fields: 0.75rem;  /* 12px */
     --gap-sm: 0.375rem;     /* 6px */
   }
+}
+
+/* 
+ * Prevent flashing during theme switches
+ * This completely disables all CSS transitions globally while the new theme is applied
+ */
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
 }

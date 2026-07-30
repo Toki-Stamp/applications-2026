@@ -56,27 +56,30 @@
     display: flex;
     flex-direction: column;
     gap: var(--help-gap);
-    max-height: 40vh; /* Roughly half the table height */
+    max-height: 50vh;
     overflow-y: auto;
     /* Компенсация: 6px скроллбар + 2px отступ block-content = 8px */
     padding-top: var(--help-padding);
     padding-bottom: var(--help-padding);
     padding-left: var(--help-padding);
-    padding-right: calc(var(--help-padding) - 8px);
+    padding-right: calc(var(--help-padding) - var(--scrollbar-width-sm) - 2px);
   }
   
   .hints-container::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: var(--scrollbar-width-sm);
+    height: var(--scrollbar-width-sm);
   }
   .hints-container::-webkit-scrollbar-track {
     background: transparent;
-    margin-top: 8px;
-    margin-bottom: 8px; /* Половина радиуса скругления */
+    margin-top: 2px;
+    margin-bottom: var(--radius-xs);
   }
   .hints-container::-webkit-scrollbar-thumb {
-    background: var(--primary);
-    border-radius: 10px;
+    background: color-mix(in srgb, var(--primary) 30%, var(--text-primary) 10%);
+    border-radius: var(--scrollbar-radius-sm);
+  }
+  .hints-container::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--primary) 50%, var(--text-primary) 20%);
   }
 
   @media (max-width: 600px) {
