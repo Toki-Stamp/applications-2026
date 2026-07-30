@@ -75,16 +75,58 @@
 
   /** @param {string} id */
   function setTheme(id) {
-    document.documentElement.classList.add('theme-switching');
+    document.documentElement.classList.add("theme-switching");
     currentTheme = id;
     document.documentElement.setAttribute("data-theme", id);
     localStorage.setItem("app-theme", id);
     isOpen = false;
-    
+
     // Remove class after browser has painted the new theme
     setTimeout(() => {
-      document.documentElement.classList.remove('theme-switching');
+      document.documentElement.classList.remove("theme-switching");
     }, 50);
+  }
+
+  // Sticky detection for categories
+  /** @type {HTMLElement[]} */
+  let categoryHeaders = [];
+  let categoryIsStuck = $state([false, false]);
+
+  /** @param {Event | { target: HTMLElement }} e */
+  function handleScroll(e) {
+    /** @type {HTMLElement} */
+    const container = /** @type {any} */ (e.target);
+    if (!container) return;
+    const containerTop = container.getBoundingClientRect().top;
+    
+    categoryHeaders.forEach((header, index) => {
+      if (header) {
+        if (index === 0) {
+          // The first header is always at the top of the container, so it's "stuck" if we've scrolled down at all
+          categoryIsStuck[index] = container.scrollTop > 0;
+        } else {
+          // Other headers stick when they hit the top of the container
+          const headerTop = header.getBoundingClientRect().top;
+          categoryIsStuck[index] = headerTop <= containerTop + 1;
+        }
+      }
+    });
+  }
+
+  /**
+   * Action to scroll to the active theme when the popover mounts.
+   * @param {HTMLElement} node
+   */
+  function scrollToActive(node) {
+    // Wait for the next tick to ensure the DOM is fully laid out
+    setTimeout(() => {
+      const activeEl = node.querySelector('.theme-row-btn.active');
+      if (activeEl) {
+        activeEl.scrollIntoView({ behavior: 'instant', block: 'center' });
+        // Force update the sticky shadows after scrolling
+        handleScroll({ target: node });
+      }
+    }, 0);
   }
 </script>
 
@@ -111,7 +153,12 @@
 
 <div class="theme-switcher-wrapper" role="presentation">
   <div class="theme-switcher" bind:this={anchorNode}>
-    <Tooltip text="Настроить тему" pos="bottom-left" variant="neon" enabled={!isOpen}>
+    <Tooltip
+      text="Настроить тему"
+      pos="bottom-left"
+      variant="neon"
+      enabled={!isOpen}
+    >
       <button
         type="button"
         class="icon-btn"
@@ -124,14 +171,33 @@
     </Tooltip>
   </div>
 
-  <Popover {isOpen} onclose={() => isOpen = false} pos="bottom-left" backdrop={true} width="min(var(--popover-width-sm), calc(100vw - calc(var(--gap-fields) * 2)))" referenceNode={anchorNode}>
-    <div class="theme-popover-content">
-      <div class="theme-category glass-header glass-header-primary">Тёмные темы</div>
+  <Popover
+    {isOpen}
+    onclose={() => (isOpen = false)}
+    pos="bottom-left"
+    backdrop={true}
+    width="min(var(--popover-width-sm), calc(100vw - calc(var(--gap-fields) * 2)))"
+    referenceNode={anchorNode}
+  >
+    <div class="theme-popover-content" onscroll={handleScroll} use:scrollToActive>
+      <div 
+        class="theme-category glass-header glass-header-primary" 
+        class:is-stuck={categoryIsStuck[0]}
+        bind:this={categoryHeaders[0]}
+      >
+        Тёмные темы
+      </div>
       {#each darkThemes as theme}
         {@render themeButton(theme)}
       {/each}
 
-      <div class="theme-category glass-header glass-header-primary">Светлые темы</div>
+      <div 
+        class="theme-category glass-header glass-header-primary" 
+        class:is-stuck={categoryIsStuck[1]}
+        bind:this={categoryHeaders[1]}
+      >
+        Светлые темы
+      </div>
       {#each lightThemes as theme}
         {@render themeButton(theme)}
       {/each}
@@ -216,9 +282,12 @@
     letter-spacing: 0.05em;
     font-weight: var(--font-weight-bold);
     color: var(--primary);
-    padding: var(--title-py-sm) calc(var(--gap-sm) * 2 + var(--scrollbar-width-sm)) var(--title-py-sm) calc(var(--gap-sm) * 2);
+    padding: var(--title-py-sm)
+      calc(var(--gap-sm) * 2 + var(--scrollbar-width-sm)) var(--title-py-sm)
+      calc(var(--gap-sm) * 2);
     /* Хак: растягиваем заголовок вправо на ширину скроллбара, чтобы не было дырки в углу */
-    margin-right: calc(var(--scrollbar-width-sm) * -1);
+    /* margin-right: calc(var(--scrollbar-width-sm) * -1); */
+    transition: box-shadow 0.2s;
   }
 
   .theme-category:not(:first-child) {
@@ -227,7 +296,7 @@
 
   /* Плавное растворение правого края без маски (маска ломает backdrop-filter) */
   .theme-category::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     right: 0;
@@ -266,7 +335,7 @@
   .theme-row-btn:hover {
     background: color-mix(in srgb, var(--primary) 8%, transparent);
     color: var(--text-primary);
-    box-shadow: 
+    box-shadow:
       0 0 0 1px color-mix(in srgb, var(--primary) 50%, transparent),
       0 4px 12px color-mix(in srgb, var(--primary) 20%, transparent);
   }
@@ -281,7 +350,7 @@
     color: var(--text-primary);
     font-weight: var(--font-weight-extrabold);
     letter-spacing: 0.02em;
-    box-shadow: 
+    box-shadow:
       0 0 0 1px color-mix(in srgb, var(--primary) 50%, transparent),
       0 4px 12px color-mix(in srgb, var(--primary) 20%, transparent);
   }
@@ -300,7 +369,9 @@
     flex-direction: column;
     flex-shrink: 0;
     border: 2px solid color-mix(in srgb, var(--t-primary) 50%, transparent);
-    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+    transition:
+      transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.2s;
   }
 
   .color-half {

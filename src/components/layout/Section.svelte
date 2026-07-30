@@ -35,7 +35,8 @@
 <style>
   .sticky-sentinel {
     position: absolute;
-    top: -1px;
+    /* When header sticks at --current-sticky-offset, we want the sentinel to be at -1px from viewport top */
+    top: calc(var(--current-sticky-offset) * -1 - 1px);
     left: 0;
     width: 100%;
     height: 1px;
@@ -64,7 +65,8 @@
 
     /* Sticky behavior: stacks under .block-title */
     position: sticky;
-    top: calc(var(--sticky-block-offset) - 2px); /* 2px compensation for sticky header gap */
+    --current-sticky-offset: calc(var(--sticky-block-offset) - 2px); /* 2px compensation for sticky header gap */
+    top: var(--current-sticky-offset);
     z-index: 25;
   }
 

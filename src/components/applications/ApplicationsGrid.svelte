@@ -344,7 +344,7 @@
 
 {#snippet statusCell(/** @type {string} */ filterKey, /** @type {{ active: boolean, icon: string }} */ status)}
   <td
-    class="text-center"
+    class="text-center no-pad-x"
     class:highlighted-col={isFilterHoveredOrActive(filterKey)}
   >
     <md-icon class="status-icon {status.active ? 'active' : ''}">{status.icon}</md-icon>
@@ -368,6 +368,32 @@
       class:is-scrolled-x={isScrolledX}
       class:is-scrolled-y={isScrolledY}
     >
+        <colgroup>
+          <!-- Закрепленные колонки -->
+          <col class="sticky-num" />
+          <col class="col-name" />
+          <col class="col-real-name" />
+          <!-- ТУДА -->
+          <col class="icon-th" />
+          <col class="icon-th" />
+          <col class="icon-th" />
+          <col class="icon-th" />
+          <col class="rotate-th" />
+          <col class="city-th" />
+          <col class="icon-th" />
+          <col class="icon-th" />
+          <col class="icon-th" />
+          <col class="time-th" />
+          <!-- ОБРАТНО -->
+          <col class="icon-th" />
+          <col class="icon-th" />
+          <col class="icon-th" />
+          <col class="icon-th" />
+          <col class="icon-th" />
+          <col class="icon-th" />
+          <col class="icon-th" />
+          <col class="time-th" />
+        </colgroup>
       <thead bind:clientHeight={headerHeight}>
         <!-- ROW 1 -->
         <tr>
@@ -438,16 +464,16 @@
           <th rowspan="2" class="sub-header rotate-th">
             <div class="rotated-text">Места</div>
           </th>
-          <th rowspan="2" class="sub-header">Город</th>
+          <th rowspan="2" class="sub-header city-th">Город</th>
           <th colspan="3" class="sub-header text-center">День</th>
-          <th rowspan="2" class="sub-header mobile-rotate-th">
+          <th rowspan="2" class="sub-header mobile-rotate-th time-th">
             <div class="rotated-text">Время</div>
           </th>
 
           <!-- Обратно -->
           <th colspan="4" class="sub-header text-center">Способ</th>
           <th colspan="3" class="sub-header text-center">День</th>
-          <th rowspan="2" class="sub-header mobile-rotate-th">
+          <th rowspan="2" class="sub-header mobile-rotate-th time-th">
             <div class="rotated-text">Время</div>
           </th>
         </tr>
@@ -793,6 +819,7 @@
 
   .participants-table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: separate;
     border-spacing: 0;
     font-size: 0.8rem;
@@ -808,6 +835,12 @@
     border-bottom: 1px solid
       color-mix(in srgb, var(--text-primary) 15%, var(--bg-color));
     vertical-align: middle;
+  }
+
+  /* Remove horizontal padding for perfectly centered fixed-width cells */
+  td.no-pad-x {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   /* Fix subpixel gap bleeding in sticky tables */
@@ -967,8 +1000,9 @@
     color: var(--primary-color, var(--primary));
   }
   .pin-btn md-icon {
-    font-size: 1.1rem;
-    --md-icon-size: 1.1rem;
+    font-size: var(--text-xl);
+    --md-icon-size: var(--text-xl);
+    flex-shrink: 0;
   }
 
   /* Interactive City Cell */
@@ -1047,6 +1081,20 @@
     color: color-mix(in srgb, var(--text-primary) 90%, transparent);
   }
 
+  .city-th {
+    width: 90px;
+    min-width: 90px;
+    max-width: 90px;
+    box-sizing: border-box;
+  }
+
+  .time-th {
+    width: 64px;
+    min-width: 64px;
+    max-width: 64px;
+    box-sizing: border-box;
+  }
+
   .icon-th {
     text-align: center;
     padding: 0.15rem 0.2rem;
@@ -1056,9 +1104,12 @@
     box-sizing: border-box;
   }
 
-  .icon-th md-icon {
-    font-size: 1.1rem;
-    opacity: 0.9;
+  .icon-th .header-icon-wrapper md-icon {
+    font-size: var(--text-lg);
+    stroke: currentColor;
+    stroke-width: 0.5px;
+    opacity: 1;
+    flex-shrink: 0;
   }
 
   /* Rotate header for compact places */
@@ -1147,7 +1198,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.35rem 0.4rem;
   }
 
   .rotate-th .rotated-text {
@@ -1337,9 +1387,10 @@
     gap: var(--gap-xs);
   }
   .header-icon-wrapper md-icon {
-    font-size: 1.1rem;
-    --md-icon-size: 1.1rem;
+    font-size: var(--text-xl);
+    --md-icon-size: var(--text-xl);
     color: inherit;
+    flex-shrink: 0;
   }
   
   .hidden-row {

@@ -40,7 +40,8 @@
 <style>
   .sticky-sentinel {
     position: absolute;
-    top: -1px;
+    /* Uses current offset assigned below to calculate intersection correctly */
+    top: calc(var(--current-sticky-offset) * -1 - 1px);
     left: 0;
     width: 100%;
     height: 1px;
@@ -80,9 +81,11 @@
   }
 
   .sub-block-card.level-2 .sub-block-title {
-    top: calc(var(--sticky-block-offset) - 2px);
+    --current-sticky-offset: calc(var(--sticky-block-offset) - 2px);
+    top: var(--current-sticky-offset);
   }
   .sub-block-card.level-3 .sub-block-title {
-    top: calc(var(--sticky-section-offset) - 2px);
+    --current-sticky-offset: calc(var(--sticky-section-offset) - 2px);
+    top: var(--current-sticky-offset);
   }
 </style>
