@@ -41,6 +41,7 @@
     onmouseenter={handleMouseEnter}
     onmouseleave={handleMouseLeave}
     bind:this={wrapperNode}
+    data-tooltip={text || undefined}
   >
     {#if children}{@render children()}{/if}
     {#if enabled && isVisible && wrapperNode}
