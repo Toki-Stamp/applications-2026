@@ -46,7 +46,9 @@ export function gridExpand(node, { duration = 300, easing = cubicOut } = {}) {
  */
 export function getApplicantDisplayName(applicant) {
   const main = applicant.nickname || "Заявителя";
-  const fullName = [applicant.firstName, applicant.lastName].filter(Boolean).join(" ");
+  const fullName = [applicant.firstName, applicant.lastName]
+    .filter(Boolean)
+    .join(" ");
   return fullName ? `${main} (${fullName})` : main;
 }
 

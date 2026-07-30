@@ -155,6 +155,30 @@
     margin-right: 1rem;
     color: var(--text-secondary);
     transition: color 0.2s;
+    flex-shrink: 0;
+  }
+
+  .card-checkbox {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+  }
+
+  :global(.card-icon md-icon) {
+    font-size: var(--text-2xl) !important;
+    --md-icon-size: var(--text-2xl) !important;
+    width: var(--text-2xl) !important;
+    height: var(--text-2xl) !important;
+  }
+
+  :global(.card-checkbox md-icon) {
+    font-size: var(--text-xl) !important;
+    --md-icon-size: var(--text-xl) !important;
+    width: var(--text-xl) !important;
+    height: var(--text-xl) !important;
   }
 
   .period-card.selected .card-icon {
@@ -177,13 +201,6 @@
     font-size: var(--text-sm);
     color: var(--text-secondary);
     margin-top: 2px;
-  }
-
-  .card-checkbox {
-    display: flex;
-    align-items: center;
-    color: var(--text-secondary);
-    transition: color 0.2s;
   }
 
   .period-card.selected .card-checkbox {

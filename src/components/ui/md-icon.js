@@ -79,7 +79,11 @@ class MdIcon extends HTMLElement {
   }
 
   render() {
-    const iconName = (this.getAttribute("icon") || this.textContent || "").trim();
+    const iconName = (
+      this.getAttribute("icon") ||
+      this.textContent ||
+      ""
+    ).trim();
     if (!iconName) return;
 
     if (this._renderedIcon === iconName) {
@@ -87,7 +91,9 @@ class MdIcon extends HTMLElement {
     }
 
     const svg = iconMap[iconName];
-    const container = this.shadowRoot ? this.shadowRoot.getElementById("icon-container") : null;
+    const container = this.shadowRoot
+      ? this.shadowRoot.getElementById("icon-container")
+      : null;
 
     if (svg && container) {
       this._renderedIcon = iconName;

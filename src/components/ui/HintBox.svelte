@@ -17,19 +17,28 @@
 </script>
 
 {#if visible}
-<div class="hint-box" class:error={type === "error"} class:dismissible={dismissible} transition:slide={{ duration: 250 }}>
-  <md-icon class="hint-icon">{computedIcon}</md-icon>
-  <span class="hint-content">
-    {#if children}{@render children()}{/if}
-  </span>
-  {#if dismissible}
-    <div class="close-btn-wrapper">
-      <Button variant="clear" aria-label="Закрыть" onclick={() => visible = false}>
-        <md-icon>close</md-icon>
-      </Button>
-    </div>
-  {/if}
-</div>
+  <div
+    class="hint-box"
+    class:error={type === "error"}
+    class:dismissible
+    transition:slide={{ duration: 250 }}
+  >
+    <md-icon class="hint-icon">{computedIcon}</md-icon>
+    <span class="hint-content">
+      {#if children}{@render children()}{/if}
+    </span>
+    {#if dismissible}
+      <div class="close-btn-wrapper">
+        <Button
+          variant="clear"
+          aria-label="Закрыть"
+          onclick={() => (visible = false)}
+        >
+          <md-icon>close</md-icon>
+        </Button>
+      </div>
+    {/if}
+  </div>
 {/if}
 
 <style>

@@ -78,8 +78,8 @@
         </div>
       {:else}
         <div class="content-wrapper">
-          <ApplicationsGrid 
-            {participants} 
+          <ApplicationsGrid
+            {participants}
             bind:activeFilters
             bind:intersectionCount
             {filterMode}

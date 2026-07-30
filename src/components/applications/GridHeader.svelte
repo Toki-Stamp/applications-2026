@@ -1,16 +1,20 @@
 <script>
-  import { getContext } from 'svelte';
+  import { getContext } from "svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import { dict } from "../../locales/ru.js";
-  import { transportMethods } from './gridStore.svelte.js';
+  import { transportMethods } from "./gridStore.svelte.js";
 
   let { headerHeight = $bindable(0) } = $props();
-  
+
   /** @type {import('./gridStore.svelte.js').GridState} */
-  const gridState = getContext('gridState');
+  const gridState = getContext("gridState");
 </script>
 
-{#snippet filterHeader(/** @type {string} */ filterKey, /** @type {string} */ content, isIcon = false)}
+{#snippet filterHeader(
+  /** @type {string} */ filterKey,
+  /** @type {string} */ content,
+  isIcon = false,
+)}
   <th
     class="icon-th interactive-th {isIcon ? '' : 'fw-bold'}"
     class:active-filter={gridState.isFilterActive(filterKey)}
@@ -19,8 +23,8 @@
     onclick={() => gridState.handleHeaderClick(filterKey)}
   >
     {#if isIcon}
-      <Tooltip 
-        pos="top" 
+      <Tooltip
+        pos="top"
         text={gridState.getFilterDetails(filterKey)?.valText || ""}
       >
         <div class="header-icon-wrapper">
@@ -36,56 +40,93 @@
 <thead bind:clientHeight={headerHeight}>
   <!-- ROW 1 -->
   <tr>
-    <th 
-      rowspan="3" 
-      class="sticky-num" 
-      class:sticky-col={gridState.isNumPinned} 
-      class:last-pinned={gridState.lastPinnedCol === 'num'} 
+    <th
+      rowspan="3"
+      class="sticky-num"
+      class:sticky-col={gridState.isNumPinned}
+      class:last-pinned={gridState.lastPinnedCol === "num"}
       bind:clientWidth={gridState.widthNum}
     >
       <div class="th-content-pin">
         №
         <div class="pin-wrapper">
-          <Tooltip pos="top" text={gridState.isNumPinned ? "Открепить колонку" : "Закрепить колонку"}>
-            <button class="pin-btn" class:active={gridState.isNumPinned} onclick={() => gridState.isNumPinned = !gridState.isNumPinned} aria-label="Закрепить колонку №">
+          <Tooltip
+            pos="top"
+            text={gridState.isNumPinned
+              ? "Открепить колонку"
+              : "Закрепить колонку"}
+          >
+            <button
+              class="pin-btn"
+              class:active={gridState.isNumPinned}
+              onclick={() => (gridState.isNumPinned = !gridState.isNumPinned)}
+              aria-label="Закрепить колонку №"
+            >
               <md-icon>push_pin</md-icon>
             </button>
           </Tooltip>
         </div>
       </div>
     </th>
-    <th 
-      rowspan="3" 
-      class="col-name" 
+    <th
+      rowspan="3"
+      class="col-name"
       class:sticky-col={gridState.isNicknamePinned}
-      class:last-pinned={gridState.lastPinnedCol === 'nickname'}
-      style:left="{gridState.isNicknamePinned ? (gridState.isNumPinned ? gridState.widthNum : 0) + 'px' : ''}"
+      class:last-pinned={gridState.lastPinnedCol === "nickname"}
+      style:left={gridState.isNicknamePinned
+        ? (gridState.isNumPinned ? gridState.widthNum : 0) + "px"
+        : ""}
       bind:clientWidth={gridState.widthNickname}
     >
       <div class="th-content-pin">
         Никнейм
         <div class="pin-wrapper">
-          <Tooltip pos="left" text={gridState.isNicknamePinned ? "Открепить колонку" : "Закрепить колонку"}>
-            <button class="pin-btn" class:active={gridState.isNicknamePinned} onclick={() => gridState.isNicknamePinned = !gridState.isNicknamePinned} aria-label="Закрепить колонку Никнейм">
+          <Tooltip
+            pos="left"
+            text={gridState.isNicknamePinned
+              ? "Открепить колонку"
+              : "Закрепить колонку"}
+          >
+            <button
+              class="pin-btn"
+              class:active={gridState.isNicknamePinned}
+              onclick={() =>
+                (gridState.isNicknamePinned = !gridState.isNicknamePinned)}
+              aria-label="Закрепить колонку Никнейм"
+            >
               <md-icon>push_pin</md-icon>
             </button>
           </Tooltip>
         </div>
       </div>
     </th>
-    <th 
-      rowspan="3" 
+    <th
+      rowspan="3"
       class="col-real-name"
       class:sticky-col={gridState.isNamePinned}
-      class:last-pinned={gridState.lastPinnedCol === 'name'}
-      style:left="{gridState.isNamePinned ? (gridState.isNumPinned ? gridState.widthNum : 0) + (gridState.isNicknamePinned ? gridState.widthNickname : 0) + 'px' : ''}"
+      class:last-pinned={gridState.lastPinnedCol === "name"}
+      style:left={gridState.isNamePinned
+        ? (gridState.isNumPinned ? gridState.widthNum : 0) +
+          (gridState.isNicknamePinned ? gridState.widthNickname : 0) +
+          "px"
+        : ""}
       bind:clientWidth={gridState.widthName}
     >
       <div class="th-content-pin">
         Имя
         <div class="pin-wrapper">
-          <Tooltip pos="left" text={gridState.isNamePinned ? "Открепить колонку" : "Закрепить колонку"}>
-            <button class="pin-btn" class:active={gridState.isNamePinned} onclick={() => gridState.isNamePinned = !gridState.isNamePinned} aria-label="Закрепить колонку Имя">
+          <Tooltip
+            pos="left"
+            text={gridState.isNamePinned
+              ? "Открепить колонку"
+              : "Закрепить колонку"}
+          >
+            <button
+              class="pin-btn"
+              class:active={gridState.isNamePinned}
+              onclick={() => (gridState.isNamePinned = !gridState.isNamePinned)}
+              aria-label="Закрепить колонку Имя"
+            >
               <md-icon>push_pin</md-icon>
             </button>
           </Tooltip>
@@ -126,7 +167,11 @@
 
     <!-- Туда День -->
     {#each [0, 1, 2] as i}
-      {@render filterHeader(`toDay_${dict.options.days[i]}`, ["Пт", "Сб", "Вс"][i], false)}
+      {@render filterHeader(
+        `toDay_${dict.options.days[i]}`,
+        ["Пт", "Сб", "Вс"][i],
+        false,
+      )}
     {/each}
 
     <!-- Обратно Способ -->
@@ -136,7 +181,11 @@
 
     <!-- Обратно День -->
     {#each [0, 1, 2] as i}
-      {@render filterHeader(`fromDay_${dict.options.days[i]}`, ["Пт", "Сб", "Вс"][i], false)}
+      {@render filterHeader(
+        `fromDay_${dict.options.days[i]}`,
+        ["Пт", "Сб", "Вс"][i],
+        false,
+      )}
     {/each}
   </tr>
 </thead>

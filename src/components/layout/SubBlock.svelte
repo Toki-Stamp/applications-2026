@@ -1,6 +1,14 @@
 <script>
   import { onMount } from "svelte";
 
+  /**
+   * @typedef {Object} Props
+   * @property {string} [title]
+   * @property {number} [stickyLevel]
+   * @property {import('svelte').Snippet} [children]
+   */
+
+  /** @type {Props} */
   let {
     title = "",
     stickyLevel = 3, // 2 = stick under main block title, 3 = stick under section title
@@ -17,7 +25,7 @@
       ([entry]) => {
         isStuck = !entry.isIntersecting;
       },
-      { threshold: [1.0] }
+      { threshold: [1.0] },
     );
     observer.observe(sentinelEl);
     return () => observer.disconnect();
@@ -26,7 +34,10 @@
 
 <div class="sub-block-card level-{stickyLevel}">
   {#if title}
-    <h3 class="sub-block-title glass-header glass-header-accent" class:is-stuck={isStuck}>
+    <h3
+      class="sub-block-title glass-header glass-header-accent"
+      class:is-stuck={isStuck}
+    >
       <div bind:this={sentinelEl} class="sticky-sentinel"></div>
       {@html title}
     </h3>

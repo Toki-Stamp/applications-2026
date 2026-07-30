@@ -89,7 +89,11 @@
                 locked={isSubmitting || hasErrors}
                 iconOnly={true}
               >
-                <md-icon>{isSubmitting || hasErrors ? "lock" : "rocket_launch"}</md-icon>
+                <md-icon
+                  >{isSubmitting || hasErrors
+                    ? "lock"
+                    : "rocket_launch"}</md-icon
+                >
               </Button>
             </Tooltip>
           {/if}

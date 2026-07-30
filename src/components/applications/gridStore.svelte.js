@@ -40,11 +40,11 @@ export class GridState {
   hoveredFilter = $state(null);
   selectedRowIndices = $state(new Set());
   lastSelectedIndex = $state(-1);
-  
+
   isNumPinned = $state(true);
   isNicknamePinned = $state(false);
   isNamePinned = $state(false);
-  
+
   widthNum = $state(0);
   widthNickname = $state(0);
   widthName = $state(0);
@@ -54,7 +54,13 @@ export class GridState {
   }
 
   get lastPinnedCol() {
-    return this.isNamePinned ? 'name' : (this.isNicknamePinned ? 'nickname' : (this.isNumPinned ? 'num' : null));
+    return this.isNamePinned
+      ? "name"
+      : this.isNicknamePinned
+        ? "nickname"
+        : this.isNumPinned
+          ? "num"
+          : null;
   }
 
   /**
@@ -80,7 +86,10 @@ export class GridState {
       this.selectedRowIndices = newSet;
       this.lastSelectedIndex = i;
     } else {
-      if (this.selectedRowIndices.has(i) && this.selectedRowIndices.size === 1) {
+      if (
+        this.selectedRowIndices.has(i) &&
+        this.selectedRowIndices.size === 1
+      ) {
         this.selectedRowIndices = new Set();
         this.lastSelectedIndex = -1;
       } else {
@@ -102,7 +111,7 @@ export class GridState {
     } else {
       this.activeFilters = {
         ...this.activeFilters,
-        [group]: { value, details: this.getFilterDetails(key) }
+        [group]: { value, details: this.getFilterDetails(key) },
       };
     }
   }
@@ -114,39 +123,57 @@ export class GridState {
   getFilterDetails(filterKey) {
     if (!filterKey) return null;
     const [direction, value] = filterKey.split("_");
-    
-    if (direction === "toCity") return { catText: "ТУДА", hideCatText: true, valText: value.charAt(0).toUpperCase() + value.slice(1), sortOrder: 2 };
-    if (direction === "firstName") return { catText: "Имя", hideCatText: true, valText: value.charAt(0).toUpperCase() + value.slice(1), sortOrder: 99 };
+
+    if (direction === "toCity")
+      return {
+        catText: "ТУДА",
+        hideCatText: true,
+        valText: value.charAt(0).toUpperCase() + value.slice(1),
+        sortOrder: 2,
+      };
+    if (direction === "firstName")
+      return {
+        catText: "Имя",
+        hideCatText: true,
+        valText: value.charAt(0).toUpperCase() + value.slice(1),
+        sortOrder: 99,
+      };
 
     const dirStr = direction.startsWith("to") ? "ТУДА" : "ОБРАТНО";
-    
+
     let typeStr = "Способ";
     let sortOrder = 1;
-    if (direction.includes("Day")) { typeStr = "День"; sortOrder = 3; }
-    if (direction.includes("Time")) { typeStr = "Время"; sortOrder = 4; }
-    
+    if (direction.includes("Day")) {
+      typeStr = "День";
+      sortOrder = 3;
+    }
+    if (direction.includes("Time")) {
+      typeStr = "Время";
+      sortOrder = 4;
+    }
+
     let displayValue = value;
     /** @type {string | undefined} */
     let valIcon = undefined;
     if (typeStr === "Способ") {
-      const match = transportMethods.find(tm => tm.key === value);
+      const match = transportMethods.find((tm) => tm.key === value);
       if (match) {
         displayValue = dict.options.transportMethodsTo[match.id];
         valIcon = match.icon;
       }
     } else if (typeStr === "День") {
       /** @type {Record<string, string>} */
-      const dayMap = { "Пятница": "ПТ", "Суббота": "СБ", "Воскресенье": "ВС" };
+      const dayMap = { Пятница: "ПТ", Суббота: "СБ", Воскресенье: "ВС" };
       displayValue = dayMap[value] || value;
     }
-    
+
     return {
       catText: dirStr,
       hideCatText: true,
       valText: displayValue,
       valIcon: valIcon,
       hideValText: typeStr === "Способ",
-      sortOrder
+      sortOrder,
     };
   }
 
@@ -158,7 +185,8 @@ export class GridState {
     if (!filterKey) return false;
     const [dir, val] = filterKey.split("_");
 
-    if (dir === "toCity") return p.transportTo?.city?.trim().toLowerCase() === val;
+    if (dir === "toCity")
+      return p.transportTo?.city?.trim().toLowerCase() === val;
     if (dir === "firstName") return p.firstName?.trim().toLowerCase() === val;
     if (dir === "toDay") return p.transportTo?.day === val;
     if (dir === "fromDay") return p.transportFrom?.day === val;
@@ -189,20 +217,21 @@ export class GridState {
    * @param {boolean} filterMode
    */
   isRowActiveOrHovered(p, filterMode) {
-    if (Object.keys(this.activeFilters).length === 0 && !this.hoveredFilter) return false;
-    
+    if (Object.keys(this.activeFilters).length === 0 && !this.hoveredFilter)
+      return false;
+
     if (Object.keys(this.activeFilters).length > 0) {
       for (const [group, filter] of Object.entries(this.activeFilters)) {
         if (!this.isRowHighlighted(p, `${group}_${filter.value}`)) return false;
       }
     }
-    
+
     if (this.hoveredFilter) {
       if (!this.isRowHighlighted(p, this.hoveredFilter)) return false;
     } else if (filterMode) {
       return false;
     }
-    
+
     return true;
   }
 

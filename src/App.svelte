@@ -3,7 +3,11 @@
   import "./app.css";
   import { fade } from "svelte/transition";
   import { formStore } from "./store.svelte.js";
-  import { GOOGLE_SCRIPT_URL, FORM_STORAGE_KEY, STEP_STORAGE_KEY } from "./constants.js";
+  import {
+    GOOGLE_SCRIPT_URL,
+    FORM_STORAGE_KEY,
+    STEP_STORAGE_KEY,
+  } from "./constants.js";
   import { dict } from "./locales/ru.js";
   import { validateStepData, sanitizeFormData } from "./schema.js";
   import { parseApiError } from "./utils/errors.js";
@@ -314,9 +318,9 @@
             {@const StepComponent = stepsConfig[currentStep - 1].component}
             <div transition:fade={{ duration: 300 }} class="step-layer">
               <div class="step-content">
-                <StepComponent 
+                <StepComponent
                   stepNumber={currentStep - 1}
-                  errors={stepErrors} 
+                  errors={stepErrors}
                 />
               </div>
             </div>

@@ -1,20 +1,28 @@
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
-  ui.createMenu('🛠 Управление заявками')
-    .addItem('Очистить все данные (Wipe)', 'wipeData')
+  ui.createMenu("🛠 Управление заявками")
+    .addItem("Очистить все данные (Wipe)", "wipeData")
     .addToUi();
 }
 
 function wipeData() {
   var ui = SpreadsheetApp.getUi();
-  var response = ui.alert('Внимание!', 'Вы уверены, что хотите полностью удалить все данные с этого листа? Это действие нельзя отменить.', ui.ButtonSet.YES_NO);
+  var response = ui.alert(
+    "Внимание!",
+    "Вы уверены, что хотите полностью удалить все данные с этого листа? Это действие нельзя отменить.",
+    ui.ButtonSet.YES_NO,
+  );
 
   if (response == ui.Button.YES) {
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
     sheet.clear();
     // Снимаем закрепление строк
     sheet.setFrozenRows(0);
-    ui.alert('Готово', 'Все данные удалены. При следующей отправке заявки заголовки сгенерируются заново.', ui.ButtonSet.OK);
+    ui.alert(
+      "Готово",
+      "Все данные удалены. При следующей отправке заявки заголовки сгенерируются заново.",
+      ui.ButtonSet.OK,
+    );
   }
 }
 
@@ -26,7 +34,10 @@ function doPost(e) {
     lock.waitLock(30000);
   } catch (err) {
     return ContentService.createTextOutput(
-      JSON.stringify({ error: "Сервер сейчас перегружен. Пожалуйста, попробуйте отправить заявку еще раз." })
+      JSON.stringify({
+        error:
+          "Сервер сейчас перегружен. Пожалуйста, попробуйте отправить заявку еще раз.",
+      }),
     ).setMimeType(ContentService.MimeType.JSON);
   }
 
@@ -51,16 +62,22 @@ function doPost(e) {
         "Фамилия",
         "Телефон",
         "Транспорт ТУДА",
-        "", "", "", "",
+        "",
+        "",
+        "",
+        "",
         "Транспорт ОБРАТНО",
-        "", "",
+        "",
+        "",
         "Коммент (Транспорт)",
         "Еда",
         "Приемы пищи",
-        "", "",
+        "",
+        "",
         "Алкоголь",
         "Приемы алкоголя",
-        "", "",
+        "",
+        "",
         "Коммент (Питание)",
         "Проживание",
         "Ночевки",
@@ -69,7 +86,17 @@ function doPost(e) {
         "Свободный микрофон",
       ]);
       sheet.appendRow([
-        "", "", "", "", "", "", "", "", "", "", "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
         "Метод",
         "Город выезда",
         "Свободные места",
@@ -91,7 +118,8 @@ function doPost(e) {
         "Тип",
         "Пт-Сб",
         "Сб-Вс",
-        "", ""
+        "",
+        "",
       ]);
       sheet.setFrozenRows(2); // Закрепляем шапку
       sheet
@@ -103,7 +131,10 @@ function doPost(e) {
     var timestamp = new Date();
 
     var applicationId = data.applicationId || "NO-ID";
-    var groupId = data.applicationType === "group" ? applicationId.split("-")[0].toUpperCase() : "";
+    var groupId =
+      data.applicationType === "group"
+        ? applicationId.split("-")[0].toUpperCase()
+        : "";
     var currentStatus = "New";
 
     // Поиск старых строк и обновление статуса
@@ -115,7 +146,10 @@ function doPost(e) {
       var changed = false;
 
       for (var j = 0; j < idValues.length; j++) {
-        if (idValues[j][0] === applicationId && statusValues[j][0] !== "Obsolete") {
+        if (
+          idValues[j][0] === applicationId &&
+          statusValues[j][0] !== "Obsolete"
+        ) {
           statusValues[j][0] = "Obsolete";
           changed = true;
           currentStatus = "Updated";
@@ -136,25 +170,42 @@ function doPost(e) {
       return 0;
     }
 
-    var DICT_PROVISION = { 'required': 'Да', 'none': 'Нет' };
+    var DICT_PROVISION = { required: "Да", none: "Нет" };
     function translateProvision(val) {
-      return DICT_PROVISION[val] || val || '';
+      return DICT_PROVISION[val] || val || "";
     }
 
-    var DICT_ACCOMMODATION = { 'booking': 'Бронь базы', 'self': 'Самостоятельно' };
+    var DICT_ACCOMMODATION = { booking: "Бронь базы", self: "Самостоятельно" };
     function translateAccommodation(val) {
-      return DICT_ACCOMMODATION[val] || val || '';
+      return DICT_ACCOMMODATION[val] || val || "";
     }
 
-    var DICT_TRANSPORT = { 'driver': 'Водитель', 'passenger': 'Пассажир', 'bus': 'Маршрутка', 'self': 'Свой ход' };
+    var DICT_TRANSPORT = {
+      driver: "Водитель",
+      passenger: "Пассажир",
+      bus: "Маршрутка",
+      self: "Свой ход",
+    };
     function translateTransport(val) {
-      return DICT_TRANSPORT[val] || val || '';
+      return DICT_TRANSPORT[val] || val || "";
     }
 
     // Вспомогательная функция для создания строки для одного человека
     function createRow(person, role) {
-      var appTypeRu = data.applicationType === "individual" ? "Индивидуальная" : (data.applicationType === "group" ? "Групповая" : "");
-      var groupCondRu = data.groupConditions === "unified" ? "Единые" : (data.groupConditions === "differential" ? "Дифференцированные" : (data.applicationType === "individual" ? "-" : ""));
+      var appTypeRu =
+        data.applicationType === "individual"
+          ? "Индивидуальная"
+          : data.applicationType === "group"
+            ? "Групповая"
+            : "";
+      var groupCondRu =
+        data.groupConditions === "unified"
+          ? "Единые"
+          : data.groupConditions === "differential"
+            ? "Дифференцированные"
+            : data.applicationType === "individual"
+              ? "-"
+              : "";
 
       return [
         timestamp, // 1. Timestamp (Время подачи заявки)
@@ -250,55 +301,79 @@ function doOptions(e) {
 
 function doGet(e) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  
+
   try {
     var lastRow = sheet.getLastRow();
     if (lastRow <= 2) {
-      return ContentService.createTextOutput(JSON.stringify({ participants: [] }))
-        .setMimeType(ContentService.MimeType.JSON);
+      return ContentService.createTextOutput(
+        JSON.stringify({ participants: [] }),
+      ).setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     // Получаем все данные со 3-й строки
     var dataRange = sheet.getRange(3, 1, lastRow - 2, 34);
     var values = dataRange.getDisplayValues();
-    
+
     var participants = [];
-    
+
     for (var i = 0; i < values.length; i++) {
       var row = values[i];
       var status = row[3]; // Status (index 3)
-      
+
       if (status === "Obsolete") {
         continue;
       }
-      
+
       participants.push({
         groupId: row[2] || "",
         role: row[4] || "",
         nickname: row[7] || "",
         firstName: row[8] || "",
-        
+        lastName: row[9] || "",
+        phone: row[10] || "",
+
         transportTo: {
           method: row[11] || "",
           city: row[12] || "",
           seats: row[13] || "",
           day: row[14] || "",
-          time: row[15] || ""
+          time: row[15] || "",
         },
-        
+
         transportFrom: {
           method: row[16] || "",
           day: row[17] || "",
-          time: row[18] || ""
-        }
+          time: row[18] || "",
+        },
+
+        food: {
+          type: row[19] || "",
+          fri: row[20] || "",
+          sat: row[21] || "",
+          sun: row[22] || "",
+        },
+
+        alcohol: {
+          type: row[23] || "",
+          fri: row[24] || "",
+          sat: row[25] || "",
+          sun: row[26] || "",
+        },
+
+        accommodation: {
+          type: row[28] || "",
+          friSat: row[29] || "",
+          satSun: row[30] || "",
+        },
       });
     }
-    
-    return ContentService.createTextOutput(JSON.stringify({ participants: participants }))
-      .setMimeType(ContentService.MimeType.JSON);
-      
+
+    return ContentService.createTextOutput(
+      JSON.stringify({ participants: participants }),
+    ).setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ error: error.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(
+      JSON.stringify({ error: error.toString() }),
+    ).setMimeType(ContentService.MimeType.JSON);
   }
 }

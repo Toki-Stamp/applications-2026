@@ -13,7 +13,7 @@
       ([entry]) => {
         isStuck = !entry.isIntersecting;
       },
-      { threshold: [1.0] }
+      { threshold: [1.0] },
     );
     observer.observe(sentinelEl);
     return () => observer.disconnect();
@@ -22,7 +22,10 @@
 
 <div class="section-container" class:first-section={isFirst}>
   {#if title}
-    <h3 class="section-title glass-header glass-header-accent" class:is-stuck={isStuck}>
+    <h3
+      class="section-title glass-header glass-header-accent"
+      class:is-stuck={isStuck}
+    >
       <div bind:this={sentinelEl} class="sticky-sentinel"></div>
       {title}
     </h3>
@@ -60,12 +63,15 @@
     align-items: center;
 
     /* Full-bleed out of Block content padding using token */
-    margin: 0 calc(var(--layout-px-base) * -1) 0 calc(var(--layout-px-base) * -1);
+    margin: 0 calc(var(--layout-px-base) * -1) 0
+      calc(var(--layout-px-base) * -1);
     padding: var(--title-py-sm) var(--layout-px-base);
 
     /* Sticky behavior: stacks under .block-title */
     position: sticky;
-    --current-sticky-offset: calc(var(--sticky-block-offset) - 2px); /* 2px compensation for sticky header gap */
+    --current-sticky-offset: calc(
+      var(--sticky-block-offset) - 2px
+    ); /* 2px compensation for sticky header gap */
     top: var(--current-sticky-offset);
     z-index: 25;
   }

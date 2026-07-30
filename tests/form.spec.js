@@ -150,7 +150,9 @@ async function fillGuestText(page, guestName, labelText, value) {
 async function clickNext(page) {
   await page.locator(".right-buttons button").last().click();
   await page.waitForTimeout(600); // wait for transition
-  await page.waitForFunction(() => document.querySelectorAll('.step-layer').length === 1);
+  await page.waitForFunction(
+    () => document.querySelectorAll(".step-layer").length === 1,
+  );
 }
 
 async function clickSubmit(page) {
@@ -257,7 +259,11 @@ test.describe("Form E2E Tests", () => {
     await fillText(page, "Ориентировочное время отправления", "18:00");
     await fillText(page, "Город отправления", "Брест");
 
-    await selectDropdown(page, "Способ отъезда", "Ищу место в попутном транспорте");
+    await selectDropdown(
+      page,
+      "Способ отъезда",
+      "Ищу место в попутном транспорте",
+    );
     await selectDropdown(page, "День отъезда с базы", "Воскресенье");
     await fillText(page, "Ориентировочное время отъезда", "15:00");
     await clickNext(page);

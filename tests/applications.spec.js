@@ -8,8 +8,19 @@ const mockParticipants = {
       firstName: "Иван",
       role: "participant",
       gender: "M",
-      transportTo: { method: "Водитель", city: "Минск", time: "10:00", day: "Пт", seats: 3 },
-      transportFrom: { method: "Пассажир", city: "Гомель", time: "12:00", day: "Вс" },
+      transportTo: {
+        method: "Водитель",
+        city: "Минск",
+        time: "10:00",
+        day: "Пт",
+        seats: 3,
+      },
+      transportFrom: {
+        method: "Пассажир",
+        city: "Гомель",
+        time: "12:00",
+        day: "Вс",
+      },
     },
     {
       id: "2",
@@ -17,8 +28,19 @@ const mockParticipants = {
       firstName: "Анна",
       role: "organizer",
       gender: "F",
-      transportTo: { method: "Пассажир", city: "Брест", time: "15:00", day: "Сб" },
-      transportFrom: { method: "Водитель", city: "Минск", time: "18:00", day: "Пн", seats: 2 },
+      transportTo: {
+        method: "Пассажир",
+        city: "Брест",
+        time: "15:00",
+        day: "Сб",
+      },
+      transportFrom: {
+        method: "Водитель",
+        city: "Минск",
+        time: "18:00",
+        day: "Пн",
+        seats: 2,
+      },
     },
     {
       id: "3",
@@ -26,8 +48,18 @@ const mockParticipants = {
       firstName: "Олег",
       role: "participant",
       gender: "M",
-      transportTo: { method: "Маршрутка", city: "Минск", time: "12:00", day: "Пт" },
-      transportFrom: { method: "Маршрутка", city: "Минск", time: "18:00", day: "Вс" },
+      transportTo: {
+        method: "Маршрутка",
+        city: "Минск",
+        time: "12:00",
+        day: "Пт",
+      },
+      transportFrom: {
+        method: "Маршрутка",
+        city: "Минск",
+        time: "18:00",
+        day: "Вс",
+      },
     },
   ],
 };
@@ -64,10 +96,14 @@ test.describe("Applications Table", () => {
     await expect(page.getByText("Олег").first()).toBeVisible();
   });
 
-  test("should filter by clicking a cell and show filter chip in footer", async ({ page }) => {
+  test("should filter by clicking a cell and show filter chip in footer", async ({
+    page,
+  }) => {
     // Click 'Минск' (should match User1 and User3's 'toCity' or 'fromCity')
     // The cell has class 'interactive-city-cell'
-    const minskCells = page.locator(".interactive-city-cell").filter({ hasText: "Минск" });
+    const minskCells = page
+      .locator(".interactive-city-cell")
+      .filter({ hasText: "Минск" });
     await minskCells.first().click();
 
     // Verify the footer becomes visible
@@ -88,9 +124,13 @@ test.describe("Applications Table", () => {
     await expect(eyeButton).toBeVisible();
   });
 
-  test("should hide non-matching rows when filter mode is toggled", async ({ page }) => {
+  test("should hide non-matching rows when filter mode is toggled", async ({
+    page,
+  }) => {
     // Click "Минск" to filter
-    const minskCells = page.locator(".interactive-city-cell").filter({ hasText: "Минск" });
+    const minskCells = page
+      .locator(".interactive-city-cell")
+      .filter({ hasText: "Минск" });
     await minskCells.first().click();
 
     const rows = page.locator(".participants-table tr:has(td)");
@@ -100,7 +140,9 @@ test.describe("Applications Table", () => {
     await page.locator(".summary-badge button").click();
 
     // Now rows that don't match (User2) should have .hidden-row class
-    const visibleRows = page.locator(".participants-table tr:has(td):not(.hidden-row)");
+    const visibleRows = page.locator(
+      ".participants-table tr:has(td):not(.hidden-row)",
+    );
     await expect(visibleRows).toHaveCount(2);
 
     // Verify User2 is not visible in viewport
@@ -108,9 +150,13 @@ test.describe("Applications Table", () => {
     await expect(page.getByText("User2").first()).not.toBeVisible();
   });
 
-  test("should remove filter when chip close button is clicked", async ({ page }) => {
+  test("should remove filter when chip close button is clicked", async ({
+    page,
+  }) => {
     // Apply filter
-    const minskCells = page.locator(".interactive-city-cell").filter({ hasText: "Минск" });
+    const minskCells = page
+      .locator(".interactive-city-cell")
+      .filter({ hasText: "Минск" });
     await minskCells.first().click();
     await expect(page.locator(".val-chip")).toHaveCount(1);
 
@@ -133,7 +179,9 @@ test.describe("Applications Table", () => {
     await expect(rows.nth(0)).not.toHaveClass(/selected/);
   });
 
-  test("should open help popover and verify scroll container", async ({ page }) => {
+  test("should open help popover and verify scroll container", async ({
+    page,
+  }) => {
     // Click help button
     await page.locator('button[aria-label="Справка"]').click();
 

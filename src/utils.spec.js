@@ -1,5 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
-import { generateId, getApplicantDisplayName, getGuestDisplayName, gridExpand } from "./utils.js";
+import {
+  generateId,
+  getApplicantDisplayName,
+  getGuestDisplayName,
+  gridExpand,
+} from "./utils.js";
 
 describe("utils.js", () => {
   describe("generateId", () => {
@@ -20,15 +25,15 @@ describe("utils.js", () => {
   describe("gridExpand", () => {
     it("should return transition configuration", () => {
       const mockNode = /** @type {any} */ ({
-        style: {}
+        style: {},
       });
-      
+
       // Mock getComputedStyle
       vi.stubGlobal("getComputedStyle", () => ({
         marginTop: "10px",
         marginBottom: "0px",
         paddingTop: "5px",
-        paddingBottom: "5px"
+        paddingBottom: "5px",
       }));
 
       const transition = gridExpand(mockNode, { duration: 200 });
@@ -67,13 +72,19 @@ describe("utils.js", () => {
     });
 
     it("should include full name in parentheses", () => {
-      expect(getApplicantDisplayName({ nickname: "toki", firstName: "Ivan", lastName: "Ivanov" }))
-        .toBe("toki (Ivan Ivanov)");
+      expect(
+        getApplicantDisplayName({
+          nickname: "toki",
+          firstName: "Ivan",
+          lastName: "Ivanov",
+        }),
+      ).toBe("toki (Ivan Ivanov)");
     });
 
     it("should handle missing last name", () => {
-      expect(getApplicantDisplayName({ nickname: "toki", firstName: "Ivan" }))
-        .toBe("toki (Ivan)");
+      expect(
+        getApplicantDisplayName({ nickname: "toki", firstName: "Ivan" }),
+      ).toBe("toki (Ivan)");
     });
   });
 
@@ -84,18 +95,24 @@ describe("utils.js", () => {
     });
 
     it("should use full name as main if provided", () => {
-      expect(getGuestDisplayName({ firstName: "Ivan", lastName: "Ivanov" }, 0))
-        .toBe("Ivan Ivanov");
+      expect(
+        getGuestDisplayName({ firstName: "Ivan", lastName: "Ivanov" }, 0),
+      ).toBe("Ivan Ivanov");
     });
 
     it("should append nickname in parentheses if both are provided", () => {
-      expect(getGuestDisplayName({ firstName: "Ivan", lastName: "Ivanov", nickname: "toki" }, 0))
-        .toBe("Ivan Ivanov (toki)");
+      expect(
+        getGuestDisplayName(
+          { firstName: "Ivan", lastName: "Ivanov", nickname: "toki" },
+          0,
+        ),
+      ).toBe("Ivan Ivanov (toki)");
     });
-    
+
     it("should use default Guest #N and nickname if no name provided", () => {
-      expect(getGuestDisplayName({ nickname: "toki" }, 1))
-        .toBe("Гостя #2 (toki)");
+      expect(getGuestDisplayName({ nickname: "toki" }, 1)).toBe(
+        "Гостя #2 (toki)",
+      );
     });
   });
 });

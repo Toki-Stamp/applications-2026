@@ -98,7 +98,7 @@
     const container = /** @type {any} */ (e.target);
     if (!container) return;
     const containerTop = container.getBoundingClientRect().top;
-    
+
     categoryHeaders.forEach((header, index) => {
       if (header) {
         if (index === 0) {
@@ -120,9 +120,9 @@
   function scrollToActive(node) {
     // Wait for the next tick to ensure the DOM is fully laid out
     setTimeout(() => {
-      const activeEl = node.querySelector('.theme-row-btn.active');
+      const activeEl = node.querySelector(".theme-row-btn.active");
       if (activeEl) {
-        activeEl.scrollIntoView({ behavior: 'instant', block: 'center' });
+        activeEl.scrollIntoView({ behavior: "instant", block: "center" });
         // Force update the sticky shadows after scrolling
         handleScroll({ target: node });
       }
@@ -179,9 +179,13 @@
     width="min(var(--popover-width-sm), calc(100vw - calc(var(--gap-fields) * 2)))"
     referenceNode={anchorNode}
   >
-    <div class="theme-popover-content" onscroll={handleScroll} use:scrollToActive>
-      <div 
-        class="theme-category glass-header glass-header-primary" 
+    <div
+      class="theme-popover-content"
+      onscroll={handleScroll}
+      use:scrollToActive
+    >
+      <div
+        class="theme-category glass-header glass-header-primary"
         class:is-stuck={categoryIsStuck[0]}
         bind:this={categoryHeaders[0]}
       >
@@ -191,8 +195,8 @@
         {@render themeButton(theme)}
       {/each}
 
-      <div 
-        class="theme-category glass-header glass-header-primary" 
+      <div
+        class="theme-category glass-header glass-header-primary"
         class:is-stuck={categoryIsStuck[1]}
         bind:this={categoryHeaders[1]}
       >

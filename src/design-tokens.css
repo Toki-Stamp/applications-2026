@@ -8,7 +8,7 @@
   --text-secondary: #a1a1aa;
   --text-placeholder: #71717a;
   /* Zinc 500 */
-  
+
   /* 
    * Default Theme (Cyberpunk) 
    * Variables defined here act as fallbacks if no theme is set
@@ -66,23 +66,27 @@
   --z-tooltips: 1000;
 
   /* Elevation & Shadow Tokens (Unified System) */
-  --shadow-header: 0 4px 14px -4px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.15), 0 1px 4px -1px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 8px 24px -6px rgba(0, 0, 0, 0.25), 0 4px 12px -4px rgba(0, 0, 0, 0.15);
-  --shadow-lg: 0 16px 40px -8px rgba(0, 0, 0, 0.35), 0 8px 20px -6px rgba(0, 0, 0, 0.2);
+  --shadow-header:
+    0 4px 14px -4px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-sm:
+    0 2px 8px -2px rgba(0, 0, 0, 0.15), 0 1px 4px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md:
+    0 8px 24px -6px rgba(0, 0, 0, 0.25), 0 4px 12px -4px rgba(0, 0, 0, 0.15);
+  --shadow-lg:
+    0 16px 40px -8px rgba(0, 0, 0, 0.35), 0 8px 20px -6px rgba(0, 0, 0, 0.2);
   --shadow-glow-primary: 0 0 20px -2px var(--primary-glow);
   --shadow-glow-accent: 0 0 20px -2px var(--accent-glow);
 
   /* Typography Scale */
-  --text-xs: 0.75rem;    /* 12px */
-  --text-sm: 0.85rem;    /* ~14px */
-  --text-base: 1rem;     /* 16px */
-  --text-lg: 1.1rem;     /* ~18px */
-  --text-xl: 1.25rem;    /* 20px */
-  --text-2xl: 1.5rem;    /* 24px */
-  --text-3xl: 1.875rem;  /* 30px */
-  --text-4xl: 2.25rem;   /* 36px */
-  --text-hero: 5rem;     /* 80px */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.85rem; /* ~14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.1rem; /* ~18px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
+  --text-3xl: 1.875rem; /* 30px */
+  --text-4xl: 2.25rem; /* 36px */
+  --text-hero: 5rem; /* 80px */
 
   /* Font Weights */
   --font-weight-normal: 400;
@@ -126,7 +130,11 @@
   --md-sys-color-error: var(--error-color);
 
   /* Make material web input outlines more visible in resting state */
-  --input-border-color: color-mix(in srgb, var(--text-primary) 25%, transparent);
+  --input-border-color: color-mix(
+    in srgb,
+    var(--text-primary) 25%,
+    transparent
+  );
 }
 
 @media (max-width: 600px) {
@@ -148,10 +156,10 @@
     --element-py: 12px;
 
     /* Override gap tokens for mobile */
-    --gap-layout: 1.5rem;   /* 24px */
-    --gap-section: 1rem;    /* 16px */
-    --gap-fields: 0.75rem;  /* 12px */
-    --gap-sm: 0.375rem;     /* 6px */
+    --gap-layout: 1.5rem; /* 24px */
+    --gap-section: 1rem; /* 16px */
+    --gap-fields: 0.75rem; /* 12px */
+    --gap-sm: 0.375rem; /* 6px */
   }
 }
 

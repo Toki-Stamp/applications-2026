@@ -32,4 +32,3 @@
   Все используемые иконки хранятся в `src/assets/icons/`. Инструкция для ИИ-агентов по вызову `npm run fetch-icon <name>` зафиксирована в [`AGENTS.md`](file:///d:/Projects/Google%20Antigravity/Applications-2026/AGENTS.md).
 
 _(Документ должен пополняться по мере принятия новых архитектурных и UX-решений)_
-

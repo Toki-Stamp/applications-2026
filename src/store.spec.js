@@ -29,7 +29,9 @@ describe("store.svelte.js", () => {
 
     it("should handle JSON parse error in localStorage", () => {
       localStorage.setItem(FORM_STORAGE_KEY, "{ broken json ");
-      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
       const store = createFormStore();
       expect(store.data.applicant.nickname).toBe("");
       expect(localStorage.getItem(FORM_STORAGE_KEY)).toBeNull();
@@ -42,13 +44,15 @@ describe("store.svelte.js", () => {
       if (globalThis.crypto) {
         globalThis.crypto.randomUUID = undefined;
       }
-      
+
       const store = createFormStore();
-      expect(store.data.applicationId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+      expect(store.data.applicationId).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+      );
       expect(store.data.applicant.nickname).toBe("");
       expect(store.data.guests.length).toBe(0);
       expect(store.meta.touchedFields.size).toBe(0);
-      
+
       // Restore
       if (globalThis.crypto) {
         globalThis.crypto.randomUUID = originalRandomUUID;
@@ -58,11 +62,11 @@ describe("store.svelte.js", () => {
     it("should update guests count properly", () => {
       const store = createFormStore();
       store.data.applicationType = APPLICATION_TYPE.GROUP;
-      
+
       store.updateGuestsCount(2);
       expect(store.data.additionalGuestsCount).toBe(2);
       expect(store.data.guests.length).toBe(2);
-      
+
       // Check default values in new guest
       expect(store.data.guests[0].provisions.food).toBe(null);
 
@@ -74,7 +78,7 @@ describe("store.svelte.js", () => {
       const store = createFormStore();
       store.data.applicationType = APPLICATION_TYPE.INDIVIDUAL;
       store.updateGuestsCount(3);
-      
+
       expect(store.data.additionalGuestsCount).toBe(0);
       expect(store.data.guests.length).toBe(0); // since it ignores targetGuests if individual
     });
@@ -82,12 +86,12 @@ describe("store.svelte.js", () => {
     it("should reset the store properly", () => {
       const store = createFormStore();
       const initialId = store.data.applicationId;
-      
+
       store.data.applicant.nickname = "test";
       store.markTouched("applicant.nickname");
-      
+
       store.reset();
-      
+
       expect(store.data.applicant.nickname).toBe("");
       expect(store.data.applicationId).not.toBe(initialId); // new UUID
       expect(store.meta.touchedFields.size).toBe(0);
@@ -118,7 +122,11 @@ describe("store.svelte.js", () => {
 
     it("should allow replacing entire data via setter", () => {
       const store = createFormStore();
-      store.data = { _version: 2, custom: true, applicant: { nickname: "set" } };
+      store.data = {
+        _version: 2,
+        custom: true,
+        applicant: { nickname: "set" },
+      };
       expect(store.data.custom).toBe(true);
     });
   });

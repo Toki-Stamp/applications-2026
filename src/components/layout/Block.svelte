@@ -1,6 +1,15 @@
 <script>
   import { onMount } from "svelte";
 
+  /**
+   * @typedef {Object} Props
+   * @property {string} [title]
+   * @property {string} [icon]
+   * @property {"left" | "center"} [align]
+   * @property {import('svelte').Snippet} [children]
+   */
+
+  /** @type {Props} */
   let { title = "", icon = "", align = "left", children } = $props();
 
   /** @type {HTMLDivElement | null} */
@@ -13,7 +22,7 @@
       ([entry]) => {
         isStuck = !entry.isIntersecting;
       },
-      { threshold: [1.0] }
+      { threshold: [1.0] },
     );
     observer.observe(sentinelEl);
     return () => observer.disconnect();

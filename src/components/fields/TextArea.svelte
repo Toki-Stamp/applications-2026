@@ -115,7 +115,9 @@
     --md-outlined-field-content-space: 12px;
     min-height: 104px; /* 3 rows: 32px padding + (24px * 3) */
     padding: var(--element-py) var(--element-px);
-    padding-right: calc(var(--element-px) * 2 + 20px); /* space for clear button */
+    padding-right: calc(
+      var(--element-px) * 2 + 20px
+    ); /* space for clear button */
     font-family: inherit;
     font-size: var(--text-base);
     color: var(--text-primary);

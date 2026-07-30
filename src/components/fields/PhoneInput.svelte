@@ -538,7 +538,7 @@
     --md-outlined-field-leading-space: var(--element-px);
     --md-outlined-field-content-space: var(--element-px);
   }
-  
+
   .phone-input:has(.phone-clear-btn) md-outlined-text-field {
     --md-outlined-field-trailing-space: calc(var(--element-px) * 2 + 24px);
   }

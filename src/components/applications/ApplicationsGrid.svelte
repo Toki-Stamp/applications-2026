@@ -1,19 +1,19 @@
 <script>
-  import './grid.css';
-  import { setContext } from 'svelte';
-  import { GridState } from './gridStore.svelte.js';
-  import GridHeader from './GridHeader.svelte';
-  import GridRow from './GridRow.svelte';
+  import "./grid.css";
+  import { setContext } from "svelte";
+  import { GridState } from "./gridStore.svelte.js";
+  import GridHeader from "./GridHeader.svelte";
+  import GridRow from "./GridRow.svelte";
 
-  let { 
+  let {
     participants,
     activeFilters = $bindable({}),
     intersectionCount = $bindable(0),
-    filterMode = false
+    filterMode = false,
   } = $props();
 
   const gridState = new GridState(activeFilters);
-  setContext('gridState', gridState);
+  setContext("gridState", gridState);
 
   // Sync external props with internal store
   $effect(() => {
@@ -37,7 +37,7 @@
       if (!p.groupId) return acc;
       acc[p.groupId] = (acc[p.groupId] || 0) + 1;
       return acc;
-    }, {})
+    }, {}),
   );
 
   let groupLeaders = $derived(
@@ -45,7 +45,7 @@
       if (!p.groupId) return acc;
       if (!(p.groupId in acc)) acc[p.groupId] = i;
       return acc;
-    }, {})
+    }, {}),
   );
 
   let headerHeight = $state(0);
@@ -54,15 +54,15 @@
 </script>
 
 <div class="table-wrapper glass-panel">
-  <div 
-    class="table-container" 
+  <div
+    class="table-container"
     style="--header-height: {headerHeight}px"
     onscroll={(e) => {
       isScrolledX = e.currentTarget.scrollLeft > 0;
       isScrolledY = e.currentTarget.scrollTop > 0;
     }}
   >
-    <table 
+    <table
       class="participants-table"
       class:is-scrolled-x={isScrolledX}
       class:is-scrolled-y={isScrolledY}
@@ -93,7 +93,7 @@
         <col class="icon-th" />
         <col class="time-th" />
       </colgroup>
-      
+
       <GridHeader bind:headerHeight />
 
       <tbody>
@@ -101,12 +101,12 @@
           {@const isGroup = groupSizes[p.groupId] > 1}
           {@const isLeader = isGroup && groupLeaders[p.groupId] === i}
           {@const isMember = isGroup && groupLeaders[p.groupId] !== i}
-          <GridRow 
-            participant={p} 
-            index={i} 
-            {isLeader} 
-            {isMember} 
-            {filterMode} 
+          <GridRow
+            participant={p}
+            index={i}
+            {isLeader}
+            {isMember}
+            {filterMode}
           />
         {/each}
       </tbody>

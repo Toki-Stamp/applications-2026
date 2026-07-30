@@ -8,8 +8,9 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
-        applications: resolve(__dirname, 'applications.html'),
+        main: resolve(__dirname, "index.html"),
+        applications: resolve(__dirname, "applications.html"),
+        admin: resolve(__dirname, "admin.html"),
       },
     },
   },

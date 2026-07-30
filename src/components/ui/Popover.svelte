@@ -1,7 +1,7 @@
 <script>
   import { scale, fade } from "svelte/transition";
-  import { portal } from '../../utils/portal.js';
-  import { floating } from '../../actions/floating.js';
+  import { portal } from "../../utils/portal.js";
+  import { floating } from "../../actions/floating.js";
 
   let {
     isOpen = false,
@@ -18,12 +18,17 @@
   {#if backdrop}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div class="popover-backdrop" use:portal onclick={() => onclose && onclose()} transition:fade={{ duration: 150 }}></div>
+    <div
+      class="popover-backdrop"
+      use:portal
+      onclick={() => onclose && onclose()}
+      transition:fade={{ duration: 150 }}
+    ></div>
   {/if}
 
   <div
     class="popover-wrapper"
-    style:width={width}
+    style:width
     use:portal
     use:floating={{ referenceNode, placement: pos }}
     transition:scale={{ start: 0.95, duration: 150 }}

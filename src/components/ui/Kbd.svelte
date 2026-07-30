@@ -1,12 +1,12 @@
 <script>
-  let { 
+  let {
     /** @type {'primary' | 'accent'} */
-    variant = "primary", 
-    children 
+    variant = "primary",
+    children,
   } = $props();
 </script>
 
-<kbd class:accent-key={variant === 'accent'}>
+<kbd class:accent-key={variant === "accent"}>
   {#if children}{@render children()}{/if}
 </kbd>
 

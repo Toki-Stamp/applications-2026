@@ -1,8 +1,8 @@
 /**
  * Svelte action to render a node in a different part of the DOM.
- * 
- * @param {HTMLElement} node 
- * @param {HTMLElement | string} target 
+ *
+ * @param {HTMLElement} node
+ * @param {HTMLElement | string} target
  * @returns {{ update: (newTarget: HTMLElement | string) => void, destroy: () => void }}
  */
 export function portal(node, target = "body") {
@@ -23,10 +23,10 @@ export function portal(node, target = "body") {
       throw new TypeError(
         `Unknown portal target type: ${
           target === null ? "null" : typeof target
-        }. Allowed types: string (querySelector) or HTMLElement.`
+        }. Allowed types: string (querySelector) or HTMLElement.`,
       );
     }
-    
+
     if (targetNode) {
       targetNode.appendChild(node);
       node.hidden = false;

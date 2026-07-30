@@ -230,7 +230,11 @@ test.describe("Validation UX Tests", () => {
 
     // Switch to Passenger
     await page.waitForTimeout(500);
-    await selectDropdown(page, "Способ прибытия", "Ищу место в попутном транспорте");
+    await selectDropdown(
+      page,
+      "Способ прибытия",
+      "Ищу место в попутном транспорте",
+    );
 
     // Force touch again to see if old freeSeats error is gone (it should just complain about other missing fields, but let's fill them)
     await selectDropdown(page, "День отправления на базу", "Пятница");

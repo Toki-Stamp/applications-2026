@@ -1,57 +1,57 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SRC_DIR = path.resolve(__dirname, '../src');
-const ICONS_DIR = path.resolve(__dirname, '../src/assets/icons');
-const INDEX_FILE = path.resolve(ICONS_DIR, 'index.js');
+const SRC_DIR = path.resolve(__dirname, "../src");
+const ICONS_DIR = path.resolve(__dirname, "../src/assets/icons");
+const INDEX_FILE = path.resolve(ICONS_DIR, "index.js");
 
 const DEFAULT_ICONS = [
-  'settings',
-  'close',
-  'live_help',
-  'delete',
-  'arrow_back',
-  'arrow_forward',
-  'lock',
-  'rocket_launch',
-  'search',
-  'arrow_drop_down',
-  'check_circle',
-  'radio_button_unchecked',
-  'error',
-  'push_pin',
-  'group',
-  'group_add',
-  'badge',
-  'person',
-  'directions_car',
-  'hail',
-  'directions_bus',
-  'directions_walk',
-  'airline_seat_recline_normal',
-  'calendar_month',
-  'schedule',
-  'location_city',
-  'edit_note',
-  'restaurant',
-  'hotel',
-  'campaign',
-  'touch_app',
-  'waving_hand',
-  'visibility',
-  'visibility_off',
-  'chevron_left',
-  'chevron_right',
-  'wb_sunny',
-  'nightlight_round',
-  'bedtime',
-  'pending',
-  'sync',
-  'history',
+  "settings",
+  "close",
+  "live_help",
+  "delete",
+  "arrow_back",
+  "arrow_forward",
+  "lock",
+  "rocket_launch",
+  "search",
+  "arrow_drop_down",
+  "check_circle",
+  "radio_button_unchecked",
+  "error",
+  "push_pin",
+  "group",
+  "group_add",
+  "badge",
+  "person",
+  "directions_car",
+  "hail",
+  "directions_bus",
+  "directions_walk",
+  "airline_seat_recline_normal",
+  "calendar_month",
+  "schedule",
+  "location_city",
+  "edit_note",
+  "restaurant",
+  "hotel",
+  "campaign",
+  "touch_app",
+  "waving_hand",
+  "visibility",
+  "visibility_off",
+  "chevron_left",
+  "chevron_right",
+  "wb_sunny",
+  "nightlight_round",
+  "bedtime",
+  "pending",
+  "sync",
+  "history",
 ];
 
 if (!fs.existsSync(ICONS_DIR)) {
@@ -60,7 +60,7 @@ if (!fs.existsSync(ICONS_DIR)) {
 
 function cleanSvg(svgContent) {
   return svgContent
-    .replace(/\s+(height|width)="[^"]*"/g, '')
+    .replace(/\s+(height|width)="[^"]*"/g, "")
     .replace(/<path /g, '<path fill="currentColor" ');
 }
 
@@ -74,16 +74,20 @@ async function fetchIcon(iconName, retries = 3) {
       if (res.ok) {
         const rawSvg = await res.text();
         const svg = cleanSvg(rawSvg);
-        fs.writeFileSync(filePath, svg, 'utf-8');
-        console.log(`✅ Saved icon "${iconName}" -> src/assets/icons/${iconName}.svg`);
+        fs.writeFileSync(filePath, svg, "utf-8");
+        console.log(
+          `✅ Saved icon "${iconName}" -> src/assets/icons/${iconName}.svg`,
+        );
         return true;
       }
     } catch (err) {
       if (attempt === retries) {
-        console.error(`❌ Failed to fetch icon "${iconName}" after ${retries} attempts.`);
+        console.error(
+          `❌ Failed to fetch icon "${iconName}" after ${retries} attempts.`,
+        );
         return false;
       }
-      await new Promise(r => setTimeout(r, 500 * attempt));
+      await new Promise((r) => setTimeout(r, 500 * attempt));
     }
   }
   return false;
@@ -92,15 +96,15 @@ async function fetchIcon(iconName, retries = 3) {
 function findFilesInDir(dir, filterExt) {
   let results = [];
   const list = fs.readdirSync(dir);
-  list.forEach(file => {
+  list.forEach((file) => {
     const filePath = path.join(dir, file);
     const stat = fs.statSync(filePath);
     if (stat && stat.isDirectory()) {
-      if (file !== 'icons') {
+      if (file !== "icons") {
         results = results.concat(findFilesInDir(filePath, filterExt));
       }
     } else {
-      if (filterExt.some(ext => file.endsWith(ext))) {
+      if (filterExt.some((ext) => file.endsWith(ext))) {
         results.push(filePath);
       }
     }
@@ -109,7 +113,7 @@ function findFilesInDir(dir, filterExt) {
 }
 
 function scanUsedIcons() {
-  const files = findFilesInDir(SRC_DIR, ['.svelte', '.js']);
+  const files = findFilesInDir(SRC_DIR, [".svelte", ".js"]);
   const usedIcons = new Set(DEFAULT_ICONS);
 
   const patterns = [
@@ -121,8 +125,8 @@ function scanUsedIcons() {
   ];
 
   for (const filePath of files) {
-    if (filePath.endsWith('index.js')) continue;
-    const content = fs.readFileSync(filePath, 'utf-8');
+    if (filePath.endsWith("index.js")) continue;
+    const content = fs.readFileSync(filePath, "utf-8");
     for (const pattern of patterns) {
       let match;
       while ((match = pattern.exec(content)) !== null) {
@@ -141,11 +145,13 @@ function scanUsedIcons() {
 
 function cleanUnusedIcons() {
   const usedIcons = scanUsedIcons();
-  const existingFiles = fs.readdirSync(ICONS_DIR).filter(f => f.endsWith('.svg'));
+  const existingFiles = fs
+    .readdirSync(ICONS_DIR)
+    .filter((f) => f.endsWith(".svg"));
   let removedCount = 0;
 
   for (const file of existingFiles) {
-    const iconName = path.basename(file, '.svg');
+    const iconName = path.basename(file, ".svg");
     if (!usedIcons.has(iconName)) {
       fs.unlinkSync(path.join(ICONS_DIR, file));
       console.log(`🗑️ Removed unused icon: "${iconName}.svg"`);
@@ -154,40 +160,42 @@ function cleanUnusedIcons() {
   }
 
   if (removedCount === 0) {
-    console.log(`✨ All ${existingFiles.length} icons are currently in use. No unused icons found.`);
+    console.log(
+      `✨ All ${existingFiles.length} icons are currently in use. No unused icons found.`,
+    );
   } else {
     console.log(`🧹 Cleaned up ${removedCount} unused icon(s).`);
   }
 }
 
 function generateIndexJs() {
-  const files = fs.readdirSync(ICONS_DIR).filter(f => f.endsWith('.svg'));
+  const files = fs.readdirSync(ICONS_DIR).filter((f) => f.endsWith(".svg"));
   const iconMap = {};
 
   for (const file of files) {
-    const iconName = path.basename(file, '.svg');
-    const content = fs.readFileSync(path.join(ICONS_DIR, file), 'utf-8');
+    const iconName = path.basename(file, ".svg");
+    const content = fs.readFileSync(path.join(ICONS_DIR, file), "utf-8");
     iconMap[iconName] = content.trim();
   }
 
   const exportContent = `// Auto-generated SVG icon registry\nexport const iconMap = ${JSON.stringify(iconMap, null, 2)};\n`;
-  fs.writeFileSync(INDEX_FILE, exportContent, 'utf-8');
+  fs.writeFileSync(INDEX_FILE, exportContent, "utf-8");
   console.log(`📦 Updated icon registry index.js with ${files.length} icons.`);
 }
 
 async function main() {
   const args = process.argv.slice(2);
-  if (args.includes('--clean')) {
+  if (args.includes("--clean")) {
     console.log(`🔍 Scanning codebase for unused icons...`);
     cleanUnusedIcons();
-  } else if (args.length === 0 || args[0] === '--all') {
+  } else if (args.length === 0 || args[0] === "--all") {
     console.log(`🔄 Fetching all default icons (${DEFAULT_ICONS.length})...`);
     for (const icon of DEFAULT_ICONS) {
       await fetchIcon(icon);
     }
   } else {
     for (const icon of args) {
-      if (icon !== '--clean') {
+      if (icon !== "--clean") {
         await fetchIcon(icon);
       }
     }

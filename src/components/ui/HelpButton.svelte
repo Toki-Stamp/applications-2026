@@ -1,7 +1,7 @@
 <script>
   import Tooltip from "./Tooltip.svelte";
   import Popover from "./Popover.svelte";
-  
+
   let { children } = $props();
   let showHelp = $state(false);
   let anchorNode = $state();
@@ -9,7 +9,12 @@
 
 <div class="help-container">
   <div class="help-button-wrapper" bind:this={anchorNode}>
-    <Tooltip text="Справка" pos="bottom-right" variant="neon" enabled={!showHelp}>
+    <Tooltip
+      text="Справка"
+      pos="bottom-right"
+      variant="neon"
+      enabled={!showHelp}
+    >
       <button
         type="button"
         class="icon-btn"
@@ -22,7 +27,13 @@
     </Tooltip>
   </div>
 
-  <Popover isOpen={showHelp} onclose={() => showHelp = false} backdrop={true} width="min(var(--popover-width-lg), calc(100vw - calc(var(--gap-fields) * 2)))" referenceNode={anchorNode}>
+  <Popover
+    isOpen={showHelp}
+    onclose={() => (showHelp = false)}
+    backdrop={true}
+    width="min(var(--popover-width-lg), calc(100vw - calc(var(--gap-fields) * 2)))"
+    referenceNode={anchorNode}
+  >
     <div class="help-content">
       {#if children}{@render children()}{/if}
     </div>
@@ -58,11 +69,21 @@
   }
 
   @keyframes wiggle {
-    0% { transform: rotate(0deg); }
-    25% { transform: rotate(-15deg); }
-    50% { transform: rotate(10deg); }
-    75% { transform: rotate(-5deg); }
-    100% { transform: rotate(0deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(-15deg);
+    }
+    50% {
+      transform: rotate(10deg);
+    }
+    75% {
+      transform: rotate(-5deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
   }
 
   .icon-btn md-icon {
@@ -76,6 +97,4 @@
   .icon-btn.active md-icon {
     animation: wiggle 0.5s ease-in-out;
   }
-
-
 </style>

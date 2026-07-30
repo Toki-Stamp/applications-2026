@@ -39,7 +39,11 @@
       </HintBox>
       <div class="desktop-only">
         <HintBox>
-          {dict.options.globalHints.hotkeysPrefix}<Kbd>Ctrl</Kbd> / <Kbd>Cmd</Kbd>{dict.options.globalHints.hotkeysMiddle}<Kbd variant="accent">Shift</Kbd>{dict.options.globalHints.hotkeysSuffix}
+          {dict.options.globalHints.hotkeysPrefix}<Kbd>Ctrl</Kbd> / <Kbd
+            >Cmd</Kbd
+          >{dict.options.globalHints.hotkeysMiddle}<Kbd variant="accent"
+            >Shift</Kbd
+          >{dict.options.globalHints.hotkeysSuffix}
         </HintBox>
       </div>
     </div>
@@ -64,7 +68,7 @@
     padding-left: var(--help-padding);
     padding-right: calc(var(--help-padding) - var(--scrollbar-width-sm) - 2px);
   }
-  
+
   .hints-container::-webkit-scrollbar {
     width: var(--scrollbar-width-sm);
     height: var(--scrollbar-width-sm);
@@ -101,7 +105,8 @@
   .applications-help :global(.block-title) {
     padding-left: var(--help-padding);
     padding-right: var(--help-padding);
-    border-radius: calc(var(--border-radius) - 1px) calc(var(--border-radius) - 1px) 0 0;
+    border-radius: calc(var(--border-radius) - 1px)
+      calc(var(--border-radius) - 1px) 0 0;
   }
 
   .applications-help.is-scrolled :global(.block-title) {

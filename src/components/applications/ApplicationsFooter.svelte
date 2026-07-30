@@ -22,12 +22,22 @@
     }
     /** @type {Record<string, number>} */
     const keyOrder = {
-      to: 1, toCity: 2, toDay: 3, toTime: 4, toSeats: 5,
-      from: 1, fromCity: 2, fromDay: 3, fromTime: 4, fromSeats: 5
+      to: 1,
+      toCity: 2,
+      toDay: 3,
+      toTime: 4,
+      toSeats: 5,
+      from: 1,
+      fromCity: 2,
+      fromDay: 3,
+      fromTime: 4,
+      fromSeats: 5,
     };
 
     for (let group of Object.values(groups)) {
-      group.filters.sort((a, b) => (keyOrder[a.key] || 99) - (keyOrder[b.key] || 99));
+      group.filters.sort(
+        (a, b) => (keyOrder[a.key] || 99) - (keyOrder[b.key] || 99),
+      );
     }
 
     return Object.values(groups).sort((a, b) => {
@@ -45,7 +55,9 @@
   function checkScroll() {
     if (scrollContainer) {
       canScrollLeft = scrollContainer.scrollLeft > 0;
-      canScrollRight = Math.ceil(scrollContainer.scrollLeft + scrollContainer.clientWidth) < scrollContainer.scrollWidth;
+      canScrollRight =
+        Math.ceil(scrollContainer.scrollLeft + scrollContainer.clientWidth) <
+        scrollContainer.scrollWidth;
     }
   }
 
@@ -53,7 +65,7 @@
     groupedFilters; // React to changes
     setTimeout(checkScroll, 50);
   });
-  
+
   $effect(() => {
     if (scrollContainer) {
       const resizeObserver = new ResizeObserver(checkScroll);
@@ -64,58 +76,92 @@
 </script>
 
 {#if Object.keys(activeFilters).length > 0}
-  <footer class="app-footer summary-footer" transition:slide={{ duration: 250, axis: 'y' }}>
+  <footer
+    class="app-footer summary-footer"
+    transition:slide={{ duration: 250, axis: "y" }}
+  >
     <div class="footer-content">
       <div class="left-container">
         <Tooltip text="Сбросить всё" pos="left">
-          <Button variant="danger" iconOnly={true} aria-label="Сбросить всё" onclick={() => { activeFilters = {}; }}>
+          <Button
+            variant="danger"
+            iconOnly={true}
+            aria-label="Сбросить всё"
+            onclick={() => {
+              activeFilters = {};
+            }}
+          >
             <md-icon>delete</md-icon>
           </Button>
         </Tooltip>
         <div class="scroll-wrapper">
-          <button class="scroll-indicator left" disabled={!canScrollLeft} onclick={() => scrollContainer?.scrollBy({left: -200, behavior: 'smooth'})}>
+          <button
+            class="scroll-indicator left"
+            disabled={!canScrollLeft}
+            onclick={() =>
+              scrollContainer?.scrollBy({ left: -200, behavior: "smooth" })}
+          >
             <md-icon class="arrow-icon">chevron_left</md-icon>
           </button>
-          <div 
-            class="left-buttons" 
-            bind:this={scrollContainer} 
+          <div
+            class="left-buttons"
+            bind:this={scrollContainer}
             onscroll={checkScroll}
             class:mask-l={canScrollLeft}
             class:mask-r={canScrollRight}
           >
             <div class="filter-groups">
-          {#each groupedFilters as group}
-            <div class="filter-group">
-              <div class="group-header">
-                <span class="group-title">{group.catText}</span>
-                <Button variant="clear" class="group-close-btn" onclick={() => {
-                  const newFilters = { ...activeFilters };
-                  group.filters.forEach((/** @type {any} */ f) => delete newFilters[f.key]);
-                  activeFilters = newFilters;
-                }}>
-                  <md-icon>close</md-icon>
-                </Button>
-              </div>
-              <div class="group-values">
-                {#each group.filters as {key, filter}}
-                  <div class="val-chip">
-                    {#if filter.details?.valIcon}<md-icon>{filter.details.valIcon}</md-icon>{/if}
-                    {#if !filter.details?.hideValText}<span>{filter.details?.valText}</span>{/if}
-                    <Button variant="clear" class="chip-close-btn" onclick={() => {
-                      const newFilters = { ...activeFilters };
-                      delete newFilters[key];
-                      activeFilters = newFilters;
-                    }}>
+              {#each groupedFilters as group}
+                <div class="filter-group">
+                  <div class="group-header">
+                    <span class="group-title">{group.catText}</span>
+                    <Button
+                      variant="clear"
+                      class="group-close-btn"
+                      onclick={() => {
+                        const newFilters = { ...activeFilters };
+                        group.filters.forEach(
+                          (/** @type {any} */ f) => delete newFilters[f.key],
+                        );
+                        activeFilters = newFilters;
+                      }}
+                    >
                       <md-icon>close</md-icon>
                     </Button>
                   </div>
-                {/each}
-              </div>
+                  <div class="group-values">
+                    {#each group.filters as { key, filter }}
+                      <div class="val-chip">
+                        {#if filter.details?.valIcon}<md-icon
+                            >{filter.details.valIcon}</md-icon
+                          >{/if}
+                        {#if !filter.details?.hideValText}<span
+                            >{filter.details?.valText}</span
+                          >{/if}
+                        <Button
+                          variant="clear"
+                          class="chip-close-btn"
+                          onclick={() => {
+                            const newFilters = { ...activeFilters };
+                            delete newFilters[key];
+                            activeFilters = newFilters;
+                          }}
+                        >
+                          <md-icon>close</md-icon>
+                        </Button>
+                      </div>
+                    {/each}
+                  </div>
+                </div>
+              {/each}
             </div>
-          {/each}
-        </div>
           </div>
-          <button class="scroll-indicator right" disabled={!canScrollRight} onclick={() => scrollContainer?.scrollBy({left: 200, behavior: 'smooth'})}>
+          <button
+            class="scroll-indicator right"
+            disabled={!canScrollRight}
+            onclick={() =>
+              scrollContainer?.scrollBy({ left: 200, behavior: "smooth" })}
+          >
             <md-icon class="arrow-icon">chevron_right</md-icon>
           </button>
         </div>
@@ -126,9 +172,18 @@
           <span class="count-number">{intersectionCount}</span>
         </div>
         <div class="summary-badge">
-          <Tooltip text={filterMode ? 'Сбросить режим' : 'Показать только найденные'} pos="right">
-            <Button variant={filterMode ? "primary" : "secondary"} iconOnly={true} onclick={() => { filterMode = !filterMode; }}>
-              <md-icon>{filterMode ? 'visibility_off' : 'visibility'}</md-icon>
+          <Tooltip
+            text={filterMode ? "Сбросить режим" : "Показать только найденные"}
+            pos="right"
+          >
+            <Button
+              variant={filterMode ? "primary" : "secondary"}
+              iconOnly={true}
+              onclick={() => {
+                filterMode = !filterMode;
+              }}
+            >
+              <md-icon>{filterMode ? "visibility_off" : "visibility"}</md-icon>
             </Button>
           </Tooltip>
         </div>
@@ -187,7 +242,9 @@
     border: none;
     color: var(--primary);
     cursor: pointer;
-    transition: opacity 0.2s, color 0.2s;
+    transition:
+      opacity 0.2s,
+      color 0.2s;
     padding: 0;
     flex-shrink: 0;
   }
@@ -201,7 +258,7 @@
   .scroll-indicator md-icon.arrow-icon {
     font-size: 2rem;
     --md-icon-size: 2rem;
-    font-variation-settings: 'wght' 700;
+    font-variation-settings: "wght" 700;
   }
 
   .left-buttons {
@@ -219,16 +276,36 @@
   }
 
   .left-buttons.mask-l.mask-r {
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 24px, black calc(100% - 24px), transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0%, black 24px, black calc(100% - 24px), transparent 100%);
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 24px,
+      black calc(100% - 24px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 24px,
+      black calc(100% - 24px),
+      transparent 100%
+    );
   }
   .left-buttons.mask-l:not(.mask-r) {
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 24px);
     mask-image: linear-gradient(to right, transparent 0%, black 24px);
   }
   .left-buttons.mask-r:not(.mask-l) {
-    -webkit-mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
-    mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
+    -webkit-mask-image: linear-gradient(
+      to right,
+      black calc(100% - 24px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      black calc(100% - 24px),
+      transparent 100%
+    );
   }
 
   .filter-groups {
@@ -291,7 +368,11 @@
     transform: translateY(1px);
   }
   :global(.group-close-btn:hover) {
-    background: color-mix(in srgb, var(--primary) 20%, var(--glass-border-hover)) !important;
+    background: color-mix(
+      in srgb,
+      var(--primary) 20%,
+      var(--glass-border-hover)
+    ) !important;
   }
 
   .group-values {
@@ -316,7 +397,7 @@
     font-weight: 500;
     line-height: 1;
   }
-  
+
   .val-chip md-icon {
     font-size: 1.1rem;
     --md-icon-size: 1.1rem;
@@ -348,7 +429,11 @@
     transform: translateY(1px);
   }
   :global(.chip-close-btn:hover) {
-    background: color-mix(in srgb, var(--primary) 20%, var(--glass-border-hover)) !important;
+    background: color-mix(
+      in srgb,
+      var(--primary) 20%,
+      var(--glass-border-hover)
+    ) !important;
   }
 
   .right-buttons {
@@ -435,11 +520,13 @@
       font-size: 0.7rem;
       line-height: 1;
     }
-    :global(.chip-close-btn), :global(.group-close-btn) {
+    :global(.chip-close-btn),
+    :global(.group-close-btn) {
       width: 14px !important;
       height: 14px !important;
     }
-    :global(.chip-close-btn md-icon), :global(.group-close-btn md-icon) {
+    :global(.chip-close-btn md-icon),
+    :global(.group-close-btn md-icon) {
       font-size: 0.8rem !important;
       --md-icon-size: 0.8rem !important;
       display: flex !important;

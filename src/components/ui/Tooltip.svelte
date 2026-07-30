@@ -1,13 +1,20 @@
 <script>
-  import { fade, scale } from 'svelte/transition';
-  import { portal } from '../../utils/portal.js';
-  import { floating } from '../../actions/floating.js';
+  import { fade, scale } from "svelte/transition";
+  import { portal } from "../../utils/portal.js";
+  import { floating } from "../../actions/floating.js";
 
-  let { text = "", pos = "top", onlyIfTruncated = false, variant = "default", enabled = true, children } = $props();
+  let {
+    text = "",
+    pos = "top",
+    onlyIfTruncated = false,
+    variant = "default",
+    enabled = true,
+    children,
+  } = $props();
 
   let isTruncated = $state(false);
   let isVisible = $state(false);
-  
+
   /** @type {HTMLElement | null} */
   let wrapperNode = $state(null);
 
@@ -36,8 +43,8 @@
 {#if text}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-  <div 
-    class="tooltip-wrapper" 
+  <div
+    class="tooltip-wrapper"
     onmouseenter={handleMouseEnter}
     onmouseleave={handleMouseLeave}
     bind:this={wrapperNode}
@@ -45,7 +52,7 @@
   >
     {#if children}{@render children()}{/if}
     {#if enabled && isVisible && wrapperNode}
-      <div 
+      <div
         class="tooltip-content {variant === 'neon' ? 'glass-panel neon' : ''}"
         use:portal
         use:floating={{ referenceNode: wrapperNode, placement: pos }}
@@ -73,7 +80,12 @@
     /* Match ThemeSwitcher Tooltip */
     background: color-mix(in srgb, var(--bg-color-accent) 95%, transparent);
     color: var(--text-primary) !important;
-    border: 1px solid color-mix(in srgb, var(--primary-color, var(--primary)) 40%, var(--border-color));
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--primary-color, var(--primary)) 40%,
+        var(--border-color)
+      );
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
@@ -101,17 +113,19 @@
       0 0 30px rgba(139, 92, 246, 0.2) !important;
     background: var(--bg-color-accent) !important;
   }
-  
+
   :global(.tooltip-content.neon::before) {
-    content: '';
+    content: "";
     position: absolute;
     inset: -1px;
     border-radius: 9px;
     z-index: -1;
     pointer-events: none;
-    background: linear-gradient(135deg,
-        var(--primary) 0%,
-        rgba(255, 255, 255, 0) 50%,
-        var(--accent) 100%) !important;
+    background: linear-gradient(
+      135deg,
+      var(--primary) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      var(--accent) 100%
+    ) !important;
   }
 </style>

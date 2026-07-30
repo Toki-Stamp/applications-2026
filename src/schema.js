@@ -364,8 +364,10 @@ export function sanitizeFormData(data) {
   };
 
   if (payload.applicant) {
-    if (payload.applicant.nickname) payload.applicant.nickname = sanitizeText(payload.applicant.nickname);
-    if (payload.applicant.firstName) payload.applicant.firstName = sanitizeText(payload.applicant.firstName);
+    if (payload.applicant.nickname)
+      payload.applicant.nickname = sanitizeText(payload.applicant.nickname);
+    if (payload.applicant.firstName)
+      payload.applicant.firstName = sanitizeText(payload.applicant.firstName);
   }
 
   if (payload.guests && Array.isArray(payload.guests)) {

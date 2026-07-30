@@ -1,4 +1,10 @@
-import { computePosition, autoUpdate, flip, shift, offset } from '@floating-ui/dom';
+import {
+  computePosition,
+  autoUpdate,
+  flip,
+  shift,
+  offset,
+} from "@floating-ui/dom";
 
 /**
  * @typedef {Object} FloatingOptions
@@ -9,12 +15,12 @@ import { computePosition, autoUpdate, flip, shift, offset } from '@floating-ui/d
 
 /**
  * Svelte action to position an element using floating-ui
- * 
+ *
  * @param {HTMLElement} node
  * @param {FloatingOptions} options
  */
 export function floating(node, options) {
-  let { referenceNode, placement = 'bottom', offsetValue = 10 } = options;
+  let { referenceNode, placement = "bottom", offsetValue = 10 } = options;
   /** @type {Function | null} */
   let cleanup = null;
 
@@ -29,13 +35,11 @@ export function floating(node, options) {
     if (placement === "bottom-right") finalPlacement = "bottom-end";
 
     computePosition(referenceNode, node, {
-      placement: /** @type {import('@floating-ui/dom').Placement} */ (finalPlacement),
-      strategy: 'fixed',
-      middleware: [
-        offset(offsetValue),
-        flip(),
-        shift({ padding: 12 })
-      ]
+      placement: /** @type {import('@floating-ui/dom').Placement} */ (
+        finalPlacement
+      ),
+      strategy: "fixed",
+      middleware: [offset(offsetValue), flip(), shift({ padding: 12 })],
     }).then(({ x, y }) => {
       Object.assign(node.style, {
         left: `${x}px`,
@@ -51,7 +55,7 @@ export function floating(node, options) {
     }
     if (referenceNode) {
       cleanup = autoUpdate(referenceNode, node, updatePosition, {
-        animationFrame: true
+        animationFrame: true,
       });
     }
   }
@@ -60,12 +64,12 @@ export function floating(node, options) {
 
   return {
     /**
-     * @param {FloatingOptions} newOptions 
+     * @param {FloatingOptions} newOptions
      */
     update(newOptions) {
       const referenceChanged = referenceNode !== newOptions.referenceNode;
       referenceNode = newOptions.referenceNode;
-      placement = newOptions.placement || 'bottom';
+      placement = newOptions.placement || "bottom";
       offsetValue = newOptions.offsetValue ?? 10;
 
       if (referenceChanged) {
@@ -76,6 +80,6 @@ export function floating(node, options) {
     },
     destroy() {
       if (cleanup) cleanup();
-    }
+    },
   };
 }

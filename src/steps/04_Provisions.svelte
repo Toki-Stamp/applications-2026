@@ -56,7 +56,10 @@
       </div>
     {/if}
 
-    <Section title={dict.steps.provisions.foodTitle} isFirst={formStore.data.applicationType !== APPLICATION_TYPE.GROUP}>
+    <Section
+      title={dict.steps.provisions.foodTitle}
+      isFirst={formStore.data.applicationType !== APPLICATION_TYPE.GROUP}
+    >
       <div class="provision-item">
         <RadioGroup
           label={dict.steps.provisions.foodLabel}
@@ -124,7 +127,7 @@
 
     <Section
       title={dict.steps.provisions.forApplicant(
-        getApplicantDisplayName(formStore.data.applicant)
+        getApplicantDisplayName(formStore.data.applicant),
       )}
     >
       <div class="provision-item">
@@ -190,7 +193,7 @@
             <ExpandableSection show={true}>
               <SubBlock
                 title={dict.steps.provisions.forGuest(
-                  getGuestDisplayName(guest, i)
+                  getGuestDisplayName(guest, i),
                 )}
               >
                 <div class="provision-item">
@@ -211,7 +214,9 @@
                       groups={groupedPeriods}
                       required={true}
                       errorMessageFn={() => dict.errors.periods}
-                      bind:values={formStore.data.guests[i].provisions.foodPeriods}
+                      bind:values={
+                        formStore.data.guests[i].provisions.foodPeriods
+                      }
                       errorText={errors[`guests.${i}.provisions.foodPeriods`]}
                     />
                   </ExpandableSection>
@@ -234,8 +239,12 @@
                       groups={groupedPeriods}
                       required={true}
                       errorMessageFn={() => dict.errors.periods}
-                      bind:values={formStore.data.guests[i].provisions.alcoholPeriods}
-                      errorText={errors[`guests.${i}.provisions.alcoholPeriods`]}
+                      bind:values={
+                        formStore.data.guests[i].provisions.alcoholPeriods
+                      }
+                      errorText={errors[
+                        `guests.${i}.provisions.alcoholPeriods`
+                      ]}
                     />
                   </ExpandableSection>
                 </div>
@@ -265,7 +274,6 @@
     flex-direction: column;
     gap: 0.5rem;
   }
-
 
   .provision-hint {
     display: flex;

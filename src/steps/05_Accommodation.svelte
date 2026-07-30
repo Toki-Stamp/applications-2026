@@ -54,7 +54,9 @@
       </div>
     {/if}
 
-    <Section isFirst={formStore.data.applicationType !== APPLICATION_TYPE.GROUP}>
+    <Section
+      isFirst={formStore.data.applicationType !== APPLICATION_TYPE.GROUP}
+    >
       <RadioGroup
         label={dict.steps.accommodation.typeLabel}
         required={true}
@@ -94,7 +96,7 @@
 
     <Section
       title={dict.steps.accommodation.forApplicant(
-        getApplicantDisplayName(formStore.data.applicant)
+        getApplicantDisplayName(formStore.data.applicant),
       )}
     >
       <RadioGroup
@@ -138,7 +140,7 @@
             <ExpandableSection show={true}>
               <SubBlock
                 title={dict.steps.accommodation.forGuest(
-                  getGuestDisplayName(guest, index)
+                  getGuestDisplayName(guest, index),
                 )}
               >
                 <RadioGroup
@@ -172,7 +174,9 @@
                   bind:value={guest.accommodation.comment}
                   errorText={errors[`guests.${index}.accommodation.comment`]}
                   onblur={() =>
-                    formStore.markTouched(`guests.${index}.accommodation.comment`)}
+                    formStore.markTouched(
+                      `guests.${index}.accommodation.comment`,
+                    )}
                 />
               </SubBlock>
             </ExpandableSection>

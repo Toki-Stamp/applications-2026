@@ -8,13 +8,18 @@
     headerHeight = $bindable(0),
     leftAction = undefined,
     rightAction = undefined,
+    title = undefined,
   } = $props();
 
   let headerWidth = $state(0);
 </script>
 
 <header class="app-header" bind:clientHeight={headerHeight}>
-  <div class="header-content" bind:clientWidth={headerWidth} style="--header-content-width: {headerWidth}px;">
+  <div
+    class="header-content"
+    bind:clientWidth={headerWidth}
+    style="--header-content-width: {headerWidth}px;"
+  >
     <div class="header-top-row">
       {#if leftAction}
         <div class="action-container left">
@@ -25,7 +30,7 @@
       <div class="title-container">
         <h1>
           <img src="/favicon.svg" alt="Z" class="title-icon" />
-          <span class="title-text">{dict.layout.header.titleText}</span>
+          <span class="title-text">{title || dict.layout.header.titleText}</span>
         </h1>
       </div>
 

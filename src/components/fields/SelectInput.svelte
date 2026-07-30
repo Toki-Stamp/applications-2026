@@ -54,7 +54,9 @@
           style.id = "custom-menu-style";
           menuEl.shadowRoot.appendChild(style);
         }
-        const outlineColor = hasError ? "var(--error, #ba1a1a)" : "var(--primary)";
+        const outlineColor = hasError
+          ? "var(--error, #ba1a1a)"
+          : "var(--primary)";
         style.textContent = `
           .menu {
             outline: 1px solid ${outlineColor} !important;
@@ -208,13 +210,13 @@
     --md-outlined-field-content-space: var(--element-px);
     --md-outlined-field-with-trailing-content-trailing-space: var(--element-px);
   }
-  
+
   .select-wrapper:has(.clear-button-wrapper) .select-field {
     --md-outlined-field-trailing-space: calc(var(--element-px) * 2 + 24px);
-    --md-outlined-select-text-field-trailing-space: calc(var(--element-px) + 28px);
+    --md-outlined-select-text-field-trailing-space: calc(
+      var(--element-px) + 28px
+    );
   }
-
-
 
   .select-field.is-empty {
     --md-outlined-select-text-field-input-text-color: var(--text-placeholder);
