@@ -25,7 +25,7 @@
 <details>
 <summary><b>🏗️ P2 — Архитектура и качество кода (Refactoring & Clean Code)</b></summary>
 
-- [ ] **[P2-1] Декомпозиция компонента `ApplicationsGrid.svelte` (1 352 строки)**
+- [x] **[P2-1] Декомпозиция компонента `ApplicationsGrid.svelte` (1 352 строки)**
   Разбить на `GridHeader.svelte` (шапка, пиннинг, фильтры), `GridRow.svelte` (строка участника) и `gridStore.svelte.js` (состояние фильтров и выделения).
 - [ ] **[P2-2] Оптимизация реактивной валидации в `App.svelte`**
   Заменить `JSON.stringify(formStore.data)` и `setTimeout` в `$effect` на производные состояния Svelte 5 (`$derived`) или вызов валидации по событиям ввода.
