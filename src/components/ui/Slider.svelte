@@ -11,13 +11,19 @@
     value = $bindable(0), 
     min = 0, 
     max = 100,
-    showLabels = false
+    showLabels = false,
+    label = "",
+    helperText = ""
   } = $props();
+
+  import FieldLabel from "../fields/FieldLabel.svelte";
 
   let percentage = $derived(Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100)));
 </script>
-
-<div class="ghost-slider-container" class:no-labels={!showLabels}>
+<div class="form-group">
+  <FieldLabel {label} {helperText} />
+  
+  <div class="ghost-slider-container" class:no-labels={!showLabels}>
   {#if showLabels}
     <div class="scale-label mono">{min}</div>
   {/if}
@@ -39,11 +45,16 @@
   {#if showLabels}
     <div class="scale-label mono">{max}</div>
   {/if}
+
+  </div>
 </div>
 
 <style>
   .ghost-slider-container {
-    display: flex; align-items: center; gap: 24px; width: 100%; position: relative; padding-top: 16px;
+    display: flex; align-items: center; gap: var(--gap-lg); width: 100%; position: relative;
+    /* Резервируем место под тултип: высота текста тултипа + отступ от ползунка (gap-sm) + доп. воздух (gap-md) */
+    padding-top: calc(var(--text-base) + var(--gap-sm) + var(--gap-md)); 
+    padding-bottom: var(--gap-sm);
   }
   
   .scale-label {
@@ -54,15 +65,16 @@
   .flex-1 { flex: 1; min-width: 0; }
   
   .slider-with-marks-wrap { 
-    position: relative; padding: 16px 0; display: flex; align-items: center; width: 100%; 
+    position: relative; display: flex; align-items: center; width: 100%; 
+    padding: var(--gap-sm) 0; /* Высота кликабельной зоны */
   }
   
   /* ================= FINAL TRACK ================= */
   .ghost-track {
-    position: absolute; left: 14px; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none;
+    position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); pointer-events: none;
     height: 1px;
     background: var(--text-secondary);
-    opacity: 0.3; 
+    opacity: 0.6; 
     box-shadow: none; 
   }
   
@@ -84,11 +96,20 @@
     -webkit-appearance: none; appearance: none; height: 40px; background: transparent !important; margin: 0; outline: none; z-index: 5; cursor: pointer; width: 100%;
   }
   
+  /* Отключаем клики по треку ТОЛЬКО на тач-устройствах (смартфоны, планшеты), чтобы не сбивать при скролле */
+  @media (pointer: coarse) {
+    .pro-range {
+      pointer-events: none;
+    }
+  }
+  
   .pro-range::-webkit-slider-thumb {
-    -webkit-appearance: none; 
+    -webkit-appearance: none;
+    appearance: none;
     cursor: pointer; 
     position: relative;
     z-index: 6;
+    pointer-events: auto;
     
     /* Frost Glass + Primary Ring (Softened) */
     width: 20px; 
@@ -107,14 +128,33 @@
       0 0 10px var(--primary-glow),
       0 2px 8px rgba(0,0,0,0.2);
   }
+
+  .pro-range::-moz-range-thumb {
+    pointer-events: auto;
+    width: 20px; 
+    height: 20px; 
+    border-radius: 50%; 
+    background: color-mix(in srgb, var(--glass-bg) 85%, var(--primary) 15%); 
+    border: 1.5px solid color-mix(in srgb, var(--primary) 50%, transparent); 
+    box-shadow: 
+      0 0 10px var(--primary-glow),
+      0 2px 8px rgba(0,0,0,0.2);
+  }
   
   /* ================= FINAL TOOLTIP ================= */
   .floating-tooltip {
     position: absolute; pointer-events: none; transition: left 0.05s linear; z-index: 10; transform: translateX(-50%);
-    top: -24px; 
-    font-size: var(--text-sm, 14px); 
-    font-weight: 500; 
-    color: var(--text-secondary); 
+    bottom: calc(50% + 10px + var(--gap-sm)); /* 50% - центр, 10px - радиус ползунка, gap-sm - токен отступа */
+    font-size: var(--text-sm); 
+    font-weight: var(--font-weight-semibold); 
+    color: var(--text-primary); 
     text-shadow: none;
+  }
+  
+  /* Синхронизируем размер текста с десктопной версией селектора */
+  @media (min-width: 600px) {
+    .floating-tooltip {
+      font-size: var(--text-base);
+    }
   }
 </style>

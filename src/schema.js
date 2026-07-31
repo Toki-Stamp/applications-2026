@@ -387,9 +387,24 @@ export function sanitizeFormData(data) {
     payload.groupConditions = null;
   }
 
+  // Причесываем данные транспорта для заявителя
   if (payload.transportTo.method !== TRANSPORT_METHOD.DRIVER) {
     delete payload.transportTo.freeSeats;
   }
+  if (payload.transportFrom.method !== TRANSPORT_METHOD.DRIVER) {
+    delete payload.transportFrom.freeSeats;
+  }
+
+  // Вспомогательная функция для копирования транспорта гостям
+  const getGuestTransport = (applicantTransport) => {
+    const guestTransport = JSON.parse(JSON.stringify(applicantTransport));
+    // Если заявитель - водитель, гость не становится водителем, а получает статус "Едет с заявителем"
+    if (guestTransport.method === TRANSPORT_METHOD.DRIVER) {
+      guestTransport.method = TRANSPORT_METHOD.WITH_APPLICANT;
+      delete guestTransport.freeSeats;
+    }
+    return guestTransport;
+  };
 
   const sanitizeAccommodation = (acc) => {
     if (acc.type === ACCOMMODATION_TYPE.SELF) {
@@ -421,6 +436,9 @@ export function sanitizeFormData(data) {
       guest.accommodation = JSON.parse(
         JSON.stringify(payload.applicant.accommodation),
       );
+      // Копируем транспорт
+      guest.transportTo = getGuestTransport(payload.transportTo);
+      guest.transportFrom = getGuestTransport(payload.transportFrom);
     });
   } else {
     sanitizeProvisions(payload.applicant.provisions);
@@ -428,6 +446,9 @@ export function sanitizeFormData(data) {
     payload.guests.forEach((guest) => {
       sanitizeProvisions(guest.provisions);
       sanitizeAccommodation(guest.accommodation);
+      // Копируем транспорт даже при раздельных условиях (пока транспорт один на всех)
+      guest.transportTo = getGuestTransport(payload.transportTo);
+      guest.transportFrom = getGuestTransport(payload.transportFrom);
     });
   }
 

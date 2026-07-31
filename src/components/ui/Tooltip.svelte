@@ -9,11 +9,15 @@
     onlyIfTruncated = false,
     variant = "default",
     enabled = true,
+    forceVisible = false,
+    offset = 10,
+    wrapperClass = "",
     children,
   } = $props();
 
   let isTruncated = $state(false);
-  let isVisible = $state(false);
+  let isHovered = $state(false);
+  let isVisible = $derived(forceVisible || isHovered);
 
   /** @type {HTMLElement | null} */
   let wrapperNode = $state(null);
@@ -21,6 +25,9 @@
   /** @param {Event} e */
   function handleMouseEnter(e) {
     if (!enabled) return;
+    
+    // Игнорируем эмуляцию hover на тач-устройствах
+    if (window.matchMedia("(hover: none)").matches) return;
 
     if (onlyIfTruncated) {
       const target = /** @type {HTMLElement} */ (e.currentTarget);
@@ -31,12 +38,12 @@
     }
 
     if (!onlyIfTruncated || isTruncated) {
-      isVisible = true;
+      isHovered = true;
     }
   }
 
   function handleMouseLeave() {
-    isVisible = false;
+    isHovered = false;
   }
 </script>
 
@@ -44,7 +51,7 @@
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <!-- svelte-ignore a11y_mouse_events_have_key_events -->
   <div
-    class="tooltip-wrapper"
+    class="tooltip-wrapper {wrapperClass}"
     onmouseenter={handleMouseEnter}
     onmouseleave={handleMouseLeave}
     bind:this={wrapperNode}
@@ -55,7 +62,7 @@
       <div
         class="tooltip-content {variant === 'neon' ? 'glass-panel neon' : ''}"
         use:portal
-        use:floating={{ referenceNode: wrapperNode, placement: pos }}
+        use:floating={{ referenceNode: wrapperNode, placement: pos, offsetValue: offset }}
         transition:scale={{ start: 0.9, duration: 150 }}
       >
         {text}

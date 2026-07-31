@@ -185,13 +185,14 @@ function doPost(e) {
       passenger: "Пассажир",
       bus: "Маршрутка",
       self: "Свой ход",
+      with_applicant: "Гость"
     };
     function translateTransport(val) {
       return DICT_TRANSPORT[val] || val || "";
     }
 
     // Вспомогательная функция для создания строки для одного человека
-    function createRow(person, role) {
+    function createRow(person, role, transportTo, transportFrom) {
       var appTypeRu =
         data.applicationType === "individual"
           ? "Индивидуальная"
@@ -222,17 +223,17 @@ function doPost(e) {
         person.lastName || "", // 10. Фамилия
         person.phone || "", // 11. Телефон
 
-        // Транспорт туда (дублируется для всей группы)
-        translateTransport(data.transportTo.method), // 11. Транспорт ТУДА
-        data.transportTo.departureCity || "", // 12. Город выезда
-        data.transportTo.freeSeats || "", // 13. Свободные места
-        data.transportTo.day || "", // 14. День выезда
-        data.transportTo.time || "", // 15. Время выезда
+        // Транспорт туда (теперь берем из переданного аргумента)
+        translateTransport(transportTo.method), // 11. Транспорт ТУДА
+        transportTo.departureCity || "", // 12. Город выезда
+        transportTo.freeSeats || "", // 13. Свободные места
+        transportTo.day || "", // 14. День выезда
+        transportTo.time || "", // 15. Время выезда
 
-        // Транспорт обратно (дублируется для всей группы)
-        translateTransport(data.transportFrom.method), // 16. Транспорт ОБРАТНО
-        data.transportFrom.day || "", // 17. День возвращения
-        data.transportFrom.time || "", // 18. Время возвращения
+        // Транспорт обратно (теперь берем из переданного аргумента)
+        translateTransport(transportFrom.method), // 16. Транспорт ОБРАТНО
+        transportFrom.day || "", // 17. День возвращения
+        transportFrom.time || "", // 18. Время возвращения
         data.transportComment || "", // 19. Комментарий к транспорту
 
         // Питание (индивидуальное для каждого человека)
@@ -258,7 +259,7 @@ function doPost(e) {
     }
 
     // 1. Сохраняем Заявителя
-    sheet.appendRow(createRow(data.applicant, "Заявитель"));
+    sheet.appendRow(createRow(data.applicant, "Заявитель", data.transportTo, data.transportFrom));
 
     // 2. Если есть гости, сохраняем каждого гостя отдельной строкой
     if (
@@ -267,7 +268,9 @@ function doPost(e) {
       data.guests.length > 0
     ) {
       for (var i = 0; i < data.guests.length; i++) {
-        sheet.appendRow(createRow(data.guests[i], "Гость " + (i + 1)));
+        var gTransportTo = data.guests[i].transportTo || data.transportTo;
+        var gTransportFrom = data.guests[i].transportFrom || data.transportFrom;
+        sheet.appendRow(createRow(data.guests[i], "Гость " + (i + 1), gTransportTo, gTransportFrom));
       }
     }
 

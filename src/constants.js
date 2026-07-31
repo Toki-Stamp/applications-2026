@@ -25,6 +25,7 @@ export const TRANSPORT_METHOD = {
   PASSENGER: "passenger",
   BUS: "bus",
   SELF: "self",
+  WITH_APPLICANT: "with_applicant", // Системный статус для гостей, едущих с заявителем
 };
 
 export const days = dict.options.days;

@@ -353,11 +353,12 @@ test.describe("Form E2E Tests", () => {
     await guestPhoneInput.fill("+375 29 222 33 44");
     await clickNext(page);
 
-    await selectDropdown(page, "Способ прибытия", "Самостоятельно");
+    await selectDropdown(page, "Способ прибытия", "Как водитель");
+    await selectDropdown(page, "Свободных мест для попутчиков", "3 места");
     await selectDropdown(page, "День отправления на базу", "Пятница");
     await fillText(page, "Ориентировочное время отправления", "10:00");
     await fillText(page, "Город отправления", "Минск");
-    await selectDropdown(page, "Способ отъезда", "Самостоятельно");
+    await selectDropdown(page, "Способ отъезда", "Как водитель");
     await selectDropdown(page, "День отъезда с базы", "Воскресенье");
     await fillText(page, "Ориентировочное время отъезда", "12:00");
     await clickNext(page);
@@ -379,6 +380,11 @@ test.describe("Form E2E Tests", () => {
     expect(submittedData.applicationType).toBe("group");
     expect(submittedData.guests.length).toBe(1);
     expect(submittedData.guests[0].provisions.foodPeriods).toEqual([]);
+    expect(submittedData.transportTo.method).toBe("driver");
+    expect(submittedData.transportTo.freeSeats).toBe(3);
+    expect(submittedData.guests[0].transportTo.method).toBe("with_applicant");
+    expect(submittedData.guests[0].transportTo.freeSeats).toBeUndefined();
+    expect(submittedData.guests[0].transportFrom.method).toBe("with_applicant");
   });
 
   test("Case 4: Group Differential", async ({ page }) => {
