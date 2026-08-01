@@ -15,7 +15,7 @@
   } = $props();
 </script>
 
-<footer class="app-footer">
+<footer class="layout-footer">
   <div class="footer-content">
     {#if isSubmitted}
       <div class="center-buttons intro-nav-wrapper">
@@ -104,18 +104,6 @@
 </footer>
 
 <style>
-  .app-footer {
-    position: relative;
-    width: 100%;
-    flex-shrink: 0;
-    background: color-mix(in srgb, var(--bg-color) 70%, transparent);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    z-index: 50;
-    border-top: 1px solid var(--border-color);
-    box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.2);
-  }
-
   .footer-content {
     max-width: var(--form-max-width);
     margin: 0 auto;

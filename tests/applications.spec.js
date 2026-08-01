@@ -107,7 +107,7 @@ test.describe("Applications Table", () => {
     await minskCells.first().click();
 
     // Verify the footer becomes visible
-    const footer = page.locator(".app-footer");
+    const footer = page.locator(".layout-footer");
     await expect(footer).toBeVisible();
 
     // Verify the chip appears in the footer

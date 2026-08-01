@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const SRC_DIR = path.resolve(__dirname, "../src");
-const ICONS_DIR = path.resolve(__dirname, "../src/assets/icons");
+const ICONS_DIR = path.resolve(__dirname, "../src/shared/assets/icons");
 const INDEX_FILE = path.resolve(ICONS_DIR, "index.js");
 
 const DEFAULT_ICONS = [

@@ -16,7 +16,7 @@
   import Modal from "$shared/components/ui/Modal.svelte";
   import Header from "$shared/components/layout/Header.svelte";
   import ThemeSwitcher from "$shared/components/ui/ThemeSwitcher.svelte";
-  import Footer from "$shared/components/layout/Footer.svelte";
+  import FormFooter from "./components/FormFooter.svelte";
   import Button from "$shared/components/ui/Button.svelte";
   import HourglassLoader from "$shared/components/ui/HourglassLoader.svelte";
 
@@ -328,7 +328,7 @@
         </div>
 
         <!-- Navigation Buttons -->
-        <Footer
+        <FormFooter
           {currentStep}
           {totalSteps}
           {hasErrors}
