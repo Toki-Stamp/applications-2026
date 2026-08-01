@@ -5,6 +5,12 @@ import { resolve } from "path";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [svelte()],
+  resolve: {
+    alias: {
+      $shared: resolve(__dirname, "./src/shared"),
+      $apps: resolve(__dirname, "./src/apps"),
+    },
+  },
   build: {
     rollupOptions: {
       input: {
