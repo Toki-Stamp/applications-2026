@@ -2,7 +2,7 @@
   /**
    * @typedef {Object} Props
    * @property {"button" | "submit" | "reset"} [type]
-   * @property {"primary" | "secondary" | "danger" | "submit" | "clear"} [variant]
+   * @property {"primary" | "secondary" | "danger" | "submit" | "clear" | "outline"} [variant]
    * @property {boolean} [iconOnly]
    * @property {boolean} [locked]
    * @property {import('svelte/elements').MouseEventHandler<HTMLButtonElement>} [onclick]
@@ -43,7 +43,8 @@
   .btn-primary,
   .btn-secondary,
   .btn-danger,
-  .btn-submit {
+  .btn-submit,
+  .btn-outline {
     padding: var(--element-py) var(--element-px);
     font-size: var(--text-base);
     font-weight: var(--font-weight-bold);
@@ -83,7 +84,8 @@
   :global(.btn-primary md-icon),
   :global(.btn-secondary md-icon),
   :global(.btn-danger md-icon),
-  :global(.btn-submit md-icon) {
+  :global(.btn-submit md-icon),
+  :global(.btn-outline md-icon) {
     font-size: var(--text-xl);
     --md-icon-size: var(--text-xl);
   }
@@ -159,6 +161,22 @@
   }
   .btn-secondary:hover::before {
     opacity: 1;
+  }
+
+  /* Outline Variant */
+  .btn-outline {
+    color: var(--text-primary);
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    box-shadow: none;
+  }
+  .btn-outline::before {
+    display: none;
+  }
+  .btn-outline:hover {
+    background: color-mix(in srgb, var(--primary) 15%, transparent);
+    border-color: color-mix(in srgb, var(--primary) 50%, var(--glass-border));
+    transform: translateY(-2px) scale(1.01);
   }
 
   /* Danger Variant */

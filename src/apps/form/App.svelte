@@ -298,7 +298,7 @@
       transition:fade={{ duration: 300 }}
     >
       {#if !isSubmitted}
-        <Header bind:headerHeight {currentStep} {totalSteps}>
+        <Header bind:headerHeight {currentStep} {totalSteps} title="АЯВКА">
           {#snippet leftAction()}
             <ThemeSwitcher />
           {/snippet}

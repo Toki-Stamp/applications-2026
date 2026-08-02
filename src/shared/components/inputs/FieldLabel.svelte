@@ -31,7 +31,6 @@
   .group-label {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
     align-items: baseline;
     column-gap: var(--gap-sm);
     row-gap: 0.2rem;

@@ -1,23 +1,32 @@
 <script lang="ts">
   import "@material/web/icon/icon.js";
   import Tooltip from "../ui/Tooltip.svelte";
+  import HintBox from "../ui/HintBox.svelte";
+  import RichText from "../ui/RichText.svelte";
+  import FieldLabel from "./FieldLabel.svelte";
+  import { dict } from "$shared/locales/ru.js";
 
   /**
    * @type {{
    *   options?: {id: string, label: string, icon?: string}[],
-   *   selectedId: string
+   *   selectedId: string,
+   *   errorText?: string,
+   *   label?: string,
+   *   required?: boolean
    * }}
    */
   let {
     options = [],
-    selectedId = $bindable()
+    selectedId = $bindable(),
+    errorText = "",
+    label = "",
+    required = false
   } = $props();
 
-  $effect(() => {
-    if (!selectedId && options.length > 0) {
-      selectedId = options[0].id;
-    }
-  });
+  const hasError = $derived(!!errorText);
+  const errorMsg = $derived(
+    hasError ? dict.errors.radio(label || "Значение") : null
+  );
 
   let isMobile = $state(false);
   let hideMobileTooltip = $state(false);
@@ -45,7 +54,10 @@
   }
 </script>
 
-<div class="category-selector-wrapper">
+<div class="form-group category-selector-wrapper" class:has-error={hasError}>
+  {#if label}
+    <FieldLabel {label} {required} />
+  {/if}
   <div class="cards-grid">
     {#each options as opt, i}
       <Tooltip 
@@ -82,12 +94,18 @@
       </Tooltip>
     {/each}
   </div>
+  {#if hasError && errorMsg}
+    <div class="error-wrapper">
+      <HintBox type="error">
+        <RichText content={errorMsg} />
+      </HintBox>
+    </div>
+  {/if}
 </div>
 
 <style>
   .category-selector-wrapper {
     width: 100%;
-    font-family: var(--font-family);
   }
 
   .cards-grid {
@@ -97,6 +115,11 @@
     gap: 6px;
     width: 100%;
   }
+
+  .has-error .category-card {
+    border-color: var(--danger-color, #ef4444);
+  }
+
 
   :global(.card-tooltip-wrapper) {
     display: flex !important;

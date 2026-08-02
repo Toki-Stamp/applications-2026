@@ -53,7 +53,7 @@
 
 <div class="app-transition-wrapper">
   <div class="app-form">
-    <Header>
+    <Header title="АЯВКИ">
       {#snippet leftAction()}
         <ThemeSwitcher />
       {/snippet}

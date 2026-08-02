@@ -16,7 +16,7 @@
     id = generateId("select"),
     icon = "",
     errorText = "",
-    onchange,
+    onchange = undefined,
     ...restProps
   } = $props();
 

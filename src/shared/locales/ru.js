@@ -373,4 +373,35 @@ export const dict = {
       newForm: "Заполнить новую заявку",
     },
   },
+
+  admin: {
+    expenseForm: {
+      blockTitle: "Новый расход",
+      categorySection: "Категория",
+      categoryLabel: "Категория",
+      detailsSection: "Детали",
+      nameLabel: "Наименование",
+      namePlaceholder: "Что было куплено",
+      amountLabel: "Сумма понесённого расхода",
+      amountPlaceholder: "0.00",
+      currency: "BYN",
+      payerLabel: "Плательщик",
+      payerPlaceholder: "Иван",
+      extraSection: "Дополнительно",
+      commentLabel: "Комментарий к расходу",
+      commentPlaceholder: "Напишите здесь всё, что считаете важным...",
+      commentHint: `"закупка мяса на рынке", "аренда шатра на 2 дня", "доставка воды"`,
+      categories: [
+        { id: "Алкогольные напитки", label: "Алкогольные напитки", icon: "wine_bar" },
+        { id: "Продукты питания", label: "Продукты питания", icon: "restaurant" },
+        { id: "Орг. расходы", label: "Орг. расходы", icon: "business_center" },
+      ],
+      errors: {
+        amount: "Укажите корректную сумму",
+        payer: "Укажите плательщика",
+        category: "Выберите категорию",
+        name: "Укажите наименование",
+      },
+    },
+  },
 };
