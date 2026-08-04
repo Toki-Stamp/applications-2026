@@ -22,12 +22,28 @@
   /** @type {HTMLElement | null} */
   let wrapperNode = $state(null);
 
+  /** @type {any} */
+  let longPressTimer = null;
+  let isLongPressActive = false;
+  let isPinnedOnTouch = false;
+
+  function dismissPinned() {
+    if (isPinnedOnTouch) {
+      isHovered = false;
+      isPinnedOnTouch = false;
+      if (typeof window !== "undefined") {
+        window.removeEventListener("pointerdown", dismissPinned, true);
+        window.removeEventListener("scroll", dismissPinned, true);
+      }
+    }
+  }
+
   /** @param {Event} e */
   function handleMouseEnter(e) {
     if (!enabled) return;
-    
-    // Игнорируем эмуляцию hover на тач-устройствах
-    if (window.matchMedia("(hover: none)").matches) return;
+
+    // Ignore mouseenter on touch devices
+    if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) return;
 
     if (onlyIfTruncated) {
       const target = /** @type {HTMLElement} */ (e.currentTarget);
@@ -43,7 +59,63 @@
   }
 
   function handleMouseLeave() {
+    if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) return;
     isHovered = false;
+  }
+
+  /** @param {TouchEvent} e */
+  function handleTouchStart(e) {
+    if (!enabled || !text) return;
+
+    // If a pinned tooltip is currently showing, tap dismisses it
+    if (isPinnedOnTouch) {
+      dismissPinned();
+      return;
+    }
+
+    clearTimeout(longPressTimer);
+    isLongPressActive = false;
+
+    // Trigger long press tooltip after 400ms hold
+    longPressTimer = setTimeout(() => {
+      isLongPressActive = true;
+      isHovered = true;
+      isPinnedOnTouch = true;
+
+      // Soft haptic feedback if supported
+      if (typeof navigator !== "undefined" && navigator.vibrate) {
+        try {
+          navigator.vibrate(20);
+        } catch (_) {}
+      }
+
+      // Attach global click-outside and scroll dismiss listeners
+      setTimeout(() => {
+        if (typeof window !== "undefined") {
+          window.addEventListener("pointerdown", dismissPinned, { capture: true, once: true });
+          window.addEventListener("scroll", dismissPinned, { capture: true, once: true });
+        }
+      }, 100);
+    }, 400);
+  }
+
+  /** @param {TouchEvent} e */
+  function handleTouchEnd(e) {
+    clearTimeout(longPressTimer);
+    if (isLongPressActive) {
+      if (e.cancelable) e.preventDefault();
+      isLongPressActive = false;
+    } else if (!isPinnedOnTouch) {
+      isHovered = false;
+    }
+  }
+
+  function handleTouchCancel() {
+    clearTimeout(longPressTimer);
+    if (!isPinnedOnTouch) {
+      isLongPressActive = false;
+      isHovered = false;
+    }
   }
 </script>
 
@@ -54,6 +126,9 @@
     class="tooltip-wrapper {wrapperClass}"
     onmouseenter={handleMouseEnter}
     onmouseleave={handleMouseLeave}
+    ontouchstart={handleTouchStart}
+    ontouchend={handleTouchEnd}
+    ontouchcancel={handleTouchCancel}
     bind:this={wrapperNode}
     data-tooltip={text || undefined}
   >

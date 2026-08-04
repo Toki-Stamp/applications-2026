@@ -34,30 +34,51 @@ class AdminStore {
     },
   ]);
 
-  /** @type {string[]} */
-  fetchedParticipantNames = $state([]);
+  /** @type {any[]} */
+  fetchedParticipants = $state([]);
   isLoadingParticipants = $state(false);
 
   /** @returns {string[]} */
   get uniquePayers() {
-    const fromExpenses = this.expenses.map((e) => e.payer).filter(Boolean);
-    const fromParticipants = this.fetchedParticipantNames;
-    const allNames = [...fromExpenses, ...fromParticipants];
-    const unique = [...new Set(allNames)];
-    return unique.sort();
+    /** @type {string[]} */
+    const candidates = [];
+
+    // 1. Payers from existing expenses
+    for (const e of this.expenses) {
+      if (e.payer) candidates.push(e.payer);
+    }
+
+    // 2. Names, surnames, and nicknames from fetched participants
+    for (const p of this.fetchedParticipants) {
+      if (p.firstName) candidates.push(p.firstName);
+      if (p.lastName) candidates.push(p.lastName);
+      if (p.nickname) candidates.push(p.nickname);
+    }
+
+    // Case-insensitive normalization & deduplication
+    const map = new Map();
+    for (const raw of candidates) {
+      if (!raw) continue;
+      const trimmed = String(raw).trim();
+      if (!trimmed) continue;
+      const lowerKey = trimmed.toLowerCase();
+      if (!map.has(lowerKey)) {
+        map.set(lowerKey, trimmed);
+      }
+    }
+
+    return Array.from(map.values()).sort((a, b) => a.localeCompare(b, "ru"));
   }
 
   async loadParticipants() {
-    if (this.fetchedParticipantNames.length > 0) return; // already loaded
+    if (this.fetchedParticipants.length > 0) return; // already loaded
     this.isLoadingParticipants = true;
     try {
       const response = await fetch(GOOGLE_SCRIPT_URL);
       if (!response.ok) throw new Error("Failed to fetch data");
       const data = await response.json();
       if (data.participants) {
-        this.fetchedParticipantNames = data.participants
-          .map((/** @type {any} */ p) => p.firstName || p.nickname)
-          .filter(Boolean);
+        this.fetchedParticipants = data.participants;
       }
     } catch (e) {
       console.error("Error fetching participants for autocomplete:", e);

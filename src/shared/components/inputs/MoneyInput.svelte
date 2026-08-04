@@ -14,6 +14,9 @@
    * @property {string} [currency]
    * @property {boolean} [required]
    * @property {string} [id]
+   * @property {(e?: Event) => void} [onblur]
+   * @property {(e?: Event) => void} [onchange]
+   * @property {(e?: Event) => void} [oninput]
    */
 
   /** @type {Props} */
@@ -27,6 +30,10 @@
     currency = "",
     required = false,
     id = generateId("money"),
+    onblur = undefined,
+    onchange = undefined,
+    oninput = undefined,
+    ...restProps
   } = $props();
 
   const hasError = $derived(!!errorText);
@@ -80,6 +87,8 @@
     }
 
     value = cleaned;
+    oninput?.(e);
+    onchange?.();
   }
 
   /** @param {FocusEvent} e */
@@ -92,6 +101,7 @@
         target.value = value;
       }
     }
+    onblur?.(e);
   }
 
   /** @param {FocusEvent} e */
@@ -107,6 +117,7 @@
   function clearValue(e) {
     e.preventDefault();
     value = "";
+    onchange?.();
   }
 </script>
 
@@ -126,6 +137,7 @@
       onblur={handleBlur}
       onfocus={handleFocus}
       autocomplete="off"
+      {...restProps}
     >
       {#if icon}
         <md-icon slot="leading-icon">{icon}</md-icon>

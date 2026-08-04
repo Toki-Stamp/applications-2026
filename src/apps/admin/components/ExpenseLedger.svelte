@@ -5,6 +5,10 @@
   import Modal from "$shared/components/ui/Modal.svelte";
   import { adminStore } from "../store.svelte.js";
   import TextInput from "$shared/components/inputs/TextInput.svelte";
+  import { dict } from "$shared/locales/ru.js";
+
+  const tLedger = dict.admin.ledger;
+  const tCols = tLedger.cols;
 
   // Filter state
   let searchQuery = $state("");
@@ -90,7 +94,7 @@
   <Section>
     <div class="search-bar glass-panel">
       <TextInput
-        placeholder="Поиск по имени, категории или комментарию..."
+        placeholder={tLedger.searchPlaceholder}
         icon="search"
         bind:value={searchQuery}
       />
@@ -101,7 +105,7 @@
   <Section>
     <div class="summary-cards">
       <div class="summary-card total glass-panel">
-        <span class="card-label">ИТОГО</span>
+        <span class="card-label">{tLedger.totalLabel}</span>
         <span class="card-value">{formatMoney(totalAmount)}</span>
       </div>
       {#each categoryTotals as cat}
@@ -114,17 +118,17 @@
   </Section>
 
   <!-- Table -->
-  <Block title="Список расходов" icon="list_alt">
+  <Block title={tLedger.tableTitle} icon="list_alt">
     <div class="table-wrapper">
       <table class="ledger-table">
         <thead>
           <tr>
-            <th>Дата</th>
-            <th>Категория</th>
-            <th>Наименование</th>
-            <th>Кто платил</th>
-            <th class="text-right">Сумма</th>
-            <th>Комментарий</th>
+            <th>{tCols.date}</th>
+            <th>{tCols.category}</th>
+            <th>{tCols.name}</th>
+            <th>{tCols.payer}</th>
+            <th class="text-right">{tCols.amount}</th>
+            <th>{tCols.comment}</th>
             <th class="actions-col"></th>
           </tr>
         </thead>
@@ -151,7 +155,7 @@
             <tr>
               <td colspan="7" class="empty-state">
                 <md-icon>receipt</md-icon>
-                <p>Нет расходов, соответствующих фильтру</p>
+                <p>{tLedger.emptyFilter}</p>
               </td>
             </tr>
           {/each}
@@ -162,9 +166,9 @@
 </div>
 
 {#if isDeleteModalOpen}
-<Modal title="Удалить запись?" onclose={() => (isDeleteModalOpen = false)}>
+<Modal title={tLedger.deleteModal.title} onclose={() => (isDeleteModalOpen = false)}>
   <div class="modal-body">
-    <p>Вы уверены, что хотите удалить этот расход?</p>
+    <p>{tLedger.deleteModal.body}</p>
     {#if expenseToDelete}
       <div class="delete-details">
         <strong>{expenseToDelete.payer}</strong> — {expenseToDelete.category}
@@ -174,8 +178,8 @@
     {/if}
   </div>
   {#snippet actions()}
-    <Button variant="secondary" onclick={() => (isDeleteModalOpen = false)}>Отмена</Button>
-    <Button variant="danger" onclick={handleDelete}>Удалить</Button>
+    <Button variant="secondary" onclick={() => (isDeleteModalOpen = false)}>{dict.common.cancel}</Button>
+    <Button variant="danger" onclick={handleDelete}>{tLedger.deleteModal.confirm}</Button>
   {/snippet}
 </Modal>
 {/if}
@@ -204,7 +208,7 @@
     padding: var(--layout-py-base) var(--layout-px-base);
     border-radius: var(--border-radius);
     text-align: center;
-    gap: 0.5rem;
+    gap: var(--gap-sm);
   }
 
   .summary-card.total {
@@ -291,8 +295,8 @@
 
   .category-badge {
     display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
+    padding: var(--gap-xs) var(--gap-sm);
+    border-radius: var(--radius-sm);
     background: var(--bg-color-accent);
     font-size: var(--text-xs);
     font-weight: 600;
@@ -318,21 +322,21 @@
   }
 
   :global(.action-btn) {
-    width: 40px !important;
-    height: 40px !important;
+    width: 36px !important;
+    height: 36px !important;
     padding: 0 !important;
-    border-radius: 50% !important;
+    border-radius: var(--radius-full) !important;
   }
 
   .empty-state {
     text-align: center;
-    padding: var(--layout-py-xl) !important;
+    padding: var(--layout-py-base) !important;
     color: var(--text-secondary);
   }
 
   .empty-state md-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+    font-size: var(--text-3xl);
+    margin-bottom: var(--gap-fields);
     opacity: 0.5;
   }
 

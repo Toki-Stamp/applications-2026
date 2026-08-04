@@ -11,9 +11,7 @@
 
 .table-wrapper:hover {
   border-color: var(--glass-border-hover);
-  box-shadow:
-    0 10px 40px -10px rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(139, 92, 246, 0.1);
+  box-shadow: var(--shadow-lg), var(--shadow-glow-primary);
 }
 
 .table-container {
@@ -362,9 +360,7 @@ table.is-scrolled-x .last-pinned::after {
 @media (max-width: 600px) {
   .table-wrapper {
     border-color: var(--glass-border-hover);
-    box-shadow:
-      0 10px 40px -10px rgba(0, 0, 0, 0.3),
-      0 0 20px rgba(139, 92, 246, 0.1);
+    box-shadow: var(--shadow-lg), var(--shadow-glow-primary);
   }
 
   .table-container::-webkit-scrollbar-track {

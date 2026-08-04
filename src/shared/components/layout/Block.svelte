@@ -116,7 +116,7 @@
   @media (max-width: 600px) {
     .block-card {
       border-color: var(--glass-border-hover);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-lg), var(--shadow-glow-primary);
     }
 
     .block-title {

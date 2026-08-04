@@ -141,6 +141,7 @@ export const GOOGLE_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbyw44Ac6xChEsCZ14wVdcXZ9vybKVqtLIzKTYenp95fWxMAQK_TvENp4oPlXiro7TlYWw/exec";
 export const FORM_STORAGE_KEY = "zubr_form_draft_2026_v2";
 export const STEP_STORAGE_KEY = "zubr_step_draft_v2";
+export const EXPENSE_DRAFT_STORAGE_KEY = "zubr_expense_draft_v1";
 
 const getContactName = (nick) =>
   dict.steps.intro.contacts.find((c) => c.nick === nick)?.name || nick;

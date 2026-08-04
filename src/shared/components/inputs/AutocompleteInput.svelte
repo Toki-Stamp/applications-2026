@@ -2,11 +2,29 @@
   import "@material/web/textfield/outlined-text-field.js";
   import "@material/web/menu/menu.js";
   import "@material/web/menu/menu-item.js";
+  import "@material/web/icon/icon.js";
   import { generateId } from "$shared/utils.js";
   import FieldLabel from "./FieldLabel.svelte";
   import Button from "$shared/components/ui/Button.svelte";
-  import { onMount } from "svelte";
 
+  /**
+   * @typedef {Object} Props
+   * @property {string} [value]
+   * @property {string} [label]
+   * @property {string} [helperText]
+   * @property {boolean} [required]
+   * @property {string} [id]
+   * @property {string} [icon]
+   * @property {string} [placeholder]
+   * @property {string} [errorText]
+   * @property {any[]} [options]
+   * @property {boolean} [capitalizeFirst]
+   * @property {(e?: Event) => void} [onchange]
+   * @property {(e?: Event) => void} [onblur]
+   * @property {(e?: Event) => void} [oninput]
+   */
+
+  /** @type {Props} */
   let {
     value = $bindable(""),
     label = "",
@@ -16,114 +34,255 @@
     icon = "",
     placeholder = "",
     errorText = "",
-    options = [], // string[]
+    options = [],
     capitalizeFirst = false,
+    onchange = undefined,
+    onblur = undefined,
+    oninput = undefined,
     ...restProps
   } = $props();
 
   let isOpen = $state(false);
-  let isFocused = $state(false);
-  let filteredOptions = $derived.by(() => {
-    if (!value) return options;
-    const lowerVal = value.toLowerCase();
-    return options.filter((opt) => opt.toLowerCase().includes(lowerVal));
-  });
+  let activeIndex = $state(-1);
 
+  /** @type {HTMLDivElement | null} */
+  let containerEl = $state(null);
+  /** @type {HTMLDivElement | null} */
+  let wrapperEl = $state(null);
   /** @type {any} */
   let textFieldEl = $state();
   /** @type {any} */
   let menuEl = $state();
-  /** @type {HTMLDivElement | null} */
-  let wrapperEl = $state(null);
+
+  /** @param {any} opt */
+  function getOptionLabel(opt) {
+    if (opt == null) return "";
+    if (typeof opt === "object") {
+      return opt.label ?? opt.name ?? opt.value ?? String(opt.id ?? "");
+    }
+    return String(opt);
+  }
+
+  let filteredOptions = $derived.by(() => {
+    if (!options || options.length === 0) return [];
+
+    // Deduplicate options case-insensitively while preserving labels
+    const map = new Map();
+    for (const opt of options) {
+      const label = getOptionLabel(opt)?.trim();
+      if (!label) continue;
+      const lower = label.toLowerCase();
+      if (!map.has(lower)) {
+        map.set(lower, opt);
+      }
+    }
+    const uniqueOpts = Array.from(map.values());
+
+    if (!value) return uniqueOpts;
+    const lowerVal = String(value).trim().toLowerCase();
+    return uniqueOpts.filter((opt) =>
+      getOptionLabel(opt).toLowerCase().includes(lowerVal),
+    );
+  });
+
+  const hasError = $derived(!!errorText);
+  const computedSupportingText = $derived(hasError ? errorText : "");
+
+  function updateMenuStyle() {
+    if (menuEl && menuEl.shadowRoot && wrapperEl) {
+      let style = menuEl.shadowRoot.querySelector("#custom-menu-style");
+      if (!style) {
+        style = document.createElement("style");
+        style.id = "custom-menu-style";
+        menuEl.shadowRoot.appendChild(style);
+      }
+      const outlineColor = hasError
+        ? "var(--error, #ba1a1a)"
+        : "var(--primary)";
+      const width = wrapperEl.offsetWidth;
+      style.textContent = `
+        .menu {
+          outline: 1px solid ${outlineColor} !important;
+          outline-offset: -1px !important;
+          border-radius: 8px !important;
+          min-width: ${width}px !important;
+          max-width: ${width}px !important;
+          max-height: 250px !important;
+          margin-top: 2px !important;
+        }
+
+        .items::-webkit-scrollbar,
+        .menu::-webkit-scrollbar,
+        *::-webkit-scrollbar {
+          width: var(--scrollbar-width-sm, 6px) !important;
+        }
+
+        .items::-webkit-scrollbar-track,
+        .menu::-webkit-scrollbar-track,
+        *::-webkit-scrollbar-track {
+          background: transparent !important;
+        }
+
+        .items::-webkit-scrollbar-thumb,
+        .menu::-webkit-scrollbar-thumb,
+        *::-webkit-scrollbar-thumb {
+          background: color-mix(in srgb, var(--primary) 30%, var(--text-primary) 10%) !important;
+          border-radius: var(--scrollbar-radius-sm, 9999px) !important;
+        }
+
+        .items::-webkit-scrollbar-thumb:hover,
+        .menu::-webkit-scrollbar-thumb:hover,
+        *::-webkit-scrollbar-thumb:hover {
+          background: color-mix(in srgb, var(--primary) 50%, var(--text-primary) 20%) !important;
+        }
+      `;
+    }
+  }
 
   /** @param {Event} e */
   function handleInput(e) {
     const target = /** @type {HTMLInputElement} */ (e.target);
-    if (capitalizeFirst && target.value.length > 0) {
-      target.value =
-        target.value.charAt(0).toUpperCase() + target.value.slice(1);
+    let val = target.value;
+    if (capitalizeFirst && val.length > 0) {
+      val = val.charAt(0).toUpperCase() + val.slice(1);
+      target.value = val;
     }
-    value = target.value;
-    if (filteredOptions.length > 0) {
+    value = val;
+    activeIndex = -1;
+    oninput?.(e);
+    onchange?.();
+
+    if (val.trim().length > 0 && filteredOptions.length > 0) {
       isOpen = true;
+    } else {
+      isOpen = false;
     }
+  }
+
+  function handleFocus() {
+    // Only open if there's typed text already
+    if (value.trim().length > 0 && filteredOptions.length > 0) {
+      isOpen = true;
+      activeIndex = -1;
+    }
+  }
+
+  /** @param {FocusEvent} e */
+  function handleBlur(e) {
+    onblur?.(e);
+  }
+
+  /** @param {KeyboardEvent} e */
+  function handleKeyDown(e) {
+    if (!isOpen && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+      if (value.trim().length > 0 && filteredOptions.length > 0) {
+        isOpen = true;
+        activeIndex = 0;
+        e.preventDefault();
+      }
+      return;
+    }
+
+    if (isOpen && filteredOptions.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        activeIndex = (activeIndex + 1) % filteredOptions.length;
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        activeIndex =
+          (activeIndex - 1 + filteredOptions.length) % filteredOptions.length;
+      } else if (e.key === "Enter") {
+        if (activeIndex >= 0 && activeIndex < filteredOptions.length) {
+          e.preventDefault();
+          selectOption(filteredOptions[activeIndex]);
+        }
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        isOpen = false;
+      }
+    }
+  }
+
+  /** @param {any} opt */
+  function selectOption(opt) {
+    const labelText = getOptionLabel(opt);
+    value = labelText;
+    isOpen = false;
+    activeIndex = -1;
+    onchange?.();
   }
 
   /** @param {Event} e */
   function clearValue(e) {
     e.preventDefault();
+    e.stopPropagation();
     value = "";
-    if (options.length > 0) {
-      isOpen = true;
-    }
-    // Re-focus the text field after clear
-    setTimeout(() => {
-      if (textFieldEl) textFieldEl.focus();
-    }, 0);
-  }
-
-  function handleFocus() {
-    isFocused = true;
-    if (filteredOptions.length > 0) {
-      isOpen = true;
-    }
-  }
-
-  function handleBlur() {
-    // Timeout to allow click events on menu items to process before closing
-    setTimeout(() => {
-      isFocused = false;
-      isOpen = false;
-    }, 200);
-  }
-
-  /** @param {string} opt */
-  function handleSelect(opt) {
-    value = opt;
     isOpen = false;
+    activeIndex = -1;
+    onchange?.();
+    if (textFieldEl) {
+      textFieldEl.focus();
+    }
   }
 
-  const hasError = $derived(!!errorText);
-  const computedSupportingText = $derived(hasError ? errorText : "");
-
-  onMount(() => {
+  // Anchor setup & menu styling
+  $effect(() => {
     if (menuEl && wrapperEl) {
       menuEl.anchor = `${id}-wrapper`;
-      
-      // Inject custom styles into the menu shadowRoot to match our design
-      // Wait for shadow root to be ready
-      setTimeout(() => {
-        if (menuEl.shadowRoot) {
-          let style = menuEl.shadowRoot.querySelector("#custom-menu-style");
-          if (!style) {
-            style = document.createElement("style");
-            style.id = "custom-menu-style";
-            menuEl.shadowRoot.appendChild(style);
-          }
-          const outlineColor = "var(--primary)";
-          style.textContent = `
-            .menu {
-              outline: 1px solid ${outlineColor} !important;
-              outline-offset: -1px !important;
-              border-radius: 8px !important;
-              max-height: 250px !important;
-            }
-          `;
-        }
-      }, 50);
     }
   });
 
   $effect(() => {
     if (menuEl) {
-      menuEl.open = isOpen;
+      const shouldBeOpen = isOpen && filteredOptions.length > 0;
+      menuEl.open = shouldBeOpen;
+      if (shouldBeOpen) {
+        updateMenuStyle();
+      }
     }
+  });
+
+  // Click outside & window scroll handlers (same as SelectInput)
+  $effect(() => {
+    if (!isOpen) return;
+
+    /** @param {Event} e */
+    function handlePointerDown(e) {
+      const target = /** @type {Node} */ (e.target);
+      if (
+        containerEl &&
+        !containerEl.contains(target) &&
+        menuEl &&
+        !menuEl.contains(target)
+      ) {
+        isOpen = false;
+      }
+    }
+
+    /** @param {Event} e */
+    function handleScroll(e) {
+      if (navigator.webdriver) return;
+      if (
+        e.target &&
+        containerEl &&
+        containerEl.contains(/** @type {Node} */ (e.target))
+      ) {
+        return;
+      }
+      isOpen = false;
+    }
+
+    window.addEventListener("pointerdown", handlePointerDown, true);
+    window.addEventListener("scroll", handleScroll, true);
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerDown, true);
+      window.removeEventListener("scroll", handleScroll, true);
+    };
   });
 </script>
 
-<div class="form-group">
+<div class="form-group" bind:this={containerEl}>
   <FieldLabel {label} {helperText} {required} />
-  <!-- We use wrapperEl as the anchor for the menu to match the width -->
   <div class="input-wrapper" id="{id}-wrapper" bind:this={wrapperEl}>
     <md-outlined-text-field
       bind:this={textFieldEl}
@@ -137,6 +296,8 @@
       oninput={handleInput}
       onfocus={handleFocus}
       onblur={handleBlur}
+      onkeydown={handleKeyDown}
+      autocomplete="off"
       {...restProps}
     >
       {#if icon}
@@ -152,18 +313,24 @@
       </div>
     {/if}
 
-    <md-menu 
-      bind:this={menuEl} 
-      positioning="popover" 
+    <md-menu
+      bind:this={menuEl}
+      positioning="popover"
       default-focus="none"
       class="autocomplete-menu"
       style:--md-menu-container-shape="8px"
       style:--md-menu-container-elevation="var(--shadow-md)"
     >
-      {#each filteredOptions as opt}
-        <!-- Use onmousedown instead of onclick so it fires before blur -->
-        <md-menu-item onmousedown={() => handleSelect(opt)} role="menuitem" tabindex="-1">
-          <div slot="headline">{opt}</div>
+      {#each filteredOptions as opt, idx}
+        {@const labelText = getOptionLabel(opt)}
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <md-menu-item
+          selected={idx === activeIndex}
+          onclick={() => selectOption(opt)}
+          role="menuitem"
+          tabindex="-1"
+        >
+          <div slot="headline">{labelText}</div>
         </md-menu-item>
       {/each}
     </md-menu>

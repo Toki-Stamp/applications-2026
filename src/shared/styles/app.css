@@ -355,6 +355,20 @@ h1::after {
   box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.2);
 }
 
+.layout-footer .footer-content {
+  max-width: var(--form-max-width);
+  margin: 0 auto;
+  padding: var(--gap-fields) var(--layout-px-base);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .layout-footer .footer-content {
+    padding: var(--gap-sm) var(--gap-fields);
+  }
+}
+
 /* Override @material/web custom properties for dark theme */
 :root {
   --md-sys-color-primary: var(--primary);

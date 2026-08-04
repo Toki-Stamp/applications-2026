@@ -32,7 +32,7 @@
     {:else}
       <div class="navigation-buttons">
         <div class="left-buttons">
-          <Tooltip text={dict.common.clearForm} pos="left">
+          <Tooltip text={dict.common.clearForm} pos="top-start">
             <Button
               type="button"
               variant="danger"
@@ -45,7 +45,7 @@
         </div>
         <div class="right-buttons">
           {#if currentStep > 2}
-            <Tooltip text={dict.common.back} pos="right">
+            <Tooltip text={dict.common.back} pos="top-end">
               <Button
                 type="button"
                 variant="secondary"
@@ -62,7 +62,7 @@
               text={hasErrors
                 ? dict.common.fillDataToContinue
                 : dict.common.next}
-              pos="right"
+              pos="top-end"
             >
               <Button
                 type="button"
@@ -81,7 +81,7 @@
                 : isSubmitting
                   ? dict.common.submitting
                   : dict.common.submit}
-              pos="right"
+              pos="top-end"
             >
               <Button
                 type="submit"

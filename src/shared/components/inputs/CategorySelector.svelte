@@ -20,7 +20,8 @@
     selectedId = $bindable(),
     errorText = "",
     label = "",
-    required = false
+    required = false,
+    onchange = undefined
   } = $props();
 
   const hasError = $derived(!!errorText);
@@ -51,6 +52,7 @@
   function selectOption(id: string) {
     selectedId = id;
     hideMobileTooltip = false;
+    onchange?.();
   }
 </script>
 
