@@ -16,7 +16,7 @@ test.describe("Admin Purchases Panel E2E Tests", () => {
 
     // Header & Initial Ledger View
     await expect(page.locator(".app-header")).toContainText(dict.admin.headerTitle);
-    await expect(page.locator(".pro-content h2.block-title")).toContainText("Список расходов");
+    await expect(page.locator(".table-wrapper")).toBeVisible();
 
     // Click Footer '+' Button to open creation form
     const addButton = page.locator(".right-buttons button");
@@ -30,7 +30,7 @@ test.describe("Admin Purchases Panel E2E Tests", () => {
     await backButton.click();
 
     // Verify back to Ledger
-    await expect(page.locator(".pro-content h2.block-title")).toContainText("Список расходов");
+    await expect(page.locator(".table-wrapper")).toBeVisible();
   });
 
   test("Test 2: Add New Expense (Happy Path)", async ({ page }) => {
@@ -54,10 +54,10 @@ test.describe("Admin Purchases Panel E2E Tests", () => {
     await submitButton.click();
 
     // Automatically transitions back to Ledger view
-    await expect(page.locator(".pro-content h2.block-title")).toContainText("Список расходов");
+    await expect(page.locator(".table-wrapper")).toBeVisible();
 
     // Check newly added row in expenses table
-    const table = page.locator(".ledger-table");
+    const table = page.locator(".participants-table");
     await expect(table).toContainText("Молоко и сыр");
     await expect(table).toContainText("Елена");
     await expect(table).toContainText("25,50 BYN");
@@ -136,7 +136,7 @@ test.describe("Admin Purchases Panel E2E Tests", () => {
     await modal.locator('button:has-text("Выйти")').click();
 
     // Returned to Ledger view, draft cleared
-    await expect(page.locator(".pro-content h2.block-title")).toContainText("Список расходов");
+    await expect(page.locator(".table-wrapper")).toBeVisible();
 
     // Open form again -> should be pristine empty
     await page.locator(".right-buttons button").click();

@@ -86,7 +86,7 @@
         {#each transportMethods as _}
           <col class="icon-th" />
         {/each}
-        <col class="city-th" />
+        <col class="icon-th" />
         <col class="icon-th" />
         <col class="icon-th" />
         <col class="time-th" />

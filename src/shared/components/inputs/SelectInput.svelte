@@ -186,15 +186,15 @@
     right: var(--element-px);
     top: 50%;
     transform: translateY(-50%);
-    z-index: 10;
+    z-index: var(--z-controls);
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(
       --bg-color-accent
     ); /* Hide the text underneath if it overlaps */
-    border-radius: 50%;
-    transition: margin-top 0.2s;
+    border-radius: var(--radius-full);
+    transition: margin-top var(--transition-normal);
   }
 
   .clear-button-wrapper.has-error {
@@ -203,8 +203,8 @@
 
   .select-field {
     width: 100%;
-    min-height: 56px;
-    --md-outlined-select-text-field-container-shape: 8px;
+    min-height: var(--input-min-height);
+    --md-outlined-select-text-field-container-shape: var(--radius-sm);
     --md-outlined-field-leading-space: var(--element-px);
     --md-outlined-field-with-leading-content-leading-space: var(--element-px);
     --md-outlined-field-content-space: var(--element-px);
@@ -212,7 +212,7 @@
   }
 
   .select-wrapper:has(.clear-button-wrapper) .select-field {
-    --md-outlined-field-trailing-space: calc(var(--element-px) * 2 + 24px);
+    --md-outlined-field-trailing-space: calc(var(--element-px) * 2 + var(--text-2xl));
     --md-outlined-select-text-field-trailing-space: calc(
       var(--element-px) + 28px
     );

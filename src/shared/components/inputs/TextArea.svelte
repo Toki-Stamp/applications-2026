@@ -90,10 +90,13 @@
     position: absolute;
     left: var(--element-px);
     top: var(--element-py);
+    font-size: var(--text-2xl);
+    width: var(--text-2xl);
+    height: var(--text-2xl);
     color: var(--text-secondary);
     pointer-events: none;
-    z-index: 1;
-    transition: color 0.2s;
+    z-index: var(--z-base);
+    transition: color var(--transition-normal);
   }
 
   .clear-button-wrapper {
@@ -104,26 +107,26 @@
     align-items: center;
     justify-content: center;
     background: var(--bg-color-accent);
-    border-radius: 50%;
-    z-index: 10;
+    border-radius: var(--radius-full);
+    z-index: var(--z-controls);
   }
 
   .custom-textarea {
     width: 100%;
-    --md-outlined-text-field-container-shape: 8px;
+    --md-outlined-text-field-container-shape: var(--radius-sm);
     --md-outlined-field-leading-space: 12px;
     --md-outlined-field-content-space: 12px;
-    min-height: 104px; /* 3 rows: 32px padding + (24px * 3) */
+    min-height: var(--textarea-min-height); /* 3 rows: 32px padding + (24px * 3) */
     padding: var(--element-py) var(--element-px);
     padding-right: calc(
-      var(--element-px) * 2 + 20px
+      var(--element-px) * 2 + var(--text-2xl)
     ); /* space for clear button */
     font-family: inherit;
     font-size: var(--text-base);
     color: var(--text-primary);
     caret-color: var(--primary);
     background-color: transparent;
-    border: 1px solid var(--input-border-color);
+    border: var(--border-width-thin) solid var(--input-border-color);
     border-radius: var(--radius-sm);
     resize: none;
     outline: none;
@@ -131,12 +134,12 @@
     box-sizing: border-box;
     line-height: var(--line-height-normal);
     transition:
-      border-color 0.2s,
-      box-shadow 0.2s;
+      border-color var(--transition-normal),
+      box-shadow var(--transition-normal);
   }
 
   .custom-textarea.has-icon {
-    padding-left: calc(var(--element-px) * 2 + 20px);
+    padding-left: calc(var(--element-px) * 2 + var(--text-2xl));
   }
 
   .custom-textarea:hover {
@@ -146,7 +149,7 @@
   .custom-textarea:focus {
     border-color: var(--primary);
     /* box-shadow to mimic Material Design thicker border */
-    box-shadow: 0 0 0 2px var(--primary);
+    box-shadow: var(--focus-ring-shadow);
   }
 
   .custom-textarea::placeholder {

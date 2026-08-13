@@ -354,7 +354,7 @@
   /* Styling to match md-outlined-text-field */
   .country-selector-btn {
     width: 100%;
-    height: 56px;
+    height: var(--input-min-height);
     background: transparent;
     border: 1px solid var(--input-border-color);
     border-radius: var(--radius-sm);
@@ -379,7 +379,7 @@
   .country-selector-btn.active {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 2px var(--primary);
+    box-shadow: var(--focus-ring-shadow);
   }
 
   .flag-icon {
@@ -406,10 +406,10 @@
     left: 0;
     width: 100%;
     background-color: var(--bg-color-accent);
-    border: 1px solid var(--glass-border);
+    border: var(--border-width-thin) solid var(--glass-border);
     border-radius: var(--radius-sm);
     box-shadow: var(--shadow-md);
-    z-index: 1000;
+    z-index: var(--z-dropdown);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -453,20 +453,20 @@
   }
 
   .country-list {
-    max-height: 280px;
+    max-height: var(--dropdown-max-height);
     overflow-y: auto;
   }
 
   /* Custom Scrollbar for list */
   .country-list::-webkit-scrollbar {
-    width: 6px;
+    width: var(--scrollbar-width-sm);
   }
   .country-list::-webkit-scrollbar-track {
     background: transparent;
   }
   .country-list::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.15);
-    border-radius: 3px;
+    border-radius: var(--scrollbar-radius-sm);
   }
   .country-list::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.25);
@@ -482,7 +482,7 @@
     color: var(--text-primary);
     cursor: pointer;
     text-align: left;
-    transition: background-color 0.15s;
+    transition: background-color var(--transition-fast);
     font-family: inherit;
   }
 
@@ -533,14 +533,14 @@
 
   .phone-input md-outlined-text-field {
     width: 100%;
-    min-height: 56px;
-    --md-outlined-text-field-container-shape: 8px;
+    min-height: var(--input-min-height);
+    --md-outlined-text-field-container-shape: var(--radius-sm);
     --md-outlined-field-leading-space: var(--element-px);
     --md-outlined-field-content-space: var(--element-px);
   }
 
   .phone-input:has(.phone-clear-btn) md-outlined-text-field {
-    --md-outlined-field-trailing-space: calc(var(--element-px) * 2 + 24px);
+    --md-outlined-field-trailing-space: calc(var(--element-px) * 2 + var(--text-2xl));
   }
 
   @media (max-width: 600px) {

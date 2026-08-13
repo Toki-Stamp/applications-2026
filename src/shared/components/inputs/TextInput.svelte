@@ -82,8 +82,8 @@
 
   .text-field {
     width: 100%;
-    min-height: 56px;
-    --md-outlined-text-field-container-shape: 8px;
+    min-height: var(--input-min-height);
+    --md-outlined-text-field-container-shape: var(--radius-sm);
     --md-outlined-field-leading-space: var(--element-px);
     --md-outlined-field-with-leading-content-leading-space: var(--element-px);
     --md-outlined-field-content-space: var(--element-px);
@@ -91,7 +91,7 @@
   }
 
   .input-wrapper:has(.clear-button-wrapper) .text-field {
-    --md-outlined-field-trailing-space: calc(var(--element-px) * 2 + 24px);
+    --md-outlined-field-trailing-space: calc(var(--element-px) * 2 + var(--text-2xl));
   }
 
   .clear-button-wrapper {
@@ -99,13 +99,13 @@
     right: var(--element-px);
     top: 50%;
     transform: translateY(-50%);
-    z-index: 10;
+    z-index: var(--z-controls);
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--bg-color-accent);
-    border-radius: 50%;
-    transition: margin-top 0.2s;
+    border-radius: var(--radius-full);
+    transition: margin-top var(--transition-normal);
   }
 
   .clear-button-wrapper.has-error {

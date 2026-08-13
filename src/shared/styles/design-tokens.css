@@ -45,12 +45,25 @@
   --border-radius: var(--radius-lg);
 
   /* UI Component Sizes */
+  --input-min-height: 56px;
+  --textarea-min-height: 104px;
   --icon-btn-size: 48px;
+  --dropdown-max-height: 280px;
   --popover-width-sm: 220px;
   --popover-width-lg: 600px;
   --popover-max-height: 260px;
 
-  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Focus & Border Tokens */
+  --border-width-thin: 1px;
+  --focus-ring-width: 2px;
+  --focus-ring-shadow: 0 0 0 var(--focus-ring-width) var(--primary);
+
+  /* Transition & Motion Tokens */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition: var(--transition-slow);
+
   --sticky-block-offset: 67px;
   --sticky-section-offset: 116px;
 
@@ -61,8 +74,12 @@
   --layout-py-sm: 1.5rem;
 
   /* Z-Index Layers */
+  --z-base: 1;
+  --z-controls: 10;
   --z-sticky-headers: 10;
+  --z-dropdown: 100;
   --z-modals: 100;
+  --z-modal: 1000;
   --z-tooltips: 1000;
 
   /* Elevation & Shadow Tokens (Unified System) */
