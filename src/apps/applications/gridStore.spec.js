@@ -189,16 +189,19 @@ describe("gridStore.svelte.js", () => {
   describe("Helpers", () => {
     it("getDayStatus returns correct object", () => {
       expect(getDayStatus("Пт", "Пт").active).toBe(true);
-      expect(getDayStatus("Пт", "Пт").icon).toBe("check_circle");
+      expect(getDayStatus("Пт", "Пт").icon).toBe("check");
 
       expect(getDayStatus("Сб", "Пт").active).toBe(false);
-      expect(getDayStatus("Сб", "Пт").icon).toBe("radio_button_unchecked");
+      expect(getDayStatus("Сб", "Пт").icon).toBe("");
     });
 
     it("getMethodStatus returns correct object", () => {
       expect(getMethodStatus("Водитель", "Водитель").active).toBe(true);
+      expect(getMethodStatus("Водитель", "Водитель").icon).toBe("check");
       expect(getMethodStatus("Трансфер", "Маршрутка").active).toBe(true);
+      expect(getMethodStatus("Трансфер", "Маршрутка").icon).toBe("check");
       expect(getMethodStatus("Пассажир", "Водитель").active).toBe(false);
+      expect(getMethodStatus("Пассажир", "Водитель").icon).toBe("");
     });
   });
 });

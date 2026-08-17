@@ -32,7 +32,9 @@
         </div>
       </Tooltip>
     {:else}
-      {content}
+      <div class="header-text-wrapper">
+        <span>{content}</span>
+      </div>
     {/if}
   </th>
 {/snippet}

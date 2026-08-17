@@ -13,6 +13,7 @@
     index: i,
     isLeader = false,
     isMember = false,
+    groupSize = 1,
     filterMode = false,
   } = $props();
 
@@ -28,9 +29,13 @@
     class="text-center no-pad-x"
     class:highlighted-col={gridState.isFilterHoveredOrActive(filterKey)}
   >
-    <md-icon class="status-icon {status.active ? 'active' : ''}"
-      >{status.icon}</md-icon
-    >
+    {#if status.active}
+      <span class="status-check-badge">
+        <md-icon>check</md-icon>
+      </span>
+    {:else}
+      <span class="opacity-30">-</span>
+    {/if}
   </td>
 {/snippet}
 
@@ -66,9 +71,13 @@
     <div class="user-meta">
       <div class="user-details">
         <div class="name-with-icon">
-          <Tooltip text={p.nickname || ""} onlyIfTruncated={true}>
-            <span class="ellipsis-text">{p.nickname || ""}</span>
-          </Tooltip>
+          {#if p.nickname?.trim()}
+            <Tooltip text={p.nickname} onlyIfTruncated={true}>
+              <span class="ellipsis-text">{p.nickname}</span>
+            </Tooltip>
+          {:else}
+            <span class="opacity-30">-</span>
+          {/if}
         </div>
       </div>
     </div>
@@ -85,13 +94,22 @@
         "px"
       : ""}
   >
-    <div class="name-with-icon">
-      {#if isMember}
+    <div class="name-cell-content">
+      <div class="name-text-wrapper">
+        {#if p.firstName?.trim()}
+          <Tooltip text={p.firstName} onlyIfTruncated={true}>
+            <span class="ellipsis-text">{p.firstName}</span>
+          </Tooltip>
+        {:else}
+          <span class="opacity-30">-</span>
+        {/if}
+      </div>
+
+      {#if isLeader}
+        <span class="group-count-badge">+{groupSize - 1}</span>
+      {:else if isMember}
         <md-icon class="group-icon member">group</md-icon>
       {/if}
-      <Tooltip text={p.firstName || ""} onlyIfTruncated={true}>
-        <span class="ellipsis-text">{p.firstName || ""}</span>
-      </Tooltip>
     </div>
   </td>
 
@@ -104,12 +122,9 @@
   {/each}
 
   <!-- ТУДА: Места, Город -->
-  <td class="text-center">
+  <td class="text-center no-pad-x">
     {#if p.transportTo.method === "Водитель" && p.transportTo.seats}
-      <span class="seats-badge">
-        <md-icon class="status-icon active">radio_button_unchecked</md-icon>
-        <span class="seats-number">{p.transportTo.seats}</span>
-      </span>
+      <span>{p.transportTo.seats}</span>
     {:else}
       <span class="opacity-30">-</span>
     {/if}

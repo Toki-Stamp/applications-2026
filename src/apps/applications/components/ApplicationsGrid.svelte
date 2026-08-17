@@ -32,21 +32,28 @@
   });
 
   // Group helpers
-  let groupSizes = $derived(
-    participants.reduce((acc, p) => {
-      if (!p.groupId) return acc;
-      acc[p.groupId] = (acc[p.groupId] || 0) + 1;
-      return acc;
-    }, {}),
-  );
+  let groupMembers = $derived.by(() => {
+    const groups = {};
+    participants.forEach((p, i) => {
+      if (!p.groupId) return;
+      if (!groups[p.groupId]) groups[p.groupId] = [];
+      groups[p.groupId].push(i);
+    });
 
-  let groupLeaders = $derived(
-    participants.reduce((acc, p, i) => {
-      if (!p.groupId) return acc;
-      if (!(p.groupId in acc)) acc[p.groupId] = i;
-      return acc;
-    }, {}),
-  );
+    const memberInfo = {};
+    Object.entries(groups).forEach(([groupId, indices]) => {
+      if (indices.length > 1) {
+        indices.forEach((idx, pos) => {
+          memberInfo[idx] = {
+            isLeader: pos === 0,
+            isMember: pos > 0,
+            groupSize: indices.length,
+          };
+        });
+      }
+    });
+    return memberInfo;
+  });
 
   let headerHeight = $state(0);
   let isScrolledX = $state(false);
@@ -96,14 +103,13 @@
 
       <tbody>
         {#each participants as p, i}
-          {@const isGroup = groupSizes[p.groupId] > 1}
-          {@const isLeader = isGroup && groupLeaders[p.groupId] === i}
-          {@const isMember = isGroup && groupLeaders[p.groupId] !== i}
+          {@const gInfo = groupMembers[i] || { isLeader: false, isMember: false, groupSize: 1 }}
           <GridRow
             participant={p}
             index={i}
-            {isLeader}
-            {isMember}
+            isLeader={gInfo.isLeader}
+            isMember={gInfo.isMember}
+            groupSize={gInfo.groupSize}
             {filterMode}
           />
         {/each}

@@ -1,6 +1,6 @@
 import { dict } from "$shared/locales/ru.js";
 
-// Helper to render checkmark or empty circle for day
+// Helper to render checkmark or empty for day
 /**
  * @param {string} actualDay
  * @param {string} targetDay
@@ -8,11 +8,11 @@ import { dict } from "$shared/locales/ru.js";
 export function getDayStatus(actualDay, targetDay) {
   return {
     active: actualDay === targetDay,
-    icon: actualDay === targetDay ? "check_circle" : "radio_button_unchecked",
+    icon: actualDay === targetDay ? "check" : "",
   };
 }
 
-// Helper to render checkmark or empty circle for transport method
+// Helper to render checkmark or empty for transport method
 /**
  * @param {string} actualMethod
  * @param {string} targetMethod
@@ -22,9 +22,9 @@ export function getMethodStatus(actualMethod, targetMethod) {
     actualMethod === targetMethod ||
     (targetMethod === "Маршрутка" && actualMethod === "Трансфер")
   ) {
-    return { active: true, icon: "check_circle" };
+    return { active: true, icon: "check" };
   }
-  return { active: false, icon: "radio_button_unchecked" };
+  return { active: false, icon: "" };
 }
 
 /** @type {Array<{key: string, icon: string, id: 'driver' | 'passenger' | 'bus' | 'self'}>} */
