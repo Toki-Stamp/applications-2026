@@ -151,8 +151,10 @@
 <style>
   .tooltip-wrapper {
     position: relative;
-    overflow: visible !important;
+    overflow: visible;
     display: inline-flex;
+    max-width: 100%;
+    min-width: 0;
   }
 
   :global(.tooltip-content) {

@@ -1,24 +1,40 @@
 <script>
+  import { getContext } from "svelte";
   import Tooltip from "$shared/components/ui/Tooltip.svelte";
   import Button from "$shared/components/ui/Button.svelte";
   import { slide } from "svelte/transition";
 
   let {
-    activeFilters = $bindable({}),
+    participants = [],
     filterMode = $bindable(false),
-    intersectionCount = 0,
   } = $props();
 
+  /** @type {import('$apps/applications/gridStore.svelte.js').GridState} */
+  const gridState = getContext("gridState");
+
+  // Stats computation
+  let stats = $derived.by(() => gridState.getStats(participants));
+
   let groupedFilters = $derived.by(() => {
-    /** @type {Record<string, { catText: string, catIcon?: string, filters: {key: string, filter: any}[] }>} */
+    /** @type {Record<string, { catText: string, catIcon?: string, filters: {key: string, value: string, details: any}[] }>} */
     const groups = {};
-    for (const [key, filter] of Object.entries(activeFilters)) {
-      const catText = filter.details?.catText || "Разное";
-      const catIcon = filter.details?.catIcon;
-      if (!groups[catText]) {
-        groups[catText] = { catText, catIcon, filters: [] };
+    for (const [key, filter] of Object.entries(gridState.activeFilters)) {
+      const values = filter.values || [filter.value];
+      for (const val of values) {
+        const details = gridState.getFilterDetails(`${key}_${val}`);
+        const catText =
+          details?.catText ||
+          (key.startsWith("to")
+            ? "ТУДА"
+            : key.startsWith("from")
+              ? "ОБРАТНО"
+              : "Разное");
+        const catIcon = details?.catIcon;
+        if (!groups[catText]) {
+          groups[catText] = { catText, catIcon, filters: [] };
+        }
+        groups[catText].filters.push({ key, value: val, details });
       }
-      groups[catText].filters.push({ key, filter });
     }
     /** @type {Record<string, number>} */
     const keyOrder = {
@@ -75,7 +91,7 @@
   });
 </script>
 
-{#if Object.keys(activeFilters).length > 0}
+{#if gridState.hasAnyFilterOrSearch}
   <footer
     class="layout-footer summary-footer"
     transition:slide={{ duration: 250, axis: "y" }}
@@ -88,88 +104,92 @@
             iconOnly={true}
             aria-label="Сбросить всё"
             onclick={() => {
-              activeFilters = {};
+              gridState.clearAllFilters();
+              filterMode = false;
             }}
           >
             <md-icon>delete</md-icon>
           </Button>
         </Tooltip>
-        <div class="scroll-wrapper">
-          <button
-            class="scroll-indicator left"
-            disabled={!canScrollLeft}
-            onclick={() =>
-              scrollContainer?.scrollBy({ left: -200, behavior: "smooth" })}
-          >
-            <md-icon class="arrow-icon">chevron_left</md-icon>
-          </button>
-          <div
-            class="left-buttons"
-            bind:this={scrollContainer}
-            onscroll={checkScroll}
-            class:mask-l={canScrollLeft}
-            class:mask-r={canScrollRight}
-          >
-            <div class="filter-groups">
-              {#each groupedFilters as group}
-                <div class="filter-group">
-                  <div class="group-header">
-                    <span class="group-title">{group.catText}</span>
-                    <Button
-                      variant="clear"
-                      class="group-close-btn"
-                      onclick={() => {
-                        const newFilters = { ...activeFilters };
-                        group.filters.forEach(
-                          (/** @type {any} */ f) => delete newFilters[f.key],
-                        );
-                        activeFilters = newFilters;
-                      }}
-                    >
-                      <md-icon>close</md-icon>
-                    </Button>
+        {#if groupedFilters.length > 0}
+          <div class="scroll-wrapper">
+            <button
+              class="scroll-indicator left"
+              disabled={!canScrollLeft}
+              onclick={() =>
+                scrollContainer?.scrollBy({ left: -200, behavior: "smooth" })}
+            >
+              <md-icon class="arrow-icon">chevron_left</md-icon>
+            </button>
+            <div
+              class="left-buttons"
+              bind:this={scrollContainer}
+              onscroll={checkScroll}
+              class:mask-l={canScrollLeft}
+              class:mask-r={canScrollRight}
+            >
+              <div class="filter-groups">
+                {#each groupedFilters as group}
+                  <div class="filter-group">
+                    <div class="group-header">
+                      <span class="group-title">{group.catText}</span>
+                      <Button
+                        variant="clear"
+                        class="group-close-btn"
+                        onclick={() => {
+                          const newFilters = { ...gridState.activeFilters };
+                          group.filters.forEach((f) => delete newFilters[f.key]);
+                          gridState.activeFilters = newFilters;
+                        }}
+                      >
+                        <md-icon>close</md-icon>
+                      </Button>
+                    </div>
+                    <div class="group-values">
+                      {#each group.filters as { key, value, details }}
+                        <div class="val-chip">
+                          <Tooltip
+                            text={details?.tooltip || details?.valText || value}
+                            pos="top"
+                          >
+                            <div class="val-chip-content">
+                              {#if details?.valIcon}<md-icon
+                                  >{details.valIcon}</md-icon
+                                >{/if}
+                              {#if !details?.hideValText}<span
+                                  >{details?.valText}</span
+                                >{/if}
+                            </div>
+                          </Tooltip>
+                          <Button
+                            variant="clear"
+                            class="chip-close-btn"
+                            onclick={() => gridState.toggleFilter(key, value)}
+                          >
+                            <md-icon>close</md-icon>
+                          </Button>
+                        </div>
+                      {/each}
+                    </div>
                   </div>
-                  <div class="group-values">
-                    {#each group.filters as { key, filter }}
-                      <div class="val-chip">
-                        {#if filter.details?.valIcon}<md-icon
-                            >{filter.details.valIcon}</md-icon
-                          >{/if}
-                        {#if !filter.details?.hideValText}<span
-                            >{filter.details?.valText}</span
-                          >{/if}
-                        <Button
-                          variant="clear"
-                          class="chip-close-btn"
-                          onclick={() => {
-                            const newFilters = { ...activeFilters };
-                            delete newFilters[key];
-                            activeFilters = newFilters;
-                          }}
-                        >
-                          <md-icon>close</md-icon>
-                        </Button>
-                      </div>
-                    {/each}
-                  </div>
-                </div>
-              {/each}
+                {/each}
+              </div>
             </div>
+            <button
+              class="scroll-indicator right"
+              disabled={!canScrollRight}
+              onclick={() =>
+                scrollContainer?.scrollBy({ left: 200, behavior: "smooth" })}
+            >
+              <md-icon class="arrow-icon">chevron_right</md-icon>
+            </button>
           </div>
-          <button
-            class="scroll-indicator right"
-            disabled={!canScrollRight}
-            onclick={() =>
-              scrollContainer?.scrollBy({ left: 200, behavior: "smooth" })}
-          >
-            <md-icon class="arrow-icon">chevron_right</md-icon>
-          </button>
-        </div>
+        {/if}
       </div>
       <div class="right-buttons">
         <div class="intersection-count">
           <span class="count-label">Найдено:</span>
-          <span class="count-number">{intersectionCount}</span>
+          <span class="count-number">{stats.matched}</span>
         </div>
         <div class="summary-badge">
           <Tooltip
@@ -391,6 +411,13 @@
     font-size: var(--text-sm);
     font-weight: 500;
     line-height: 1;
+  }
+
+  .val-chip-content {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    cursor: default;
   }
 
   .val-chip md-icon {

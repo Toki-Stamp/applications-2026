@@ -1,19 +1,17 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, setContext } from "svelte";
   import { GOOGLE_SCRIPT_URL } from "$shared/constants.js";
   import { dict } from "$shared/locales/ru.js";
   import { parseApiError } from "$shared/utils/errors.js";
   import Overlay from "$shared/components/ui/Overlay.svelte";
   import Header from "$shared/components/layout/Header.svelte";
-  import Tooltip from "$shared/components/ui/Tooltip.svelte";
-  import Button from "$shared/components/ui/Button.svelte";
-  import { slide } from "svelte/transition";
   import ThemeSwitcher from "$shared/components/ui/ThemeSwitcher.svelte";
   import HelpButton from "$shared/components/ui/HelpButton.svelte";
   import ApplicationsHelp from "./components/ApplicationsHelp.svelte";
   import ApplicationsGrid from "./components/ApplicationsGrid.svelte";
   import ApplicationsFooter from "./components/ApplicationsFooter.svelte";
   import HourglassLoader from "$shared/components/ui/HourglassLoader.svelte";
+  import { GridState } from "$apps/applications/gridStore.svelte.js";
 
   let isLoading = $state(true);
   /** @type {{title: string, body: string} | null} */
@@ -22,13 +20,13 @@
   /** @type {any[]} */
   let participants = $state([]);
 
-  /** @type {Record<string, { value: string, details?: { catText: string, catIcon?: string, hideCatText?: boolean, valText: string, valIcon?: string, hideValText?: boolean } | null }>} */
-  let activeFilters = $state({});
-  let intersectionCount = $state(0);
+  const gridState = new GridState();
+  setContext("gridState", gridState);
+
   let filterMode = $state(false);
 
   $effect(() => {
-    if (Object.keys(activeFilters).length === 0) {
+    if (!gridState.hasAnyFilterOrSearch) {
       filterMode = false;
     }
   });
@@ -53,7 +51,7 @@
 
 <div class="app-transition-wrapper">
   <div class="app-form">
-    <Header title="АЯВКИ">
+    <Header title="ЗАЯВКИ">
       {#snippet leftAction()}
         <ThemeSwitcher />
       {/snippet}
@@ -80,8 +78,6 @@
         <div class="content-wrapper">
           <ApplicationsGrid
             {participants}
-            bind:activeFilters
-            bind:intersectionCount
             {filterMode}
           />
         </div>
@@ -89,9 +85,8 @@
     </div>
 
     <ApplicationsFooter
-      bind:activeFilters
+      {participants}
       bind:filterMode
-      {intersectionCount}
     />
   </div>
 </div>

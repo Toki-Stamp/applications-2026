@@ -1,35 +1,18 @@
 <script>
   import "./grid.css";
-  import { setContext } from "svelte";
+  import { getContext } from "svelte";
   import { GridState, transportMethods } from "$apps/applications/gridStore.svelte.js";
   import GridHeader from "./GridHeader.svelte";
   import GridRow from "./GridRow.svelte";
+  import GridSummaryRow from "./GridSummaryRow.svelte";
 
   let {
-    participants,
-    activeFilters = $bindable({}),
-    intersectionCount = $bindable(0),
+    participants = [],
     filterMode = false,
   } = $props();
 
-  const gridState = new GridState(activeFilters);
-  setContext("gridState", gridState);
-
-  // Sync external props with internal store
-  $effect(() => {
-    activeFilters = gridState.activeFilters;
-  });
-
-  // Calculate intersection count for parent
-  $effect(() => {
-    let count = 0;
-    if (Object.keys(gridState.activeFilters).length > 0) {
-      for (const p of participants) {
-        if (gridState.isRowHighlightedAll(p)) count++;
-      }
-    }
-    intersectionCount = count;
-  });
+  /** @type {import('$apps/applications/gridStore.svelte.js').GridState} */
+  const gridState = getContext("gridState") || new GridState();
 
   // Group helpers
   let groupMembers = $derived.by(() => {
@@ -55,24 +38,52 @@
     return memberInfo;
   });
 
-  let headerHeight = $state(0);
+  let headerHeight = $state(84);
   let isScrolledX = $state(false);
   let isScrolledY = $state(false);
+  let hasMoreBelow = $state(false);
+  /** @type {HTMLDivElement | null} */
+  let containerRef = $state(null);
+
+  function updateScrollState() {
+    if (!containerRef) return;
+    isScrolledX = containerRef.scrollLeft > 0;
+    isScrolledY = containerRef.scrollTop > 0;
+    const maxScroll = containerRef.scrollHeight - containerRef.clientHeight;
+    hasMoreBelow = maxScroll > 2 && maxScroll - containerRef.scrollTop > 2;
+  }
+
+  $effect(() => {
+    participants;
+    filterMode;
+    gridState.activeFilters;
+    gridState.searchQuery;
+    gridState.searchNick;
+    gridState.searchName;
+    gridState.searchCity;
+    updateScrollState();
+  });
+
+  $effect(() => {
+    if (!containerRef) return;
+    const ro = new ResizeObserver(() => updateScrollState());
+    ro.observe(containerRef);
+    return () => ro.disconnect();
+  });
 </script>
 
 <div class="table-wrapper glass-panel">
   <div
     class="table-container"
+    bind:this={containerRef}
     style="--header-height: {headerHeight}px"
-    onscroll={(e) => {
-      isScrolledX = e.currentTarget.scrollLeft > 0;
-      isScrolledY = e.currentTarget.scrollTop > 0;
-    }}
+    onscroll={updateScrollState}
   >
     <table
       class="participants-table"
       class:is-scrolled-x={isScrolledX}
       class:is-scrolled-y={isScrolledY}
+      class:has-more-below={hasMoreBelow}
     >
       <colgroup>
         <!-- Закрепленные колонки -->
@@ -99,7 +110,7 @@
         <col class="time-th" />
       </colgroup>
 
-      <GridHeader bind:headerHeight />
+      <GridHeader {participants} bind:headerHeight />
 
       <tbody>
         {#each participants as p, i}
@@ -114,6 +125,8 @@
           />
         {/each}
       </tbody>
+
+      <GridSummaryRow {participants} />
     </table>
   </div>
 </div>

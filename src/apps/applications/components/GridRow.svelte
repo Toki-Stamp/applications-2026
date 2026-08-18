@@ -19,16 +19,44 @@
 
   /** @type {import('$apps/applications/gridStore.svelte.js').GridState} */
   const gridState = getContext("gridState");
+
+  /**
+   * Split string into matched and non-matched chunks for safe highlighting
+   * @param {string} text
+   * @param {string} query
+   */
+  function highlightMatch(text, query) {
+    if (!text) return [];
+    if (!query || !query.trim()) return [{ text, match: false }];
+    const q = query.trim().toLowerCase();
+    const lower = text.toLowerCase();
+    const parts = [];
+    let currentIndex = 0;
+    let matchIndex = lower.indexOf(q, currentIndex);
+
+    while (matchIndex !== -1) {
+      if (matchIndex > currentIndex) {
+        parts.push({ text: text.slice(currentIndex, matchIndex), match: false });
+      }
+      parts.push({
+        text: text.slice(matchIndex, matchIndex + q.length),
+        match: true,
+      });
+      currentIndex = matchIndex + q.length;
+      matchIndex = lower.indexOf(q, currentIndex);
+    }
+    if (currentIndex < text.length) {
+      parts.push({ text: text.slice(currentIndex), match: false });
+    }
+    return parts;
+  }
 </script>
 
 {#snippet statusCell(
-  /** @type {string} */ filterKey,
   /** @type {{ active: boolean, icon: string }} */ status,
+  isColActive = false,
 )}
-  <td
-    class="text-center no-pad-x"
-    class:highlighted-col={gridState.isFilterHoveredOrActive(filterKey)}
-  >
+  <td class="text-center no-pad-x" class:is-col-active={isColActive}>
     {#if status.active}
       <span class="status-check-badge">
         <md-icon>check</md-icon>
@@ -39,11 +67,21 @@
   </td>
 {/snippet}
 
+{#snippet renderHighlighted(/** @type {string} */ text, /** @type {string} */ query)}
+  {#each highlightMatch(text, query) as part}
+    {#if part.match}
+      <mark class="search-match">{part.text}</mark>
+    {:else}
+      <span>{part.text}</span>
+    {/if}
+  {/each}
+{/snippet}
+
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <tr
   class:hidden-row={filterMode &&
-    Object.keys(gridState.activeFilters).length > 0 &&
+    gridState.hasAnyFilterOrSearch &&
     !gridState.isRowHighlightedAll(p)}
   class:selected={gridState.selectedRowIndices.has(i)}
   class:highlighted={gridState.isRowActiveOrHovered(p, filterMode)}
@@ -62,6 +100,7 @@
   <!-- Никнейм -->
   <td
     class="col-name"
+    class:is-col-active={!!gridState.searchNick}
     class:sticky-col={gridState.isNicknamePinned}
     class:last-pinned={gridState.lastPinnedCol === "nickname"}
     style:left={gridState.isNicknamePinned
@@ -73,7 +112,12 @@
         <div class="name-with-icon">
           {#if p.nickname?.trim()}
             <Tooltip text={p.nickname} onlyIfTruncated={true}>
-              <span class="ellipsis-text">{p.nickname}</span>
+              <span class="ellipsis-text">
+                {@render renderHighlighted(
+                  p.nickname,
+                  gridState.searchNick || gridState.searchQuery,
+                )}
+              </span>
             </Tooltip>
           {:else}
             <span class="opacity-30">-</span>
@@ -86,6 +130,9 @@
   <!-- Имя -->
   <td
     class="col-real-name"
+    class:group-member={isMember}
+    class:group-leader={isLeader}
+    class:is-col-active={!!gridState.searchName}
     class:sticky-col={gridState.isNamePinned}
     class:last-pinned={gridState.lastPinnedCol === "name"}
     style:left={gridState.isNamePinned
@@ -98,7 +145,12 @@
       <div class="name-text-wrapper">
         {#if p.firstName?.trim()}
           <Tooltip text={p.firstName} onlyIfTruncated={true}>
-            <span class="ellipsis-text">{p.firstName}</span>
+            <span class="ellipsis-text">
+              {@render renderHighlighted(
+                p.firstName,
+                gridState.searchName || gridState.searchQuery,
+              )}
+            </span>
           </Tooltip>
         {:else}
           <span class="opacity-30">-</span>
@@ -116,40 +168,33 @@
   <!-- ТУДА: В, П, М, С -->
   {#each transportMethods as tm}
     {@render statusCell(
-      `to_${tm.key}`,
       getMethodStatus(p.transportTo.method, tm.key),
+      gridState.isGroupValueActive("to", tm.key),
     )}
   {/each}
 
-  <!-- ТУДА: Места, Город -->
-  <td class="text-center no-pad-x">
+  <!-- ТУДА: Места -->
+  <td
+    class="text-center no-pad-x"
+    class:is-col-active={gridState.isFilterActive("toSeats_true")}
+  >
     {#if p.transportTo.method === "Водитель" && p.transportTo.seats}
       <span>{p.transportTo.seats}</span>
     {:else}
       <span class="opacity-30">-</span>
     {/if}
   </td>
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
+
+  <!-- ТУДА: Город -->
   <td
-    class="interactive-city-cell"
-    class:highlighted-col={gridState.isFilterHoveredOrActive(
-      "toCity_" + (p.transportTo?.city?.trim().toLowerCase() || ""),
-    )}
-    onclick={(e) => {
-      e.stopPropagation();
-      if (p.transportTo?.city) {
-        const clickedCity = p.transportTo.city.trim().toLowerCase();
-        gridState.handleHeaderClick("toCity_" + clickedCity);
-      }
-    }}
-    onmouseenter={() =>
-      (gridState.hoveredFilter = p.transportTo?.city
-        ? `toCity_${p.transportTo.city.trim().toLowerCase()}`
-        : null)}
-    onmouseleave={() => (gridState.hoveredFilter = null)}
+    class="city-cell"
+    class:is-col-active={!!gridState.activeFilters["toCity"] || !!gridState.searchCity}
   >
     {#if p.transportTo?.city}
-      {p.transportTo.city}
+      {@render renderHighlighted(
+        p.transportTo.city,
+        gridState.searchCity || gridState.searchQuery,
+      )}
     {:else}
       <span class="opacity-30">-</span>
     {/if}
@@ -158,70 +203,40 @@
   <!-- ТУДА: День -->
   {#each [0, 1, 2] as dayIndex}
     {@render statusCell(
-      `toDay_${dict.options.days[dayIndex]}`,
       getDayStatus(p.transportTo.day, dict.options.days[dayIndex]),
+      gridState.isGroupValueActive("toDay", dict.options.days[dayIndex]),
     )}
   {/each}
 
   <!-- ТУДА: Время -->
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
   <td
-    class="text-center time-cell interactive-time-cell"
-    class:highlighted-col={gridState.isFilterHoveredOrActive(
-      `toTime_${p.transportTo?.time}`,
-    )}
-    onclick={(e) => {
-      e.stopPropagation();
-      if (p.transportTo?.time) {
-        const key = `toTime_${p.transportTo.time}`;
-        gridState.handleHeaderClick(key);
-      }
-    }}
-    onmouseenter={() =>
-      (gridState.hoveredFilter = p.transportTo?.time
-        ? `toTime_${p.transportTo.time}`
-        : null)}
-    onmouseleave={() => (gridState.hoveredFilter = null)}
+    class="text-center time-cell"
+    class:is-col-active={!!gridState.activeFilters["toTime"]}
   >
-    {p.transportTo.time || "-"}
+    {p.transportTo?.time || "-"}
   </td>
 
   <!-- ОБРАТНО: В, П, М, С -->
   {#each transportMethods as tm}
     {@render statusCell(
-      `from_${tm.key}`,
       getMethodStatus(p.transportFrom.method, tm.key),
+      gridState.isGroupValueActive("from", tm.key),
     )}
   {/each}
 
   <!-- ОБРАТНО: День -->
   {#each [0, 1, 2] as dayIndex}
     {@render statusCell(
-      `fromDay_${dict.options.days[dayIndex]}`,
       getDayStatus(p.transportFrom.day, dict.options.days[dayIndex]),
+      gridState.isGroupValueActive("fromDay", dict.options.days[dayIndex]),
     )}
   {/each}
 
   <!-- ОБРАТНО: Время -->
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
   <td
-    class="text-center time-cell interactive-time-cell"
-    class:highlighted-col={gridState.isFilterHoveredOrActive(
-      `fromTime_${p.transportFrom?.time}`,
-    )}
-    onclick={(e) => {
-      e.stopPropagation();
-      if (p.transportFrom?.time) {
-        const key = `fromTime_${p.transportFrom.time}`;
-        gridState.handleHeaderClick(key);
-      }
-    }}
-    onmouseenter={() =>
-      (gridState.hoveredFilter = p.transportFrom?.time
-        ? `fromTime_${p.transportFrom.time}`
-        : null)}
-    onmouseleave={() => (gridState.hoveredFilter = null)}
+    class="text-center time-cell"
+    class:is-col-active={!!gridState.activeFilters["fromTime"]}
   >
-    {p.transportFrom.time || "-"}
+    {p.transportFrom?.time || "-"}
   </td>
 </tr>
